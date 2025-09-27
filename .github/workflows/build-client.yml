@@ -10,6 +10,7 @@ on:
     paths:
       - ".github/workflows/deploy_frontend_main.yml"
       - "client/**/*"
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
