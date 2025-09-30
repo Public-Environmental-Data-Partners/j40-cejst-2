@@ -6,14 +6,14 @@ declare namespace MapModuleScssNamespace {
     censusRow:string;
     censusLabel:string;
     censusText: string;
-    feedbackLink:string;
+    //feedbackLink:string; 
     isInFocus:string;
     versionInfo: string;
     showThresholdExceed:string;
     showCategoriesExceed: string;
     categoryHeader:string;
-    sendFeedbackLink: string;
-    sendFeedbackBtn: string;
+   // sendFeedbackLink: string;
+   // sendFeedbackBtn: string;
     buttonContainer: string;
     buttonText: string;
     buttonImage: string;

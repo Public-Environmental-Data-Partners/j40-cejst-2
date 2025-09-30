@@ -234,27 +234,6 @@ export const DOWNLOAD_LINKS = {
         />,
       }}
     />,
-    <FormattedMessage
-      id={'download.page.download.file.5'}
-      key={'download.page.download.file.5'}
-      defaultMessage={`<link5>Instructions to Federal agencies on using the CEJST</link5> (.pdf {instructions})`}
-      description={'Navigate to the download page. This is sixth download file link'}
-      values={{
-        link5: COMMON_COPY.linkFn(DOWNLOAD_FILES.NARWAL.INSTRUCTIONS.URL, false, true),
-        link5es: COMMON_COPY.linkFn(DOWNLOAD_FILES.NARWAL.INSTRUCTIONS_ES.URL, false, true),
-        instructions: <FormattedNumber
-          value={DOWNLOAD_FILES.NARWAL.INSTRUCTIONS.SIZE}
-          style="unit"
-          unit="kilobyte"
-          unitDisplay="narrow"
-        />,
-        instructionsEs: <FormattedNumber
-          value={DOWNLOAD_FILES.NARWAL.INSTRUCTIONS_ES.SIZE}
-          style="unit"
-          unit="kilobyte"
-          unitDisplay="narrow"
-        />,
-      }}
-    />,
+
   ],
 };

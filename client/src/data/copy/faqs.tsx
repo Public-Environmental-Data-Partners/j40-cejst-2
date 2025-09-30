@@ -1,15 +1,17 @@
 /* eslint-disable max-len */
-import {defineMessages, FormattedDate, FormattedMessage} from 'gatsby-plugin-intl';
-import React from 'react';
+// import {defineMessages, FormattedDate, FormattedMessage} from 'gatsby-plugin-intl';
+import {defineMessages} from 'gatsby-plugin-intl';
 
-import LinkTypeWrapper from '../../components/LinkTypeWrapper';
+// import React from 'react';
 
-import {DATA_SURVEY_LINKS, PAGES_ENDPOINTS, SITE_SATISFACTION_SURVEY_LINKS} from '../constants';
-import {CEJST_INSTRUCT, EXEC_ORDER_LINK, FED_RECOGNIZED_INDIAN_ENTITIES, WHEJAC_RECOMMENDATIONS} from './about';
-import {boldFn, FEEDBACK_EMAIL, linkFn, METH_1_0_RELEASE_DATE, METH_2_0_RELEASE_DATE} from './common';
-import {DOWNLOAD_FILES} from './downloads';
-import {EXPLORE_PAGE_LINKS} from './explore';
-import {VERSION_NUMBER} from './methodology';
+// import LinkTypeWrapper from '../../components/LinkTypeWrapper';
+
+// import {DATA_SURVEY_LINKS, PAGES_ENDPOINTS, SITE_SATISFACTION_SURVEY_LINKS} from '../constants';
+// import {CEJST_INSTRUCT, EXEC_ORDER_LINK, FED_RECOGNIZED_INDIAN_ENTITIES, WHEJAC_RECOMMENDATIONS} from './about';
+// mport {boldFn, FEEDBACK_EMAIL, linkFn, METH_1_0_RELEASE_DATE, METH_2_0_RELEASE_DATE} from './common';
+// import {DOWNLOAD_FILES} from './downloads';
+// import {EXPLORE_PAGE_LINKS} from './explore';
+// import {VERSION_NUMBER} from './methodology';
 
 export const PAGE_INTRO = defineMessages({
   PAGE_TILE: {
@@ -24,8 +26,9 @@ export const PAGE_INTRO = defineMessages({
   },
 });
 
+// commenting out all questions until we rework the FAQ page
 export const QUESTIONS = [
-  <FormattedMessage
+  /*  <FormattedMessage
     id={ 'faqs.page.Q1'}
     key={ 'faqs.page.Q1'}
     defaultMessage={ 'What is the Climate and Economic Justice Screening Tool (CEJST)?'}
@@ -120,11 +123,11 @@ export const QUESTIONS = [
     key={ 'faqs.page.Q22'}
     defaultMessage={ 'Why are some tracts disadvantaged in certain U.S. Territories because they only meet the low income threshold?'}
     description={ 'Navigate to the FAQs page, this will be Q22'}
-  />,
+  />, */
 ];
 
 export const FAQ_ANSWERS = {
-  Q1_P1: <FormattedMessage
+  /*  Q1_P1: <FormattedMessage
     id={ 'faqs.page.answers.Q1_P1'}
     defaultMessage={ 'The CEJST is a geospatial mapping tool that identifies disadvantaged communities that face burdens. The tool has an interactive map and uses datasets that are indicators of burdens.'}
     description={ 'Navigate to the FAQs page, this will be an answer, Q1_P1'}
@@ -414,5 +417,5 @@ export const FAQ_ANSWERS = {
     id={ 'faqs.page.answers.Q22'}
     defaultMessage={ 'Because some nationally-consistent datasets on indicators of environmental or climate burden used in the tool do not currently include data for certain U.S. Territories, tracts in these Territories are considered disadvantaged if they meet the low income threshold only.'}
     description={ 'Navigate to the FAQs page, this will be an answer, Q22'}
-  />,
+  />, */
 };

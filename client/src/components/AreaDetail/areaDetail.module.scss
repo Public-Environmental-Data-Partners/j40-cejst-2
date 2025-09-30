@@ -67,7 +67,9 @@ $sidePanelLabelFontColor: #171716;
 
 }
 
-.sendFeedbackLink {
+
+// removing the send feedback button when a census tract is selected
+/* .sendFeedbackLink {
   @include u-margin-top(2);
   @include u-margin-left(2);
   @include u-margin-bottom(2);
@@ -90,7 +92,7 @@ $sidePanelLabelFontColor: #171716;
       }
     }
   }
-}
+} */
 
 //Census row styles
 .censusRow {

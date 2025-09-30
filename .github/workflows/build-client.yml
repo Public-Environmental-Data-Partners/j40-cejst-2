@@ -4,11 +4,11 @@ on:
   push:
     branches: [main]
     paths:
-      - ".github/workflows/deploy_frontend_main.yml"
+      - ".github/workflows/build-client.yml"
       - "client/**/*"
   pull_request:
     paths:
-      - ".github/workflows/deploy_frontend_main.yml"
+      - ".github/workflows/build-client.yml"
       - "client/**/*"
 
 concurrency:
@@ -17,6 +17,7 @@ concurrency:
 
 env:
   node-version: 18
+  english-strings: client/src/intl/en.json
 
 jobs:
   build:
@@ -31,6 +32,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node-version }}
+          cache: npm
+          cache-dependency-path: client/package-lock.json
 
       - name: Install
         run: npm ci
@@ -55,22 +58,73 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    needs:
+      - translations
     defaults:
       run:
         working-directory: client
+    permissions:
+      contents: write       # For commiting changes back to the current PR.
+      pull-requests: write  # For commenting on the PR.
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The translation job may have committed some changes; use them!
+          ref: ${{ needs.translations.outputs.commit_hash }}
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node-version }}
+          cache: npm
+          cache-dependency-path: client/package-lock.json
 
       - name: Install
         run: npm ci
 
+      # We want to know if this branch has changed the english strings, not
+      # just if the `translations` job had to update it, so we need this check.
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            english:
+              - ${{ env.english-strings }}
+
       - name: Unit tests
-        run: npm test
+        env:
+          update_snapshots: ${{ github.event_name == 'pull_request' && steps.changes.outputs.english == 'true' }}
+        run: |
+          if [ "${update_snapshots}" == 'true' ]; then
+            echo '⚠️ Updating snapshots as part of the test!'
+            echo '-----------------------------------------'
+            npm run test:update
+          else
+            npm test
+          fi
+
+      - name: Commit changes to Snapshots
+        uses: stefanzweifel/git-auto-commit-action@v5
+        id: commit
+        if: github.event_name == 'pull_request'
+        with:
+          commit_message: 'Auto-update snapshot tests'
+          file_pattern: '*.snap'
+
+      - name: Comment on the PR about changes
+        uses: thollander/actions-comment-pull-request@v3
+        if: steps.commit.outputs.changes_detected == 'true'
+        env:
+          commit_url: 'https://github.com/${{ github.repository }}/commit/${{ steps.commit.outputs.commit_hash }}'
+        with:
+          message: >
+            🚨 The "snapshot" tests in your PR have been automatically updated
+            because you changed some text in the app! **Make sure [the changes
+            to `.snap` files](${{ env.commit_url }}) are correct** and don’t
+            include other things that should *not* have changed.
+
+            You can also update snapshot tests yourself when working locally by
+            running `npm run test:update` on the command line.
 
   lint:
     runs-on: ubuntu-latest
@@ -84,6 +138,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node-version }}
+          cache: npm
+          cache-dependency-path: client/package-lock.json
 
       - name: Install
         run: npm ci
@@ -106,6 +162,12 @@ jobs:
     defaults:
       run:
         working-directory: client
+    permissions:
+      contents: write       # For commiting changes back to the current PR.
+      pull-requests: write  # For commenting on the PR.
+    outputs:
+      changed: ${{ steps.commit-strings.outputs.changes_detected == 'true' }}
+      commit_hash: ${{ steps.commit-strings.outputs.commit_hash }}
     steps:
       - uses: actions/checkout@v4
 
@@ -113,12 +175,67 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node-version }}
+          cache: npm
+          cache-dependency-path: client/package-lock.json
 
       - name: Install
         run: npm ci
 
-      - name: Spanish translation test
-        run: npm run test:intl-translations
+      - name: Extract English from source code
+        if: github.event_name == 'pull_request'
+        run: npm run intl:extract
+
+      - name: Commit changes to English strings
+        uses: stefanzweifel/git-auto-commit-action@v5
+        id: commit-strings
+        if: github.event_name == 'pull_request'
+        with:
+          commit_message: 'Auto-update en.json from component source code'
+          file_pattern: '${{ env.english-strings }}'
+
+      - name: Comment on the PR about changes
+        uses: thollander/actions-comment-pull-request@v3
+        if: steps.commit-strings.outputs.changes_detected == 'true'
+        with:
+          message: >
+            :wave: FYI, your PR has been automatically updated with changes to
+            `${{ env.english-strings }}`, which contains all the translatable
+            text from the application (probably because you made changes to
+            the text of a component without updating this file).
+
+      - name: Check Spanish translations
+        # TODO: Make this error fatal when we have a strategy for translations!
+        # 
+        # Right now, we are trying to quickly iterate on this community
+        # deployment of CEJST and don't have a clear process or strategy around
+        # how to handle translations. We're keeping this check in so we have an
+        # eye on what is or isn't translated, but missing or deprecated
+        # non-English strings should not stop the build and prevent us from
+        # merging or deploying changes.
+        continue-on-error: true
+        run: |
+          npm run test:intl-translations > output.txt \
+            || echo "Error: ${?}" > ./failed
+
+          # Make sure you can see the output in the log!
+          cat output.txt
+
+          if [ -f ./failed ]; then
+            {
+              echo '⚠️ English and Spanish translations are mismatched.'
+              echo '<details><summary>Details:</summary>'
+              echo ''
+              echo '```'
+              cat output.txt
+              echo '```'
+              echo ''
+              echo '</details>'
+            } >> "${GITHUB_STEP_SUMMARY}"
+            exit 1
+          else
+            echo '✅ Translations in good shape.' >> "${GITHUB_STEP_SUMMARY}"
+          fi
+
 
   deploy:
     if: github.ref == 'refs/heads/main'

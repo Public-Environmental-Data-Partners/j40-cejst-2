@@ -198,6 +198,10 @@ const FAQPage = ({location}: IFAQPageProps) => {
 
           {/* First column */}
           <Grid col={12} tablet={{col: 7}}>
+
+            {/* Adding "coming soon" to top of first column until further notice*/}
+            <h2>{intl.formatMessage(FAQS_COPY.PAGE_INTRO.COMING_SOON)}</h2>
+
             <section style={accordionContainerStyle}>
               {/* Enabling multiselect true fails a11y using axe tool */}
               <Accordion items={faqItems}/>

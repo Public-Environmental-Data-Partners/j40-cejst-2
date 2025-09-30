@@ -430,7 +430,7 @@ export const DATASETS = defineMessages({
   INFO: {
     id: 'methodology.page.datasetContainer.info',
     defaultMessage: `
-      The tool’s datasets are public and consistent nationwide. They come from different sources and are high quality. The Council on Environmental Quality (CEQ) chose them based on relevance,  availability, and quality. They identify climate, environmental, and other burdens on communities.
+      The tool’s datasets are public and consistent nationwide. They come from different sources and are high quality.
     `,
     description: 'Navigate to the Methodology page. This is the description of the dataset section',
   },

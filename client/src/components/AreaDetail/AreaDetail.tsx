@@ -1,6 +1,6 @@
 /* eslint-disable quotes */
 // External Libs:
-import {Accordion, Button, Icon} from "@trussworks/react-uswds";
+import {Accordion} from "@trussworks/react-uswds"; // button and icon removed with the removal of the feedback button
 import {MessageDescriptor, useIntl} from "gatsby-plugin-intl";
 import React from "react";
 
@@ -1199,8 +1199,9 @@ const AreaDetail = ({properties}: IAreaDetailProps) => {
         />
       }
 
-      {/* Send Feedback button */}
-      <a
+
+      {/* Send Feedback button - removed for now */}
+      {/*       <a
         className={styles.sendFeedbackLink}
         href={
           intl.locale === `es` ?
@@ -1219,7 +1220,8 @@ const AreaDetail = ({properties}: IAreaDetailProps) => {
             <Icon.Launch aria-label={intl.formatMessage(EXPLORE_COPY.COMMUNITY.SEND_FEEDBACK.IMG_ICON.ALT_TAG)} />
           </div>
         </Button>
-      </a>
+      </a> */}
+
 
       {/* All category accordions in this component */}
       {<Accordion multiselectable={true} items={categoryItems} className="-AreaDetail" />}
