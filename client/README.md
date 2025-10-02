@@ -1,5 +1,5 @@
-[![Staging](https://github.com/usds/justice40-tool/actions/workflows/deploy_fe_staging.yml/badge.svg)](https://github.com/usds/justice40-tool/actions/workflows/deploy_fe_staging.yml)
-[![Production](https://github.com/usds/justice40-tool/actions/workflows/deploy_fe_main.yml/badge.svg)](https://github.com/usds/justice40-tool/actions/workflows/deploy_fe_main.yml)
+[![Staging](https://github.com/Public-Environmental-Data-Partners/j40-cejst-2/actions/workflows/deploy_fe_staging.yml/badge.svg)](https://github.com/usds/justice40-tool/actions/workflows/deploy_fe_staging.yml)
+[![Production](https://github.com/Public-Environmental-Data-Partners/j40-cejst-2/actions/workflows/deploy_fe_main.yml/badge.svg)](https://github.com/usds/justice40-tool/actions/workflows/deploy_fe_main.yml)
 
 # Justice40 Client
 
@@ -12,7 +12,7 @@ This README contains the following content:
 - [Localization](#localization)
 - [Feature toggling](#feature-toggling)
 - [Environment variables](#environment-variables)
-- [Debugging](#debugging)
+- [Debugging](#debugging)	
 - [Package versions](#package-versions)
 
 ## Installing and running the client site
@@ -171,7 +171,7 @@ To access a translated version of a page, e.g. `pages/index.js`, add the locale 
 
 There are 3 environment variables that can be set:
 
-1. DATA_SOURCE (required) = can be set to 'cdn' or 'local'. This is used to change where the tiles are sourced from. It is used in the [constants](https://github.com/usds/justice40-tool/blob/main/client/src/data/constants.tsx) file to determine which TILE_BASE_URL to use.
+1. DATA_SOURCE (required) = can be set to 'cdn' or 'local'. This is used to change where the tiles are sourced from. It is used in the [constants](https://github.com/Public-Environmental-Data-Partners/j40-cejst-2/blob/main/client/src/data/constants.tsx) file to determine which TILE_BASE_URL to use.
 2. SITE_URL = set this to change the base URL for the website's public html folder. If none is provided, then localhost:8000 is used. This is used for the site_map.xml file and robots.txt file. This is only used during production build aka `npm build`.
 3. PATH_PREFIX = set this to add an additional path(s) to SITE_URL. If none is provided then no additional paths are added to the SITE_URL. This is only used during production build aka `npm build`.
 
