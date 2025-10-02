@@ -73,7 +73,7 @@ This should return something like `v14.x.x`.
 While any IDE can be used to contribute to this project, many of our developers use Visual Studio Code (VS Code). Because of this, we've included a few [VS Code configurations to make it easier to develop the data pipeline](data/data-pipeline/INSTALLATION.md#visual-studio-code).
 
 1. On macOS :apple:, open the terminal and type `brew install --cask visual-studio-code` and press return. If this doesn't work – or you're using Win10 :window: – you can [download and install VS Code](https://code.visualstudio.com/) directly.
-2. After [forking this repo](https://github.com/usds/justice40-tool/blob/main/CONTRIBUTING.md#code-contributions), you can clone your forked repo into VS Code.
+2. After [forking this repo](CONTRIBUTING.md#code-contributions), you can clone your forked repo into VS Code.
 
 <!-- TODO: this belongs in the client readme -->
 

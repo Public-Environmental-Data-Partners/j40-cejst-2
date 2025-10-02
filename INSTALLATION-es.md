@@ -33,7 +33,7 @@ Si bien se puede usar cualquier IDE, describimos cómo configurar VS Code
 
 1. Abra la terminal y escriba `brew install --cask visual-studio-code` y presione RETORNO.
     1. Si esto no funciona o para Win10, puede descargar VS Code desde el [sitio web](https://code.visualstudio.com/).
-2. Después de [bifurcar este repositorio](https://github.com/usds/justice40-tool/blob/main/CONTRIBUTING-es.md#colaboraciones-con-c%C3%B3digo), puede clonar su repositorio bifurcado en VS Code
+2. Después de [bifurcar este repositorio](CONTRIBUTING-es.md#colaboraciones-con-c%C3%B3digo), puede clonar su repositorio bifurcado en VS Code
 3. VS Code con el mensaje de "clonar un repositorio"
 4. Abra la terminal y navegue al directorio `cliente`
 5. Escriba `npm install` para cargar las dependencias
