@@ -112,7 +112,7 @@ Self-managed S3 bucket with static website hosting for preview deployments.
 - Good, because it's very cost-effective (~$0.01/month per PR)
 - Good, because it provides full control over the deployment process
 - Good, because it can be enhanced with CloudFront for better performance
-- Good, because it supports custom domains if needed
+- Good, because it supports custom domains if needed and address issue [#9](https://github.com/Public-Environmental-Data-Partners/j40-cejst-2/issues/9)
 - Bad, because it requires AWS setup and credentials
 - Bad, because it adds some complexity to the deployment process
 - Bad, because it's a small ongoing cost (though minimal)
