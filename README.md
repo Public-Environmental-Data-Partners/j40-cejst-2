@@ -4,15 +4,17 @@
 
 _[¡Lea esto en español!](README-es.md)_
 
-This repo contains the code, processes, and documentation for the data and tech powering the former [Climate and Economic Justice Screening Tool (CEJST)](https://screeningtool.geoplatform.gov).
+This repo contains the code, processes, and documentation for the data and tech powering the former Climate and Economic Justice Screening Tool (CEJST), as well as continued updates by the [Public Environmental Data Partners](https://screening-tools.com/). The current version of the tool, as represented by the code current in the `main` branch, is live [here](https://public-environmental-data-partners.github.io/j40-cejst-2)
 
-## Status January 2025
+## Status October 2025
 
-The old CEJST has been taken offline by the incoming adminsitration. This fork is maintained by communities who still require access to the tool, and who hope to gradually improve it.  
+The old CEJST has been taken offline by the incoming adminsitration (Jan 2025). This fork is maintained by communities who still require access to the tool, and who hope to gradually improve it.
 
-**Many of the instructions in the README are not appropriate at the current stage of development.** In particular, the use of Docker and docker-compose is not advised. Instead, in this initial stage, we are only building the main web server (found in `client`). This is a Gatsby website, which uses React components to build a static site in the `client/public` folder. Further instructions are coming soon.  For now, thank you for your interest! Please use [Github issues](https://github.com/edgi-govdata-archiving/j40-cejst-2/issues) to track problems and feature requests.  
+**Many of the instructions in the README are not appropriate at the current stage of development.** In particular, the use of Docker and docker-compose is not advised. Instead, in this initial stage, we are only building the main web server (found in `client`). This is a Gatsby website, which uses React components to build a static site in the `client/public` folder. Further instructions are coming soon. For now, thank you for your interest!
 
--------------
+Please use [Github issues](https://github.com/Public-Environmental-Data-Partners/j40-cejst-2/issues) to track problems and feature requests.
+
+---
 
 ## Background
 
@@ -41,6 +43,13 @@ If you have software experience or more specific use cases, in-depth documentati
 ### Project Documentation
 
 For more general documentation on the project that is not related to getting set up, including architecture diagrams and engineering decision logs, visit [docs/](docs/).
+
+### Deployment
+
+The original Justice40 project used GitHub Actions workflows for deployment:
+
+- [Staging deployment workflow](https://github.com/usds/justice40-tool/blob/main/.github/workflows/deploy_fe_staging.yml)
+- [Production deployment workflow](https://github.com/usds/justice40-tool/blob/main/.github/workflows/deploy_fe_main.yml)
 
 ## Glossary
 

@@ -6,7 +6,7 @@ _[Read this in English!](CONTRIBUTING.md)_
 
 Siga las instrucciones siguientes para colaborar con la herramienta Justice40 que reside en este repositorio.
 
-Antes de hacer su aportación, recomendamos que lea además nuestros archivos [LICENCIA](LICENSE-es.md) y [LÉAME](README-es.md), que también se incluyen aquí. Si el contenido de este repositorio no responde a sus preguntas, no dude en [contactar con nosotros](mailto:justice40open@usds.gov).
+Antes de hacer su aportación, recomendamos que lea además nuestros archivos [LICENCIA](LICENSE-es.md) y [LÉAME](README-es.md), que también se incluyen aquí. Si el contenido de este repositorio no responde a sus preguntas, no dude en [contactar con nosotros](https://groups.google.com/g/justice40-open-source).
 
 ## Dominio público
 
@@ -22,7 +22,7 @@ Si cree que encontró un error en la herramienta Justice40, consulte nuestra lis
 
 Cuando informe de un error, siga estas instrucciones:
 
-- **Use la plantilla de informe de error**, Bug Report ([aquí](https://github.com/DOI-DO/j40-cejst-2/issues/new/choose), para comunicar el problema. La plantilla se llena con la información adecuada.
+- **Use la plantilla de informe de error**, Bug Report ([aquí](https://github.com/Public-Environmental-Data-Partners/j40-cejst-2/issues/new/choose), para comunicar el problema. La plantilla se llena con la información adecuada.
 - **Use un título claro y descriptivo del problema** para definirlo.
 - **Describa los pasos exactos para reproducir el problema** con todos los detalles posibles. Por ejemplo, comience con una explicación de cómo llegó a la página donde encontró el error.
 - **Describa el comportamiento que observó después de seguir esos pasos** e indique exactamente cuál es el problema que causa ese comportamiento.
@@ -34,7 +34,7 @@ Cuando informe de un error, siga estas instrucciones:
 
 Si desea sugerir un cambio, solicitar una función o tratar un asunto, pero no tiene el lenguaje o el código específico para enviar su solicitud, puede abrir un problema en este repositorio.
 
-Abra [aquí](https://github.com/DOI-DO/j40-cejst-2/issues/new/choose) un problema de tipo "Solicitud de función".
+Abra [aquí](https://github.com/Public-Environmental-Data-Partners/j40-cejst-2/issues/new/choose) un problema de tipo "Solicitud de función".
 
 En el problema, describa la función que desea, por qué la necesita y cómo debería funcionar esta. Los integrantes del equipo responderán a este lo antes posible.
 
@@ -47,6 +47,6 @@ Si desea colaborar con alguna parte del código base, bifurque el repositorio si
 <!-- markdown-link-check-disable -->
 
 - No se permiten las fusiones al proyecto principal `main`; abra una solicitud de incorporación de cambios desde una rama.
-- Al menos un revisor autorizado debe aprobar la confirmación (en [CODEOWNERS](https://github.com/DOI-DO/j40-cejst-2/tree/main/.github/CODEOWNERS), en inglés, consulte la lista más reciente de estos revisores).
+- Al menos un revisor autorizado debe aprobar la confirmación (en [CODEOWNERS](https://github.com/Public-Environmental-Data-Partners/j40-cejst-2/tree/main/.github/CODEOWNERS), en inglés, consulte la lista más reciente de estos revisores).
 - Todas las verificaciones de estado obligatorias deben ser aprobadas.
   Si hay un desacuerdo importante entre los integrantes del equipo, se organizará una reunión con el fin de determinar el plan de acción para la solicitud de incorporación de cambios.

@@ -6,7 +6,7 @@ _[¡Lea esto en español!](CONTRIBUTING-es.md)_
 
 The following is a set of guidelines for contributing to the Justice40 Climate and Economic Justice Screening Tool (CEJST) that lives in this repository.
 
-Before contributing, we encourage you to read our [LICENSE](LICENSE.md) and [README](README.md) files. If you have any questions not answered by the content of this repository, please [contact us](mailto:justice40open@usds.gov).
+Before contributing, we encourage you to read our [LICENSE](LICENSE.md) and [README](README.md) files. If you have any questions not answered by the content of this repository, please [contact us](https://groups.google.com/g/justice40-open-source).
 
 ## Public Domain
 
@@ -22,7 +22,7 @@ If you think you have found a bug in the Justice40 tool, search our issues list 
 
 If you do not find your bug in our issues list, file a bug report. When reporting the bug, please follow these guidelines:
 
-- **Please use the `Bug Report` issue template** ([here](https://github.com/DOI-DO/j40-cejst-2/issues/new/choose)). This is populated with the right information
+- **Please use the `Bug Report` issue template** ([here](https://github.com/Public-Environmental-Data-Partners/j40-cejst-2/issues/new/choose)). This is populated with the right information
 - **Use a clear and descriptive issue title** for the issue to identify the problem.
 - **Describe the exact steps to reproduce the problem** in as much detail as possible. For example, start by explaining how you got to the page where you encountered the bug.
 - **Describe the behavior you observed after following the steps** and point out what exactly is the problem with that behavior.
@@ -34,7 +34,7 @@ If you do not find your bug in our issues list, file a bug report. When reportin
 
 If you don't have specific language or code to submit but would like to suggest a change, request a feature, or have something addressed, you can open an issue in this repository.
 
-Please open an issue of type `Feature request` [here](https://github.com/DOI-DO/j40-cejst-2/issues/new/choose).
+Please open an issue of type `Feature request` [here](https://github.com/Public-Environmental-Data-Partners/j40-cejst-2/issues/new/choose).
 
 In this issue, please describe the feature you would like to see, why you need it, and how it should work. Team members will respond to the Feature request as soon as possible.
 
@@ -48,7 +48,7 @@ If you would like to contribute to any part of the codebase, please fork the rep
 
 - Merges to `main` are prohibited - please open a pull request from a branch
 - Please create a branch name in the format of `<github-username>`/`<issue-number>`-`<kebab-case-description>`. For example vimusds/1069-fix-territory-on-mobile
-- At least one required reviewer must approve the commit (see [CODEOWNERS](https://github.com/DOI-DO/j40-cejst-2/tree/main/.github/CODEOWNERS) for the most up-to-date list of these members)
+- At least one required reviewer must approve the commit (see [CODEOWNERS](https://github.com/Public-Environmental-Data-Partners/j40-cejst-2/tree/main/.github/CODEOWNERS) for the most up-to-date list of these members)
 - All required status checks must pass
 
 If there is significant dissent within the team, a meeting will be held to discuss a plan of action for the pull request.

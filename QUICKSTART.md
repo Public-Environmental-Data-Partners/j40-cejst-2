@@ -5,7 +5,7 @@ Install [`git`](https://git-scm.com/). See [Install Git](INSTALLATION.md#install
 Open a terminal, clone this repository, and change directory to the repository root:
 
 ```sh
-$ git clone https://github.com/DOI-DO/j40-cejst-2
+$ git clone https://github.com/Public-Environmental-Data-Partners/j40-cejst-2.git
 Cloning into 'j40-cejst-2'...
 $ cd j40-cejst-2
 ```

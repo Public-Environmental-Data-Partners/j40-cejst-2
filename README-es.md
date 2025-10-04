@@ -1,6 +1,6 @@
 # Herramienta Justice40
 
-[![CC0 License](https://img.shields.io/badge/license-CCO--1.0-brightgreen)](https://github.com/DOI-DO/j40-cejst-2/blob/main/LICENSE.md)
+[![CC0 License](https://img.shields.io/badge/license-CCO--1.0-brightgreen)](LICENSE.md)
 
 _[Read this in English!](README.md)_
 
