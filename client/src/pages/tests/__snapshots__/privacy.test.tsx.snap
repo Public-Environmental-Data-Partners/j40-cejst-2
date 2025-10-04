@@ -450,7 +450,7 @@ exports[`rendering of the Privacy Policy page matches Privacy Policy page snapsh
                   <a
                     class="usa-link usa-link--external footer-link-first-child"
                     data-cy="check-out-the-code-on-github"
-                    href="https://github.com/Public-Environmental-Data-Partners/j40-cejst-2"
+                    href="https://github.com/edgi-govdata-archiving/j40-cejst-2"
                     rel="noreferrer"
                     target="_blank"
                   >
