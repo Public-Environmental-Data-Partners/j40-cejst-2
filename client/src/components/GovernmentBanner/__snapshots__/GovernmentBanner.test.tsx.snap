@@ -166,12 +166,6 @@ exports[`rendering of the GovernmentBanner checks if component renders 1`] = `
           class="usa-link"
           href="#"
         >
-          English
-        </a>
-        <a
-          class="usa-link"
-          href="#"
-        >
           Español
         </a>
       </div>

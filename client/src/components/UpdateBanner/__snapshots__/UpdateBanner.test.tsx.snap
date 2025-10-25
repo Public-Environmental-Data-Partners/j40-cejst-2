@@ -30,10 +30,26 @@ exports[`rendering of the UpdateBanner renders small version at cutoff date 1`] 
 <DocumentFragment>
   <div>
     <div>
-      <strong>
-        This is an unofficial copy of the CEJST Tool.
-      </strong>
-        We are working on an overhaul, but in the meantime some links and text may incorrectly suggest that this site is affiliated with the US Government.
+      <div>
+        <span>
+          <strong>
+            This is an unofficial copy of the CEJST Tool.
+          </strong>
+            We are working on an overhaul, but in the meantime some links and text may incorrectly suggest that this site is affiliated with the US Government.
+        </span>
+        <div>
+          <img
+            alt="language icon for selecting language"
+            src="test-file-stub"
+          />
+          <a
+            class="usa-link"
+            href="#"
+          >
+            Español
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </DocumentFragment>
