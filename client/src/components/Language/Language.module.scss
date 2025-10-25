@@ -1,7 +1,7 @@
-@use '../../styles/design-system.scss' as *;
+@use "../../styles/design-system.scss" as *;
 
 @mixin baseLanguageStyles {
-  @include u-margin-right(4);
+  @include u-margin-right(1);
   @include u-display("flex");
 
   .languageIcon {
@@ -11,26 +11,24 @@
   .languageLink {
     @include u-display("inline-block");
     @include u-margin-left(1.5);
-    
+
     cursor: pointer;
-    font-size: .8rem; // government banner text size not a token
-    @include u-padding-top('2px');
-    
+    font-size: 0.8rem; // government banner text size not a token
+    @include u-padding-top("2px");
   }
 }
 
 .languageContainer {
-    @include baseLanguageStyles();
-    @include at-media-max("desktop") {
-      display: none;
-    }
+  @include baseLanguageStyles();
+  @include at-media-max("desktop") {
+    display: none;
   }
-  
-  .languageContainerMobile {
-    @include baseLanguageStyles();
-    @include u-padding-top(3);
-    @include at-media("desktop") {
-      display: none;
-    }
+}
+
+.languageContainerMobile {
+  @include baseLanguageStyles();
+  @include u-padding-top(3);
+  @include at-media("desktop") {
+    display: none;
   }
-  
+}

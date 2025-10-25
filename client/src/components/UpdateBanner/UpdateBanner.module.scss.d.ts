@@ -3,6 +3,8 @@ declare namespace UpdateBannerNamespace {
     updateBannerAlert: string;
     updateBannerContainer: string;
     updateBanner: string;
+    updateBannerContent: string;
+    updateBannerText: string;
     updatePillIcon: string;
     updateHeading: string;
   }

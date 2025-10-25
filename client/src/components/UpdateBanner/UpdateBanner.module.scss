@@ -1,4 +1,4 @@
-@use '../../styles/design-system.scss' as *;
+@use "../../styles/design-system.scss" as *;
 
 .updateBannerContainer {
   @include u-bg("gray-cool-2");
@@ -9,7 +9,7 @@
 .updateBanner {
   max-width: 70.25rem; // Needs this exact value to align with GovBanner
   @include u-font("body", "3xs");
-  @include u-line-height('ui', 2);
+  @include u-line-height("ui", 2);
   @include u-margin-left(auto);
   @include u-margin-right(auto);
 
@@ -26,4 +26,16 @@
 
 .updateBannerAlert {
   @include u-margin-top(2);
+}
+
+.updateBannerContent {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+  flex-wrap: wrap;
+}
+
+.updateBannerText {
+  flex: 1;
+  min-width: 0; // Allows text to wrap properly
 }
