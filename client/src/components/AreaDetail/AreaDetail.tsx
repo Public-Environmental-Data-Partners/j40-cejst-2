@@ -14,7 +14,7 @@ import TractDemographics from "../TractDemographics";
 import TractInfo from "../TractInfo";
 import TractPrioritization from "../TractPrioritization";
 
-// Styles and constants to be used in the component
+// Styles and constants:
 import * as constants from "../../data/constants";
 import * as EXPLORE_COPY from "../../data/copy/explore";
 import * as styles from "./areaDetail.module.scss";
