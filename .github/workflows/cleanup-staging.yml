@@ -3,6 +3,8 @@ name: Cleanup Preview Deployment
 on:
   pull_request:
     types: [closed]
+    paths:
+      - "client/**/*"
 
 jobs:
   cleanup:
@@ -20,47 +22,8 @@ jobs:
       - name: Delete All PR S3 Folders
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
-          echo "Deleting all S3 folders for PR #$PR_NUMBER"
-
-          # List all folders that start with pr-{PR_NUMBER}-
-          FOLDERS=$(aws s3 ls s3://pedp-cejst2-staging/j40-cejst-2/ --recursive | grep "pr-$PR_NUMBER-" | awk '{print $2}' | sed 's|/$||')
-
-          if [ -z "$FOLDERS" ]; then
-            echo "No folders found for PR #$PR_NUMBER"
-          else
-            echo "Found folders to delete:"
-            echo "$FOLDERS"
-            
-            # Delete each folder
-            for folder in $FOLDERS; do
-              echo "Deleting: s3://pedp-cejst2-staging/j40-cejst-2/$folder/"
-              aws s3 rm s3://pedp-cejst2-staging/j40-cejst-2/$folder/ --recursive
-            done
-            
-            echo "✅ Successfully deleted all preview deployment folders for PR #$PR_NUMBER"
-          fi
-
-      - name: Invalidate CloudFront Cache for All PR Folders
-        run: |
-          PR_NUMBER=${{ github.event.pull_request.number }}
-          echo "Invalidating CloudFront cache for all PR #$PR_NUMBER folders"
-
-          # List all folders that start with pr-{PR_NUMBER}-
-          FOLDERS=$(aws s3 ls s3://pedp-cejst2-staging/j40-cejst-2/ --recursive | grep "pr-$PR_NUMBER-" | awk '{print $2}' | sed 's|/$||')
-
-          if [ -z "$FOLDERS" ]; then
-            echo "No folders found for CloudFront invalidation"
-          else
-            # Create invalidation paths for all folders
-            INVALIDATION_PATHS=""
-            for folder in $FOLDERS; do
-              INVALIDATION_PATHS="$INVALIDATION_PATHS /j40-cejst-2/$folder/*"
-            done
-            
-            echo "Invalidating paths: $INVALIDATION_PATHS"
-            aws cloudfront create-invalidation --distribution-id ${{ secrets.STAGING_CLOUDFRONT_DISTRIBUTION_ID }} --paths $INVALIDATION_PATHS
-            echo "✅ Successfully invalidated CloudFront cache for all PR folders"
-          fi
+          echo "Deleting S3 folders for PR #$PR_NUMBER"
+          aws s3 rm s3://pedp-cejst2-staging/j40-cejst-2/ --exclude "*" --include "pr-$PR_NUMBER-*" --recursive
 
       - name: Comment on PR about cleanup
         uses: thollander/actions-comment-pull-request@v3
@@ -68,7 +31,7 @@ jobs:
           message: |
             **🧹 Preview deployment cleaned up! 🧹**
 
-            All preview deployment folders for this PR have been deleted from S3 and CloudFront cache has been invalidated.
+            All preview deployment folders for this PR have been deleted from AWS.
 
             **Cleaned up PR**: #${{ github.event.pull_request.number }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
