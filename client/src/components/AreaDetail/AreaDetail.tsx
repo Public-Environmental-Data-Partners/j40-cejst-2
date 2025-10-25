@@ -196,7 +196,7 @@ const AreaDetail = ({properties}: IAreaDetailProps) => {
       null;
 
   /**
-   * The workforce development category has some indicators whose source will vary depending on which
+   * The workforce development category has some indicators who's source will vary depending on which
    * territory is selected. This function allows us to change the source of workforce development indicators
    * depending on which territory was selected
    *
