@@ -357,6 +357,20 @@ Navigate to your repository's **Settings** → **Secrets and variables** → **A
    - **Cause**: Using S3 directly instead of CloudFront
    - **Solution**: Always use CloudFront for production deployments
 
+## Additional Resources and Best Practices
+
+### Multi-Account Strategy
+
+For organizations planning to scale their AWS infrastructure, consider implementing a multi-account strategy as outlined in [You should have lots of AWS accounts](https://src-bin.com/substrate/blog/you-should-have-lots-of-aws-accounts/). This approach provides enhanced security through isolation boundaries, improved reliability, better compliance, simplified IAM management, and automatic cost categorization.
+
+### Cloud Security Best Practices
+
+The [Datadog State of Cloud Security 2025](https://www.datadoghq.com/state-of-cloud-security/) report highlights critical security considerations, including that 84% of organizations use multiple AWS accounts, 40% implement data perimeters, and 15% of S3 buckets remain publicly accessible. Key recommendations include eliminating long-lived credentials, implementing data perimeters, and following the principle of least privilege.
+
+### Security Considerations for This Setup
+
+The current single-account setup is appropriate for initial development and staging. Consider implementing IAM role assumption, resource tagging, VPC endpoints, and monitoring as you scale.
+
 ## Related Documentation
 
 - [Main README](../../README.md) - Project overview and quick start
