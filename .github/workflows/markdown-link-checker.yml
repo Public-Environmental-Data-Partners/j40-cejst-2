@@ -1,0 +1,26 @@
+name: Markdown Link Checker
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "**.md"
+
+jobs:
+  markdown-link-check:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Need full history for path filtering
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            markdown:
+              - '**.md'
+      - name: Run linkspector
+        if: steps.changes.outputs.markdown == 'true'
+        uses: umbrelladocs/action-linkspector@v1
+        with:
+          fail_on_error: true
