@@ -1,6 +1,6 @@
 # Preview Deployment Links for Pull Requests
 
-- Status: proposed
+- Status: approved
 - Deciders: Development Team
 - Date: 2025-01-27
 - Tags: deployment, preview, pull-requests, github-actions
