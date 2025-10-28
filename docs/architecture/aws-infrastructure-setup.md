@@ -361,7 +361,7 @@ Navigate to your repository's **Settings** → **Secrets and variables** → **A
 
 ### Multi-Account Strategy
 
-For organizations planning to scale their AWS infrastructure, consider implementing a multi-account strategy as outlined in [You should have lots of AWS accounts](https://src-bin.com/substrate/blog/you-should-have-lots-of-aws-accounts/). This approach provides enhanced security through isolation boundaries, improved reliability, better compliance, simplified IAM management, and automatic cost categorization.
+If/when we plan to scale our AWS infrastructure, we may want to consider implementing a multi-account strategy as outlined in [You should have lots of AWS accounts](https://src-bin.com/substrate/blog/you-should-have-lots-of-aws-accounts/). This approach provides enhanced security through isolation boundaries, improved reliability, better compliance, simplified IAM management, and automatic cost categorization.
 
 ### Cloud Security Best Practices
 
@@ -369,7 +369,7 @@ The [Datadog State of Cloud Security 2025](https://www.datadoghq.com/state-of-cl
 
 ### Security Considerations for This Setup
 
-The current single-account setup is appropriate for initial development and staging. Consider implementing IAM role assumption, resource tagging, VPC endpoints, and monitoring as you scale.
+The current single-account setup is appropriate for initial development and staging. In the future we may want to consider implementing IAM role assumption, resource tagging, VPC endpoints, and monitoring as we scale.
 
 ## Related Documentation
 
