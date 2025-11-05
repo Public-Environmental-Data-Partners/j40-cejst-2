@@ -21,12 +21,17 @@ exports[`rendering of the J40Header checks if component renders 1`] = `
               alt="language icon for selecting language"
               src="test-file-stub"
             />
-            <a
-              class="usa-link"
-              href="#"
-            >
-              Español
-            </a>
+            <div>
+              <span>
+                English
+              </span>
+              <a
+                class="usa-link"
+                href="#"
+              >
+                Español
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -207,12 +212,17 @@ exports[`rendering of the J40Header checks if component renders 1`] = `
                       alt="language icon for selecting language"
                       src="test-file-stub"
                     />
-                    <a
-                      class="usa-link"
-                      href="#"
-                    >
-                      Español
-                    </a>
+                    <div>
+                      <span>
+                        English
+                      </span>
+                      <a
+                        class="usa-link"
+                        href="#"
+                      >
+                        Español
+                      </a>
+                    </div>
                   </div>
                 </div>
               </li>

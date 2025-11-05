@@ -8,13 +8,26 @@
     align-self: baseline;
   }
 
+  .languageLinks {
+    @include u-display("inline-flex");
+    @include u-margin-left(1.5);
+    gap: 0.5rem; // Add spacing between language links
+    align-items: center;
+  }
+
   .languageLink {
     @include u-display("inline-block");
-    @include u-margin-left(1.5);
-
     cursor: pointer;
     font-size: 0.8rem; // government banner text size not a token
     @include u-padding-top("2px");
+  }
+
+  .languageLinkActive {
+    @include u-display("inline-block");
+    font-size: 0.8rem; // government banner text size not a token
+    @include u-padding-top("2px");
+    font-weight: bold; // Make active language bold
+    color: inherit; // Use current text color
   }
 }
 

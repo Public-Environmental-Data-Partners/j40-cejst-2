@@ -42,12 +42,17 @@ exports[`rendering of the UpdateBanner renders small version at cutoff date 1`] 
             alt="language icon for selecting language"
             src="test-file-stub"
           />
-          <a
-            class="usa-link"
-            href="#"
-          >
-            Español
-          </a>
+          <div>
+            <span>
+              English
+            </span>
+            <a
+              class="usa-link"
+              href="#"
+            >
+              Español
+            </a>
+          </div>
         </div>
       </div>
     </div>
