@@ -258,7 +258,8 @@ export const TRIBAL_SOURCE_LAYER = "blocks";
 export const BASE_MAP_LAYER_ID = "base-map-layer-id";
 export const HIGH_ZOOM_LAYER_ID = "high-zoom-layer-id";
 export const PRIORITIZED_HIGH_ZOOM_LAYER_ID = "prioritized-high-zoom-layer-id";
-export const GRANDFATHERED_HIGH_ZOOM_LAYER_ID = "grandfathered-high-zoom-layer-id";
+export const GRANDFATHERED_HIGH_ZOOM_LAYER_ID =
+  "grandfathered-high-zoom-layer-id";
 export const LOW_ZOOM_LAYER_ID = "low-zoom-layer-id";
 export const FEATURE_BORDER_LAYER_ID = "feature-border-layer-id";
 export const SELECTED_FEATURE_BORDER_LAYER_ID =
@@ -370,13 +371,13 @@ export const USWDS_BREAKPOINTS = {
 // ********** SURVEY LINKS ***************
 
 export const DATA_SURVEY_LINKS = {
-  EN: "https://eop.gov1.qualtrics.com/jfe/form/SV_3WC1hmbqoS4Ak2G",
-  ES: "https://eop.gov1.qualtrics.com/jfe/form/SV_bNsBlreFIhs9uFU",
+  EN: "https://docs.google.com/forms/d/e/1FAIpQLSc_nxBGIs9q8yg1RlgePhpevBePGJVE9NYLWBnwhd46wt-67A/viewform",
+  ES: "https://docs.google.com/forms/d/e/1FAIpQLSdB-4Viwb6KJIUQjMLxfqxsJXlg-gQ61PGT524AGill9Mf_Pg/viewform",
 };
 
 export const SITE_SATISFACTION_SURVEY_LINKS = {
-  EN: "https://eop.gov1.qualtrics.com/jfe/form/SV_2mF9GXOhDKKjxcy",
-  ES: "https://eop.gov1.qualtrics.com/jfe/form/SV_bgfSa2U8NGuyr9c",
+  EN: "https://docs.google.com/forms/d/e/1FAIpQLSe8kbo10ViosV_2aQHQd9EDUVPtSU7IjtblqZF3d96CiarxFA/viewform",
+  ES: "https://docs.google.com/forms/d/e/1FAIpQLSeNXlgsdJKWZ9pw3eyrkOelPLJGkqjkqYE63huHkEa_q2L4DQ/viewform",
 };
 
 export const CONTACT_SURVEY_LINKS = {
@@ -389,18 +390,22 @@ export const CENSUS_TRACT_SURVEY_LINKS = {
   ES: "https://eop.gov1.qualtrics.com/jfe/form/SV_3LbCTDxjTqZdyPI",
 };
 
-export const TILE_BASE_URL = process.env.DATA_SOURCE === "local" ?
-process.env.GATSBY_LOCAL_TILES_BASE_URL :
-process.env.GATSBY_CDN_TILES_BASE_URL;
+export const TILE_BASE_URL =
+  process.env.DATA_SOURCE === "local" ?
+    process.env.GATSBY_LOCAL_TILES_BASE_URL :
+    process.env.GATSBY_CDN_TILES_BASE_URL;
 
-export const TILE_PATH = process.env.DATA_SOURCE === "local" ?
-process.env.GATSBY_DATA_PIPELINE_SCORE_PATH_LOCAL :
-process.env.GATSBY_2_0_SCORE_PATH;
+export const TILE_PATH =
+  process.env.DATA_SOURCE === "local" ?
+    process.env.GATSBY_DATA_PIPELINE_SCORE_PATH_LOCAL :
+    process.env.GATSBY_2_0_SCORE_PATH;
 
-export const MAP_TRACT_SEARCH_PATH = process.env.DATA_SOURCE === "local" ?
-process.env.GATSBY_DATA_PIPELINE_SEARCH_PATH_LOCAL :
-process.env.GATSBY_2_0_MAP_TRACT_SEARCH_PATH;
+export const MAP_TRACT_SEARCH_PATH =
+  process.env.DATA_SOURCE === "local" ?
+    process.env.GATSBY_DATA_PIPELINE_SEARCH_PATH_LOCAL :
+    process.env.GATSBY_2_0_MAP_TRACT_SEARCH_PATH;
 
-export const GATSBY_DATA_PIPELINE_TRIBAL_PATH = process.env.DATA_SOURCE === "local" ?
-process.env.GATSBY_DATA_PIPELINE_TRIBAL_PATH_LOCAL :
-process.env.GATSBY_2_0_TRIBAL_PATH;
+export const GATSBY_DATA_PIPELINE_TRIBAL_PATH =
+  process.env.DATA_SOURCE === "local" ?
+    process.env.GATSBY_DATA_PIPELINE_TRIBAL_PATH_LOCAL :
+    process.env.GATSBY_2_0_TRIBAL_PATH;

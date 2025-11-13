@@ -9,12 +9,12 @@ import React from 'react';
 import {hyphenizeString} from '../../../cypress/integration/common/helpers';
 import J40MainGridContainer from '../J40MainGridContainer';
 import LinkTypeWrapper from '../LinkTypeWrapper';
-// import SurveyButton from '../SurveyButton';
+import SurveyButton from '../SurveyButton';
 
 // @ts-ignore
 import {GITHUB_LINK, GITHUB_LINK_ES} from '../../constants';
 /* import {PAGES_ENDPOINTS} from '../../data/constants';
- */import * as ABOUT_COPY from '../../data/copy/about';
+ */ import * as ABOUT_COPY from '../../data/copy/about';
 import * as COMMON_COPY from '../../data/copy/common';
 // import whitehouseIcon from '../../images/eop-seal.svg';
 
@@ -74,7 +74,9 @@ const J40Footer = () => {
         openUrlNewTab={true}
         className={'footer-link-first-child'}
         key={'contactlink'}
-        dataCy={hyphenizeString(COMMON_COPY.FOOTER.GITHUB_LINK_TEXT.defaultMessage)}
+        dataCy={hyphenizeString(
+            COMMON_COPY.FOOTER.GITHUB_LINK_TEXT.defaultMessage,
+        )}
         tag={intl.formatMessage(ABOUT_COPY.GET_INVOLVED.JOIN_OSC_LINK_TAG)}
       />,
     ],
@@ -87,13 +89,17 @@ const J40Footer = () => {
     // `className="mobile-lg:grid-col-6 desktop:grid-col-3">` needs to be
     // `className="mobile-lg:grid-col-12 desktop:grid-col-4">` ugh.
     <footer className={'j40-footer'}>
-      <div className="usa-footer__primary-section pb2" data-cy={`footer-primary-block`}>
+      <div
+        className="usa-footer__primary-section pb2"
+        data-cy={`footer-primary-block`}
+      >
         <J40MainGridContainer>
           <div className={'grid-row tablet-lg:grid-col4'}>
             {NAVLINKS.map((links, i) => (
               <div
                 key={`linkSection-${i}`}
-                className="mobile-lg:grid-col-12 desktop:grid-col-4">
+                className="mobile-lg:grid-col-12 desktop:grid-col-4"
+              >
                 <NavSection links={links} />
               </div>
             ))}
@@ -120,7 +126,7 @@ const J40Footer = () => {
           />
         </J40MainGridContainer>
       </div> */}
-      {/* <SurveyButton /> */}
+      <SurveyButton />
     </footer>
   );
 };
@@ -128,7 +134,7 @@ const J40Footer = () => {
 const NavSection = ({
   links,
 }: {
-  links: React.ReactNode[]
+  links: React.ReactNode[];
 }): React.ReactElement => {
   const [primaryLinkOrHeading, ...secondaryLinks] = links;
   return (
