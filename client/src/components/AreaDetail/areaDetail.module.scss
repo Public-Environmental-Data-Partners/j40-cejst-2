@@ -1,4 +1,4 @@
-@use '../../styles/design-system.scss' as *;
+@use "../../styles/design-system.scss" as *;
 @import "../utils.scss";
 
 $sidePanelLabelFontColor: #171716;
@@ -13,7 +13,7 @@ $sidePanelLabelFontColor: #171716;
   padding: 2rem 1rem 2rem 1.2rem;
   text-align: center;
   font-size: medium;
-  color: #A0A3A3;
+  color: #a0a3a3;
 }
 
 .areaDetailContainer {
@@ -25,10 +25,10 @@ $sidePanelLabelFontColor: #171716;
   display: flex;
   flex-direction: column;
   align-items: center;
-  // @include u-padding-bottom(3);
+  @include u-padding-bottom(3);
 
   .isInFocus {
-    padding: .5rem 1rem .25rem 1.2rem;
+    padding: 0.5rem 1rem 0.25rem 1.2rem;
     font-size: small;
     font-weight: bold;
     @include u-margin-top(2);
@@ -41,10 +41,9 @@ $sidePanelLabelFontColor: #171716;
       margin-top: 0;
       margin-bottom: 0;
     }
-
   }
 
-  .prioCopy{
+  .prioCopy {
     @include u-padding-left(2);
     @include u-padding-right(2);
     @include u-padding-top(2);
@@ -62,9 +61,8 @@ $sidePanelLabelFontColor: #171716;
 
   .showCategoriesExceed {
     font-size: small;
-    @include u-margin-top('05');
+    @include u-margin-top("05");
   }
-
 }
 
 .sendFeedbackLink {
@@ -72,7 +70,7 @@ $sidePanelLabelFontColor: #171716;
   @include u-margin-left(2);
   @include u-margin-bottom(2);
 
-  .sendFeedbackBtn{
+  .sendFeedbackBtn {
     @include u-text("blue-70v");
     @include u-bg("yellow-20v");
     height: 40px;
@@ -82,10 +80,10 @@ $sidePanelLabelFontColor: #171716;
       @include u-text("gray-90");
     }
 
-    .buttonContainer{
+    .buttonContainer {
       display: flex;
 
-      .buttonText{
+      .buttonText {
         @include u-margin-right(1);
       }
     }
@@ -114,14 +112,14 @@ $sidePanelLabelFontColor: #171716;
   justify-content: space-between;
   text-transform: uppercase;
   font-size: small;
-  @include u-bg('gray-cool-5');
+  @include u-bg("gray-cool-5");
   @include u-padding-left(2.5);
   @include u-padding-right(2);
 }
 
 .categorySpacer {
-  @include typeset('sans', '2xs', 2);
-  @include u-text('bold');
+  @include typeset("sans", "2xs", 2);
+  @include u-text("bold");
 
   margin-left: -20px;
   @include u-padding-top(1);
@@ -129,7 +127,7 @@ $sidePanelLabelFontColor: #171716;
   @include u-padding-left(2.5);
 }
 
-.testSignals{
+.testSignals {
   padding-left: 1rem;
   padding-bottom: 1rem;
 }

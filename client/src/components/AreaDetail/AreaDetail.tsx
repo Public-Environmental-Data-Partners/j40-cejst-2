@@ -1,6 +1,6 @@
 /* eslint-disable quotes */
 // External Libs:
-import {Accordion, Button, Icon} from "@trussworks/react-uswds";
+import {Accordion} from "@trussworks/react-uswds";
 import {MessageDescriptor, useIntl} from "gatsby-plugin-intl";
 import React from "react";
 
@@ -1204,7 +1204,7 @@ const AreaDetail = ({properties}: IAreaDetailProps) => {
       )}
 
       {/* Send Feedback button */}
-      <a
+      {/* <a
         className={styles.sendFeedbackLink}
         href={
           intl.locale === `es` ?
@@ -1227,7 +1227,7 @@ const AreaDetail = ({properties}: IAreaDetailProps) => {
             />
           </div>
         </Button>
-      </a>
+      </a> */}
 
       {/* All category accordions in this component */}
       {
