@@ -250,7 +250,7 @@ exports[`rendering of the DatasetContainer checks if various text fields are vis
           Contact
         </h1>
         <a
-          href="https://eop.gov1.qualtrics.com/jfe/form/SV_3WC1hmbqoS4Ak2G"
+          href="https://docs.google.com/forms/d/e/1FAIpQLSc_nxBGIs9q8yg1RlgePhpevBePGJVE9NYLWBnwhd46wt-67A/viewform"
           rel="noreferrer"
           target="_blank"
         >
@@ -259,7 +259,7 @@ exports[`rendering of the DatasetContainer checks if various text fields are vis
             data-testid="button"
             type="button"
           >
-            Share data sources with CEQ
+            Share data feedback
             <img
               alt="launch icon"
               src="test-file-stub"
@@ -365,6 +365,28 @@ exports[`rendering of the DatasetContainer checks if various text fields are vis
           </div>
         </div>
       </div>
+    </div>
+    <div
+      class="grid-container-desktop-lg"
+      data-testid="gridContainer"
+    >
+      <a
+        href="https://eop.gov1.qualtrics.com/jfe/form/SV_2mF9GXOhDKKjxcy"
+        rel="noreferrer"
+        target="_blank"
+      >
+        <button
+          class="usa-button"
+          data-testid="button"
+          type="button"
+        >
+          Help improve the tool
+          <img
+            alt="launch icon"
+            src="test-file-stub"
+          />
+        </button>
+      </a>
     </div>
   </footer>
 </DocumentFragment>

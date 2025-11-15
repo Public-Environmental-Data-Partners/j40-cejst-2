@@ -504,7 +504,7 @@
   "methodology.page.datasetCard.used.in": "Utilizado en:",
   "methodology.page.datasetContainer.additional.heading": "Otros indicadores",
   "methodology.page.datasetContainer.additional.info": "Estos conjuntos de datos brindan más información sobre cada comunidad.",
-  "methodology.page.datasetContainer.button.text": "Compartir fuentes de datos con el CEQ",
+  "methodology.page.datasetContainer.button.text": "Compartir comentarios sobre los datos",
   "methodology.page.datasetContainer.census.disclaimer": "Este producto utiliza la API de datos de la Oficina del Censo, pero no está respaldado ni certificado por la Oficina del Censo.",
   "methodology.page.datasetContainer.heading": "Conjuntos de datos utilizados en la metodología beta",
   "methodology.page.datasetContainer.heading.rich.text": "Conjuntos de datos utilizados en la metodología de la v{version}",

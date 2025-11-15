@@ -424,8 +424,8 @@ export const DATASETS = defineMessages({
   },
   BUTTON_TEXT: {
     id: 'methodology.page.datasetContainer.button.text',
-    defaultMessage: 'Share data sources with CEQ',
-    description: 'Navigate to the Methodology page. This is the section heading of which datasets are used in cumulative score with a button labeled: Share data sources with CEQ',
+    defaultMessage: 'Share data feedback',
+    description: 'Navigate to the Methodology page. This is the section heading of which datasets are used in cumulative score with a button labeled: Share data feedback',
   },
   INFO: {
     id: 'methodology.page.datasetContainer.info',

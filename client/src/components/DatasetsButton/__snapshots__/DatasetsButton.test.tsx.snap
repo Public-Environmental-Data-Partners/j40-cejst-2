@@ -11,7 +11,7 @@ exports[`rendering of DatasetsButton Component checks if component renders 1`] =
       data-testid="button"
       type="button"
     >
-      Share data sources with CEQ
+      Share data feedback
       <img
         alt="launch icon"
         src="test-file-stub"

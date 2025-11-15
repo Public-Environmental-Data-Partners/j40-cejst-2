@@ -4,12 +4,12 @@ import {useIntl} from 'gatsby-plugin-intl';
 import * as React from 'react';
 import {useWindowSize} from 'react-use';
 
-// import DatasetsButton from '../components/DatasetsButton';
+import DatasetsButton from '../components/DatasetsButton';
 import J40MainGridContainer from '../components/J40MainGridContainer';
 import Layout from '../components/layout';
 import SubPageNav from '../components/SubPageNav';
 
-import {PAGES_ENDPOINTS, USWDS_BREAKPOINTS} from '../data/constants';
+import {DATA_SURVEY_LINKS, PAGES_ENDPOINTS, USWDS_BREAKPOINTS} from '../data/constants';
 import {SIDE_PANEL_INIT_STATE_ICON_ALT_TEXT} from '../data/copy/explore';
 import * as FAQS_COPY from '../data/copy/faqs';
 
@@ -191,7 +191,7 @@ const FAQPage = ({location}: IFAQPageProps) => {
 
         <section className={'page-heading'}>
           <h1>{intl.formatMessage(FAQS_COPY.PAGE_INTRO.PAGE_TILE)}</h1>
-          {/* <DatasetsButton href= {DATA_SURVEY_LINKS.EN} /> */}
+          <DatasetsButton href= {intl.locale === 'es' ? DATA_SURVEY_LINKS.ES : DATA_SURVEY_LINKS.EN} />
         </section>
 
         <Grid row gap className={'j40-mb5-mt3'}>

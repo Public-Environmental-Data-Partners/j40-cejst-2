@@ -5,14 +5,14 @@ import {useWindowSize} from 'react-use';
 import {Grid} from '@trussworks/react-uswds';
 // import AboutCard from '../components/AboutCard/AboutCard';
 // import AboutCardsContainer from '../components/AboutCard/AboutCardsContainer';
-// import DatasetsButton from '../components/DatasetsButton';
+import DatasetsButton from '../components/DatasetsButton';
 // import HowYouCanHelp from '../components/HowYouCanHelp';
 import J40MainGridContainer from '../components/J40MainGridContainer';
 import Layout from '../components/layout';
 import SubPageNav from '../components/SubPageNav';
 
 // import {GITHUB_LINK, GITHUB_LINK_ES} from '../constants';
-import {PAGES_ENDPOINTS, USWDS_BREAKPOINTS} from '../data/constants';
+import {PAGES_ENDPOINTS, USWDS_BREAKPOINTS, DATA_SURVEY_LINKS} from '../data/constants';
 import * as ABOUT_COPY from '../data/copy/about';
 // import {FEEDBACK_EMAIL} from '../data/copy/common';
 
@@ -40,7 +40,7 @@ const AboutPage = ({location}: IAboutPageProps) => {
 
         <section className={'page-heading'}>
           <h1 data-cy={'about-page-heading'}>{intl.formatMessage(ABOUT_COPY.PAGE.TITLE)}</h1>
-          {/* <DatasetsButton href= {intl.locale === 'es' ? DATA_SURVEY_LINKS.ES : DATA_SURVEY_LINKS.EN} /> */}
+          <DatasetsButton href= {intl.locale === 'es' ? DATA_SURVEY_LINKS.ES : DATA_SURVEY_LINKS.EN} />
         </section>
 
         <Grid row gap className={'j40-mb5-mt3'}>
