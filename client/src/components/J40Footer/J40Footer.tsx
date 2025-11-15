@@ -9,7 +9,7 @@ import React from 'react';
 import {hyphenizeString} from '../../../cypress/integration/common/helpers';
 import J40MainGridContainer from '../J40MainGridContainer';
 import LinkTypeWrapper from '../LinkTypeWrapper';
-// import SurveyButton from '../SurveyButton';
+import SurveyButton from '../SurveyButton';
 
 // @ts-ignore
 import {GITHUB_LINK, GITHUB_LINK_ES} from '../../constants';
@@ -120,7 +120,7 @@ const J40Footer = () => {
           />
         </J40MainGridContainer>
       </div> */}
-      {/* <SurveyButton /> */}
+      <SurveyButton />
     </footer>
   );
 };

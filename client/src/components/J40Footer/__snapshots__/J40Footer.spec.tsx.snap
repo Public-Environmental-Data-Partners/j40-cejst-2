@@ -54,6 +54,28 @@ exports[`J40Footer renders correctly 1`] = `
         </div>
       </div>
     </div>
+    <div
+      class="grid-container-desktop-lg"
+      data-testid="gridContainer"
+    >
+      <a
+        href="https://docs.google.com/forms/d/e/1FAIpQLSe8kbo10ViosV_2aQHQd9EDUVPtSU7IjtblqZF3d96CiarxFA/viewform"
+        rel="noreferrer"
+        target="_blank"
+      >
+        <button
+          class="usa-button"
+          data-testid="button"
+          type="button"
+        >
+          Help improve the tool
+          <img
+            alt="launch icon"
+            src="test-file-stub"
+          />
+        </button>
+      </a>
+    </div>
   </footer>
 </DocumentFragment>
 `;
