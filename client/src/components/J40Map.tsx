@@ -31,6 +31,8 @@ import MapSearch from './MapSearch';
 import MapTractLayers from './MapTractLayers/MapTractLayers';
 import MapTribalLayer from './MapTribalLayers/MapTribalLayers';
 import TerritoryFocusControl from './territoryFocusControl';
+// Layer filtering component and type definitions for managing map layer visibility
+import LayerFilter, {LayerFilters} from './LayerFilter';
 
 // Styles and constants
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -98,6 +100,12 @@ const J40Map = ({location}: IJ40Interface) => {
   const [inMultiSelectMode, setInMultiSelectMode] = useState<boolean>(false);
   const [showTooManyTractsAlert, setShowTooManyTractsAlert] = useState<boolean>(false);
   const [selectTractId, setSelectTractId] = useState<string | undefined>(undefined);
+  // State for managing indicator selections: tracks which indicators are selected
+  // This will be used for the color-based approach to determine which tracts to color
+  const [layerFilters, setLayerFilters] = useState<LayerFilters>({
+    identifiedAsDisadvantaged: true,
+    indicators: {},
+  });
   const {width: windowWidth} = useWindowSize();
 
   /**
@@ -189,6 +197,11 @@ const J40Map = ({location}: IJ40Interface) => {
    * @param isMultiSelectKeyDown true if the multi select key is down
    */
   const selectFeaturesOnMap = (feature: IMapFeature, isMultiSelectKeyDown: boolean = false) => {
+    // Guard clause: ensure feature exists and has properties before processing
+    // Prevents errors when clicking on map areas without features
+    if (!feature || !feature.properties) {
+      return;
+    }
     const featuresList = updateSelectedFeatures(feature, isMultiSelectKeyDown || inMultiSelectMode);
     if (featuresList.length > 0) {
       const [minLng, minLat, maxLng, maxLat] = getFeaturesBbox(featuresList);
@@ -286,9 +299,15 @@ const J40Map = ({location}: IJ40Interface) => {
 
       // @ts-ignore
       const feature = event.features && event.features[0];
-
+      // Extract Ctrl/Cmd key state for multi-select functionality
       // @ts-ignore
-      selectFeaturesOnMap(feature, event.srcEvent.ctrlKey);
+      const ctrlKey = (event as MapEvent).srcEvent?.ctrlKey || false;
+
+      // Only process feature selection if a valid feature with properties was clicked
+      // @ts-ignore
+      if (feature && feature.properties) {
+        selectFeaturesOnMap(feature, ctrlKey);
+      }
     }
   };
 
@@ -491,8 +510,18 @@ const J40Map = ({location}: IJ40Interface) => {
             <MapTribalLayer />
           }
 
+          {/* Map tract layers - all tracts are visible, ready for color-based indicator approach */}
           <MapTractLayers
             selectedFeatures={selectedFeatures}
+            indicatorFilters={layerFilters}
+          />
+
+          {/* Layer Filter Dropdown: UI component for users to select indicators
+              Selected indicators will be used for color-based tract visualization */}
+          <LayerFilter
+            onFiltersChange={(filters) => {
+              setLayerFilters(filters);
+            }}
           />
 
           {/* This is the first overlayed row on the map: Search and Geolocation */}
