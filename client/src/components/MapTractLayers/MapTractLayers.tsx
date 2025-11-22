@@ -7,9 +7,69 @@ import {useFlags} from '../../contexts/FlagContext';
 
 import * as constants from '../../data/constants';
 import * as COMMON_COPY from '../../data/copy/common';
+// Type definition for indicator selections (used for color-based approach)
+import {LayerFilters} from '../LayerFilter';
+
+/**
+ * Maps indicator IDs from the LayerFilter component to their corresponding
+ * tile property constants used in MapLibre GL expressions.
+ * This mapping is used for the color-based approach to determine
+ * which tracts to color based on selected indicators.
+ */
+const INDICATOR_PROPERTY_MAP: { [key: string]: string } = {
+  // Climate change
+  expAgLoss: constants.IS_EXCEEDS_THRESH_FOR_EXP_AGR_LOSS,
+  expBldLoss: constants.IS_EXCEEDS_THRESH_FOR_EXP_BLD_LOSS,
+  expPopLoss: constants.IS_EXCEEDS_THRESH_FOR_EXP_POP_LOSS,
+  floodRisk: constants.IS_EXCEEDS_THRESH_FLOODING,
+  wildfireRisk: constants.IS_EXCEEDS_THRESH_WILDFIRE,
+
+  // Energy
+  energyBurden: constants.IS_EXCEEDS_THRESH_FOR_ENERGY_BURDEN,
+  pm25: constants.IS_EXCEEDS_THRESH_FOR_PM25,
+
+  // Health
+  asthma: constants.IS_EXCEEDS_THRESH_FOR_ASTHMA,
+  diabetes: constants.IS_EXCEEDS_THRESH_FOR_DIABETES,
+  heartDisease: constants.IS_EXCEEDS_THRESH_FOR_HEART_DISEASE,
+  lifeExpectancy: constants.IS_EXCEEDS_THRESH_FOR_LOW_LIFE_EXP,
+
+  // Housing
+  housingBurden: constants.IS_EXCEEDS_THRESH_FOR_HOUSE_BURDEN,
+  leadPaint: constants.IS_EXCEEDS_THRESH_FOR_LEAD_PAINT_AND_MEDIAN_HOME_VAL,
+  kitchenPlumb: constants.IS_EXCEEDS_THRESH_KITCHEN_PLUMB,
+  impervious: constants.IS_EXCEEDS_THRESH_IMPERVIOUS,
+
+  // Legacy pollution
+  abandonMines: constants.ABANDON_LAND_MINES_EXCEEDS_THRESH,
+  fuds: constants.FORMER_DEF_SITES_EXCEEDS_THRESH,
+  hazWaste: constants.IS_EXCEEDS_THRESH_FOR_HAZARD_WASTE,
+  rmp: constants.IS_EXCEEDS_THRESH_FOR_RMP,
+  superfund: constants.IS_EXCEEDS_THRESH_FOR_SUPERFUND,
+
+  // Transportation
+  diesel: constants.IS_EXCEEDS_THRESH_FOR_DIESEL_PM,
+  traffic: constants.IS_EXCEEDS_THRESH_FOR_TRAFFIC_PROX,
+  travelBurden: constants.IS_EXCEEDS_THRESH_TRAVEL_DISADV,
+
+  // Water and wastewater
+  leakyTanks: constants.IS_EXCEEDS_THRESH_LEAKY_UNDER,
+  wastewater: constants.IS_EXCEEDS_THRESH_FOR_WASTEWATER,
+
+  // Workforce development
+  unemployment: constants.IS_EXCEEDS_THRESH_FOR_UNEMPLOYMENT,
+  poverty: constants.IS_EXCEEDS_THRESH_FOR_BELOW_100_POVERTY,
+  lowIncome: constants.IS_EXCEEDS_THRESH_FOR_LOW_MEDIAN_INCOME,
+  education: constants.IS_EXCEEDS_THRESH_FOR_LINGUISITIC_ISO,
+
+  // Note: tribalLands is handled as a separate layer (MapTribalLayer), not as a tract filter
+};
 
 interface IMapTractLayers {
     selectedFeatures: MapGeoJSONFeature[] | undefined,
+    // Optional indicator selections for color-based approach
+    // When provided, determines which tracts to color based on selected indicators
+    indicatorFilters?: LayerFilters;
 }
 
 /**
@@ -59,15 +119,114 @@ export const featureURLForTilesetName = (tilesetName: string): string => {
  * only the interactive layers are returned from this component. The reason being is that the
  * other layers are supplied by he getOSBaseMap function.
  *
- * @param {string | number} selectedFeatureId
- * @param {MapGeoJSONFeature | undefined} selectedFeature
- * @return {Style}
+ * @param {MapGeoJSONFeature[] | undefined} selectedFeatures - Array of currently selected map features
+ * @return {JSX.Element} React component containing map sources and layers
  */
 const MapTractLayers = ({
   selectedFeatures,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  indicatorFilters, // Will be used in next step for color-based paint expressions
 }: IMapTractLayers) => {
+  // Build filter for selected features (used for highlighting selected tracts)
   const selectedFeatureIds = selectedFeatures ? (selectedFeatures.map((feat) => feat.id)) : [''];
   const filter = ['in', constants.GEOID_PROPERTY, ...selectedFeatureIds];
+
+  /**
+   * Builds a MapLibre GL expression that checks if a tract matches any of the selected indicators.
+   * Returns null if "Identified as disadvantaged" is checked (meaning color all tracts).
+   * Returns an expression that evaluates to true/false for each tract based on indicator matches.
+   *
+   * @param {LayerFilters | undefined} layerFilters - LayerFilters object with selected indicators
+   * @return {any[] | null} MapLibre GL expression or null (null = color all tracts)
+   */
+  const buildIndicatorColorCondition = (layerFilters?: LayerFilters): any[] | null => {
+    // If no filters provided, return null (color all tracts - default behavior)
+    if (!layerFilters) {
+      return null;
+    }
+
+    // If "Identified as disadvantaged" is checked, return null (color all tracts)
+    if (layerFilters.identifiedAsDisadvantaged) {
+      return null;
+    }
+
+    // Get all checked indicators
+    const checkedIndicators = Object.keys(layerFilters.indicators).filter(
+        (key) => layerFilters.indicators[key] === true,
+    );
+
+    // If no indicators are checked, return always-false expression (color nothing)
+    if (checkedIndicators.length === 0) {
+      return ['==', 1, 0]; // Always false
+    }
+
+    // Build condition expressions for checked indicators
+    const indicatorConditions: any[] = checkedIndicators
+        .filter((indicatorId) => INDICATOR_PROPERTY_MAP[indicatorId]) // Only include valid indicators
+        .map((indicatorId) => [
+          '==',
+          ['get', INDICATOR_PROPERTY_MAP[indicatorId]],
+          true,
+        ]);
+
+    // If no valid conditions, return always-false
+    if (indicatorConditions.length === 0) {
+      return ['==', 1, 0]; // Always false
+    }
+
+    // Return 'any' expression: true if tract matches ANY selected indicator
+    return ['any', ...indicatorConditions];
+  };
+
+  // Build the color condition expression
+  const colorCondition = buildIndicatorColorCondition(indicatorFilters);
+
+  /**
+   * Builds a MapLibre GL paint color expression that conditionally colors tracts.
+   * - If condition is null: use default color (color all tracts)
+   * - If condition is always-false: use transparent (color nothing)
+   * - If condition exists: use case expression to color matching tracts
+   *
+   * @param {any[] | null} condition - The color condition from buildIndicatorColorCondition
+   * @param {string} defaultColor - The default color to use (e.g., PRIORITIZED_FEATURE_FILL_COLOR)
+   * @return {any} Color value or conditional expression (MapLibre GL Expression type)
+   */
+  const buildColorExpression = (
+      condition: any[] | null,
+      defaultColor: string,
+  ): any => {
+    // If condition is null, color all tracts (default behavior)
+    if (condition === null) {
+      return defaultColor;
+    }
+
+    // Check if condition is always-false (no indicators selected)
+    const isAlwaysFalse = condition &&
+      Array.isArray(condition) &&
+      condition.length === 3 &&
+      condition[0] === '==' &&
+      condition[1] === 1 &&
+      condition[2] === 0;
+
+    // If always-false, return transparent (no color)
+    if (isAlwaysFalse) {
+      return 'rgba(0, 0, 0, 0)'; // Fully transparent
+    }
+
+    // Otherwise, use case expression: color if condition is true, transparent if false
+    return [
+      'case',
+      condition, // If tract matches selected indicators
+      defaultColor, // Use the normal color
+      'rgba(0, 0, 0, 0)', // Otherwise, transparent (uncolored)
+    ];
+  };
+
+  // Build color expression for high zoom prioritized layer (testing only)
+  const highZoomPrioritizedColor = buildColorExpression(
+      colorCondition,
+      constants.PRIORITIZED_FEATURE_FILL_COLOR,
+  );
 
   return (
     <>
@@ -123,7 +282,7 @@ const MapTractLayers = ({
           filter={['==', constants.SCORE_PROPERTY_HIGH, true]}
           type='fill'
           paint={{
-            'fill-color': constants.PRIORITIZED_FEATURE_FILL_COLOR,
+            'fill-color': highZoomPrioritizedColor, // Conditional color based on indicator selections
             'fill-opacity': constants.HIGH_ZOOM_PRIORITIZED_FEATURE_FILL_OPACITY,
           }}
           minzoom={constants.GLOBAL_MIN_ZOOM_HIGH}
