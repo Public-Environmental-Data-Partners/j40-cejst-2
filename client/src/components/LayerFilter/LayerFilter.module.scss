@@ -181,6 +181,8 @@
 .categoryCheckbox {
   cursor: pointer;
   flex-shrink: 0;
+  // Ensure adequate touch target size for mobile accessibility
+  // The summary row provides the full touch target area
 }
 
 .categoryName {

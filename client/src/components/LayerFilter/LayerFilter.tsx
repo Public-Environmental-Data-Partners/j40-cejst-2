@@ -190,7 +190,16 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
   const handleCategoryChange = (categoryId: string, checked: boolean) => {
     // Find the category
     const category = categories.find((cat) => cat.id === categoryId);
-    if (!category) return;
+    if (!category) {
+      console.warn(`Category with id "${categoryId}" not found`);
+      return;
+    }
+
+    // Handle edge case: category with no indicators
+    if (category.indicators.length === 0) {
+      console.warn(`Category "${category.name}" has no indicators`);
+      return;
+    }
 
     // Update category checkbox state
     setCategoryStates((prev) => ({
@@ -255,6 +264,9 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
   const getCategorySelectedCount = (categoryId: string): number => {
     const category = categories.find((cat) => cat.id === categoryId);
     if (!category) return 0;
+
+    // Handle edge case: category with no indicators
+    if (category.indicators.length === 0) return 0;
 
     return category.indicators.filter((indicator) =>
       filters.indicators[indicator.id],
