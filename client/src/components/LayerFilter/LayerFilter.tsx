@@ -132,12 +132,36 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
   };
 
   const handleCategoryChange = (categoryId: string, checked: boolean) => {
-    // For now, just track the checkbox state independently
-    // In Phase 3, this will connect to indicators
+    // Find the category
+    const category = categories.find((cat) => cat.id === categoryId);
+    if (!category) return;
+
+    // Update category checkbox state
     setCategoryStates((prev) => ({
       ...prev,
       [categoryId]: checked,
     }));
+
+    // Build new filters object
+    const newFilters: LayerFilters = {
+      identifiedAsDisadvantaged: false, // Auto-uncheck when category is checked
+      indicators: {
+        ...filters.indicators,
+      },
+    };
+
+    if (checked) {
+      // Select all indicators in this category
+      category.indicators.forEach((indicator) => {
+        newFilters.indicators[indicator.id] = true;
+      });
+    } else {
+      // Deselect all indicators in this category (Step 3.2 will handle this)
+      // For now, just update the state
+    }
+
+    setFilters(newFilters);
+    onFiltersChange(newFilters);
   };
 
   const handleResetFilters = () => {
