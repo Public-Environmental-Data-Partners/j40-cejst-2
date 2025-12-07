@@ -117,6 +117,19 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
       identifiedAsDisadvantaged: checked,
       indicators: checked ? {} : {...filters.indicators},
     };
+
+    // When "Identified as Disadvantaged" is checked, clear all category checkbox states
+    // and indeterminate states since all indicators are cleared
+    if (checked) {
+      setCategoryStates({});
+      // Clear all indeterminate states
+      Object.keys(categoryCheckboxRefs.current).forEach((categoryId) => {
+        if (categoryCheckboxRefs.current[categoryId]) {
+          categoryCheckboxRefs.current[categoryId]!.indeterminate = false;
+        }
+      });
+    }
+
     setFilters(newFilters);
     onFiltersChange(newFilters);
   };
