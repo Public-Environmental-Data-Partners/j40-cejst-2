@@ -228,8 +228,8 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
           <label className={styles.mainCheckboxLabel}>
             <input
               type="checkbox"
-              checked={filters.indicators.lowIncome || false}
-              onChange={(e) => handleIndicatorChange('lowIncome', e.target.checked)}
+              checked={filters.indicators.lowIncomeFPL || false}
+              onChange={(e) => handleIndicatorChange('lowIncomeFPL', e.target.checked)}
               className={styles.checkbox}
             />
             <span>Low income</span>

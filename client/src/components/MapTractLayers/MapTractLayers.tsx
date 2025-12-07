@@ -62,6 +62,9 @@ const INDICATOR_PROPERTY_MAP: { [key: string]: string } = {
   lowIncome: constants.IS_EXCEEDS_THRESH_FOR_LOW_MEDIAN_INCOME,
   education: constants.IS_EXCEEDS_THRESH_FOR_LINGUISITIC_ISO,
 
+  // Low income (FPL200S) - standalone checkbox
+  lowIncomeFPL: constants.IS_FEDERAL_POVERTY_LEVEL_200,
+
   // Note: tribalLands is handled as a separate layer (MapTribalLayer), not as a tract filter
 };
 
