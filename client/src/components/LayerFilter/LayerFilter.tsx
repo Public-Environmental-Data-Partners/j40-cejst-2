@@ -1,6 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react';
 // import {useIntl} from 'gatsby-plugin-intl';
-import {Accordion, Button} from '@trussworks/react-uswds';
+import {Button} from '@trussworks/react-uswds';
 import * as styles from './LayerFilter.module.scss';
 
 interface ILayerFilter {
@@ -161,28 +161,7 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
     };
   }, [isOpen]);
 
-  // Build accordion items for categories
-  const accordionItems = categories.map((category) => ({
-    id: category.id,
-    headingLevel: 'h4' as const,
-    title: category.name,
-    content: (
-      <div className={styles.indicatorsList}>
-        {category.indicators.map((indicator) => (
-          <label key={indicator.id} className={styles.checkboxLabel}>
-            <input
-              type="checkbox"
-              checked={filters.indicators[indicator.id] || false}
-              onChange={(e) => handleIndicatorChange(indicator.id, e.target.checked)}
-              className={styles.checkbox}
-            />
-            <span>{indicator.label}</span>
-          </label>
-        ))}
-      </div>
-    ),
-    expanded: false,
-  }));
+  // Render categories using details/summary instead of accordion
 
   return (
     <div
@@ -235,12 +214,29 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
             <span>Low income</span>
           </label>
 
-          {/* Category accordions */}
-          <Accordion
-            multiselectable={true}
-            items={accordionItems}
-            className={styles.categoriesAccordion}
-          />
+          {/* Category details/summary */}
+          <div className={styles.categoriesContainer}>
+            {categories.map((category) => (
+              <details key={category.id} className={styles.categoryDetails}>
+                <summary className={styles.categorySummary}>
+                  {category.name}
+                </summary>
+                <div className={styles.indicatorsList}>
+                  {category.indicators.map((indicator) => (
+                    <label key={indicator.id} className={styles.checkboxLabel}>
+                      <input
+                        type="checkbox"
+                        checked={filters.indicators[indicator.id] || false}
+                        onChange={(e) => handleIndicatorChange(indicator.id, e.target.checked)}
+                        className={styles.checkbox}
+                      />
+                      <span>{indicator.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </details>
+            ))}
+          </div>
 
           {/* Lands of federally recognized tribes checkbox */}
           <label className={styles.mainCheckboxLabel}>

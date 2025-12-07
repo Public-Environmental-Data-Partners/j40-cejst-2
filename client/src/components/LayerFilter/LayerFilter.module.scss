@@ -99,8 +99,39 @@
   padding: 8px 0;
 }
 
-.categoriesAccordion {
+.categoriesContainer {
   margin: 16px 0;
+}
+
+.categoryDetails {
+  margin-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.categorySummary {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 0;
+  cursor: pointer;
+  list-style: none;
+  color: #1b1b1b;
+
+  // Hide default disclosure marker
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &::marker {
+    display: none;
+  }
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
 }
 
 .actionButtons {
