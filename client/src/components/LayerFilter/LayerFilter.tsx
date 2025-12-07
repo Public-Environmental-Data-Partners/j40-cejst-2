@@ -25,7 +25,10 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
   const [categoryStates, setCategoryStates] = useState<{[key: string]: boolean}>({});
   // Track which categories are expanded
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
+  // Track which category was just auto-expanded (for smooth scroll)
+  const [justExpanded, setJustExpanded] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const categoryRefs = useRef<{[key: string]: HTMLDetailsElement | null}>({});
 
   // Category structure with indicators
   const categories = [
@@ -184,6 +187,8 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
       });
       // Auto-expand category when selected
       setExpandedCategories((prev) => new Set(prev).add(categoryId));
+      // Mark as just expanded for smooth scroll
+      setJustExpanded(categoryId);
     } else {
       // Deselect all indicators in this category
       category.indicators.forEach((indicator) => {
@@ -238,6 +243,24 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
       document.removeEventListener('wheel', handleWheel, {capture: true});
     };
   }, [isOpen]);
+
+  // Smooth scroll to category when it's auto-expanded
+  useEffect(() => {
+    if (justExpanded && categoryRefs.current[justExpanded]) {
+      const categoryElement = categoryRefs.current[justExpanded];
+      if (categoryElement) {
+        // Small delay to ensure DOM has updated
+        setTimeout(() => {
+          categoryElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+          });
+        }, 100);
+      }
+      // Clear the justExpanded flag
+      setJustExpanded(null);
+    }
+  }, [justExpanded]);
 
   // Render categories using details/summary instead of accordion
 
@@ -297,6 +320,9 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
             {categories.map((category) => (
               <details
                 key={category.id}
+                ref={(el) => {
+                  categoryRefs.current[category.id] = el;
+                }}
                 className={styles.categoryDetails}
                 open={expandedCategories.has(category.id)}
                 onToggle={(e) => {
