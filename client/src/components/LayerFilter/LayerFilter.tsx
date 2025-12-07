@@ -23,6 +23,8 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
   });
   // Track category checkbox states independently (not connected to indicators yet)
   const [categoryStates, setCategoryStates] = useState<{[key: string]: boolean}>({});
+  // Track which categories are expanded
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Category structure with indicators
@@ -180,6 +182,8 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
       category.indicators.forEach((indicator) => {
         newFilters.indicators[indicator.id] = true;
       });
+      // Auto-expand category when selected
+      setExpandedCategories((prev) => new Set(prev).add(categoryId));
     } else {
       // Deselect all indicators in this category
       category.indicators.forEach((indicator) => {
@@ -198,6 +202,7 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
     };
     setFilters(defaultFilters);
     setCategoryStates({});
+    setExpandedCategories(new Set()); // Collapse all categories on reset
     onFiltersChange(defaultFilters);
   };
 
@@ -290,7 +295,25 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
           {/* Category details/summary */}
           <div className={styles.categoriesContainer}>
             {categories.map((category) => (
-              <details key={category.id} className={styles.categoryDetails}>
+              <details
+                key={category.id}
+                className={styles.categoryDetails}
+                open={expandedCategories.has(category.id)}
+                onToggle={(e) => {
+                  // Sync expanded state when user manually expands/collapses category
+                  // This ensures state stays in sync with the native details element behavior
+                  const details = e.currentTarget;
+                  if (details.open) {
+                    setExpandedCategories((prev) => new Set(prev).add(category.id));
+                  } else {
+                    setExpandedCategories((prev) => {
+                      const next = new Set(prev);
+                      next.delete(category.id);
+                      return next;
+                    });
+                  }
+                }}
+              >
                 <summary className={styles.categorySummary}>
                   <span className={styles.chevronIcon}>▶</span>
                   <input
