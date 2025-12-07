@@ -127,6 +127,31 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
     if (!checked) {
       delete newFilters.indicators[indicatorId];
     }
+
+    // Find which category this indicator belongs to and update category checkbox state
+    const category = categories.find((cat) =>
+      cat.indicators.some((ind) => ind.id === indicatorId),
+    );
+
+    if (category) {
+      // Count how many indicators in this category are selected
+      const selectedCount = category.indicators.filter((ind) =>
+        newFilters.indicators[ind.id],
+      ).length;
+
+      // Update category checkbox state:
+      // - If all indicators selected → category checked
+      // - If no indicators selected → category unchecked
+      // - If some indicators selected → category checked (we'll add indeterminate in Phase 6)
+      const allSelected = selectedCount === category.indicators.length;
+      const noneSelected = selectedCount === 0;
+
+      setCategoryStates((prev) => ({
+        ...prev,
+        [category.id]: allSelected || (selectedCount > 0 && !noneSelected),
+      }));
+    }
+
     setFilters(newFilters);
     onFiltersChange(newFilters);
   };
