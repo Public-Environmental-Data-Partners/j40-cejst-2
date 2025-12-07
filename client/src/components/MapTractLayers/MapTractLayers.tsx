@@ -150,6 +150,27 @@ const MapTractLayers = ({
   };
 
   /**
+   * COLOR-BASED APPROACH:
+   *
+   * This component uses a "color-based" approach for indicator filtering, which means:
+   * - Tracts that match selected indicators are colored (visible with fill color)
+   * - Tracts that don't match are made transparent (still rendered but invisible)
+   * - This differs from a "filter-based" approach which would hide/show entire tracts
+   *
+   * Benefits:
+   * - All tracts remain in the DOM, allowing for smooth transitions
+   * - Users can see the full map context while filtering
+   * - Better performance than adding/removing features dynamically
+   * - Simpler state management (no need to track which tracts to show/hide)
+   *
+   * Implementation:
+   * - Uses MapLibre GL conditional paint expressions (case statements)
+   * - Matching tracts: use normal fill color (PRIORITIZED_FEATURE_FILL_COLOR)
+   * - Non-matching tracts: use transparent color (rgba(0, 0, 0, 0))
+   * - Condition is built from selected indicators using INDICATOR_PROPERTY_MAP
+   */
+
+  /**
    * Builds a MapLibre GL expression that checks if a tract matches any of the selected indicators.
    * Returns null if "Identified as disadvantaged" is checked (meaning color all tracts).
    * Returns an expression that evaluates to true/false for each tract based on indicator matches.
