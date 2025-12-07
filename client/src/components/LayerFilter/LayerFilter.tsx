@@ -144,7 +144,7 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
 
     // Build new filters object
     const newFilters: LayerFilters = {
-      identifiedAsDisadvantaged: false, // Auto-uncheck when category is checked
+      identifiedAsDisadvantaged: checked ? false : filters.identifiedAsDisadvantaged,
       indicators: {
         ...filters.indicators,
       },
@@ -156,8 +156,10 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
         newFilters.indicators[indicator.id] = true;
       });
     } else {
-      // Deselect all indicators in this category (Step 3.2 will handle this)
-      // For now, just update the state
+      // Deselect all indicators in this category
+      category.indicators.forEach((indicator) => {
+        delete newFilters.indicators[indicator.id];
+      });
     }
 
     setFilters(newFilters);
