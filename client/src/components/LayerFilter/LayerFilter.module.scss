@@ -164,6 +164,12 @@
   font-weight: normal;
   flex-shrink: 0;
   margin-left: auto;
+  padding-left: 8px;
+  white-space: nowrap;
+  opacity: 0.8;
+  
+  // Ensure it doesn't cause text wrapping
+  min-width: fit-content;
 }
 
 .categoryDetails[open] .chevronIcon {
