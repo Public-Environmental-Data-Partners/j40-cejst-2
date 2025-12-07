@@ -24,6 +24,8 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
   // Track category checkbox states independently (not connected to indicators yet)
   const [categoryStates, setCategoryStates] = useState<{[key: string]: boolean}>({});
   // Track which categories are expanded
+  // This state persists across dropdown open/close (component doesn't unmount)
+  // State resets on page refresh (React component remounts)
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   // Track which category was just auto-expanded (for smooth scroll)
   const [justExpanded, setJustExpanded] = useState<string | null>(null);
@@ -293,6 +295,20 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
       setJustExpanded(null);
     }
   }, [justExpanded]);
+
+  // Sync indeterminate states for all categories when filters or dropdown state changes
+  // This ensures indeterminate state is restored when dropdown reopens
+  useEffect(() => {
+    categories.forEach((category) => {
+      if (categoryCheckboxRefs.current[category.id]) {
+        const selectedCount = category.indicators.filter((ind) =>
+          filters.indicators[ind.id],
+        ).length;
+        const someSelected = selectedCount > 0 && selectedCount < category.indicators.length;
+        categoryCheckboxRefs.current[category.id]!.indeterminate = someSelected;
+      }
+    });
+  }, [filters.indicators, isOpen]);
 
   // Render categories using details/summary instead of accordion
 
