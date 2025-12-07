@@ -111,6 +111,36 @@
   &:last-child {
     border-bottom: none;
   }
+
+  // Smooth expand/collapse animation for indicators list
+  // Works for both manual expand/collapse and auto-expand
+  .indicatorsList {
+    will-change: opacity, transform; // Optimize for animation
+  }
+
+  // Reset animation state when closed to ensure it re-triggers
+  &:not([open]) .indicatorsList {
+    animation: none; // Reset animation when closed
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  // Trigger animation when opening (works every time)
+  &[open] .indicatorsList {
+    animation: slideDown 0.2s ease-out;
+    animation-fill-mode: forwards; // Keep final state
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .categorySummary {
