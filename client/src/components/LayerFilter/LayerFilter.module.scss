@@ -82,7 +82,7 @@
   align-items: center;
   gap: 8px;
   padding: 6px 0;
-  padding-left: 16px;
+  padding-left: 24px;
   cursor: pointer;
   font-size: 14px;
 
@@ -97,6 +97,7 @@
 
 .indicatorsList {
   padding: 8px 0;
+  margin-left: 0;
 }
 
 .categoriesContainer {
@@ -113,6 +114,9 @@
 }
 
 .categorySummary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 14px;
   font-weight: 600;
   padding: 8px 0;
@@ -132,6 +136,23 @@
   &:hover {
     background-color: #f5f5f5;
   }
+}
+
+.chevronIcon {
+  font-size: 10px;
+  color: #757575;
+  transition: transform 0.2s ease;
+  display: inline-block;
+  width: 12px;
+  text-align: center;
+}
+
+.categoryName {
+  flex: 1;
+}
+
+.categoryDetails[open] .chevronIcon {
+  transform: rotate(90deg);
 }
 
 .actionButtons {

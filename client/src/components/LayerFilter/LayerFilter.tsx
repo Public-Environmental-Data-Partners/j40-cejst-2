@@ -219,7 +219,8 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
             {categories.map((category) => (
               <details key={category.id} className={styles.categoryDetails}>
                 <summary className={styles.categorySummary}>
-                  {category.name}
+                  <span className={styles.chevronIcon}>▶</span>
+                  <span className={styles.categoryName}>{category.name}</span>
                 </summary>
                 <div className={styles.indicatorsList}>
                   {category.indicators.map((indicator) => (
