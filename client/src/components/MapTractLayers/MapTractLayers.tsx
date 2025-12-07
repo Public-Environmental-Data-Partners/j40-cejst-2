@@ -135,6 +135,21 @@ const MapTractLayers = ({
   const filter = ['in', constants.GEOID_PROPERTY, ...selectedFeatureIds];
 
   /**
+   * Determines whether grandfathered tracts should be shown.
+   * Grandfathered tracts are only shown when:
+   * - "Identified as disadvantaged" is checked AND
+   * - No individual indicator checkboxes are checked
+   *
+   * @param {LayerFilters | undefined} filters - The current layer filters
+   * @return {boolean} True if grandfathered tracts should be shown
+   */
+  const shouldShowGrandfathered = (filters?: LayerFilters): boolean => {
+    if (!filters) return true; // Default state - show grandfathered
+    if (!filters.identifiedAsDisadvantaged) return false; // Hide if "Identified as disadvantaged" is unchecked
+    return Object.keys(filters.indicators).length === 0; // Show only if no individual indicators checked
+  };
+
+  /**
    * Builds a MapLibre GL expression that checks if a tract matches any of the selected indicators.
    * Returns null if "Identified as disadvantaged" is checked (meaning color all tracts).
    * Returns an expression that evaluates to true/false for each tract based on indicator matches.
@@ -292,17 +307,19 @@ const MapTractLayers = ({
         />
 
         {/* High zoom layer (static) - grandfathered features only */}
-        <Layer
-          id={constants.GRANDFATHERED_HIGH_ZOOM_LAYER_ID}
-          source-layer={constants.SCORE_SOURCE_LAYER}
-          filter={['==', constants.IS_GRANDFATHERED, true]}
-          type='fill'
-          paint={{
-            'fill-color': constants.GRANDFATHERED_FEATURE_FILL_COLOR,
-            'fill-opacity': constants.HIGH_ZOOM_PRIORITIZED_FEATURE_FILL_OPACITY,
-          }}
-          minzoom={constants.GLOBAL_MIN_ZOOM_HIGH}
-        />
+        {shouldShowGrandfathered(indicatorFilters) && (
+          <Layer
+            id={constants.GRANDFATHERED_HIGH_ZOOM_LAYER_ID}
+            source-layer={constants.SCORE_SOURCE_LAYER}
+            filter={['==', constants.IS_GRANDFATHERED, true]}
+            type='fill'
+            paint={{
+              'fill-color': constants.GRANDFATHERED_FEATURE_FILL_COLOR,
+              'fill-opacity': constants.HIGH_ZOOM_PRIORITIZED_FEATURE_FILL_OPACITY,
+            }}
+            minzoom={constants.GLOBAL_MIN_ZOOM_HIGH}
+          />
+        )}
 
         {/* High zoom layer (static) - controls the border between features */}
         <Layer
