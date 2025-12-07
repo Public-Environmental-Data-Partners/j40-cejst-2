@@ -391,7 +391,7 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
                 }}
               >
                 <summary className={styles.categorySummary}>
-                  <span className={styles.chevronIcon}>▶</span>
+                  <span className={styles.chevronIcon} aria-hidden="true">▶</span>
                   <input
                     ref={(el) => {
                       categoryCheckboxRefs.current[category.id] = el;
@@ -404,13 +404,22 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
                     }}
                     className={styles.categoryCheckbox}
                     onClick={(e) => e.stopPropagation()} // Also stop on click
+                    aria-label={`${category.name}, 
+                    ${getCategorySelectedCount(category.id)} of 
+                    ${category.indicators.length} indicators selected`}
+                    aria-describedby={`category-${category.id}-count`}
                   />
                   <span className={styles.categoryName}>{category.name}</span>
-                  <span className={styles.countBadge}>
+                  <span
+                    id={`category-${category.id}-count`}
+                    className={styles.countBadge}
+                    aria-live="polite"
+                    aria-atomic="true"
+                  >
                     ({getCategorySelectedCount(category.id)}/{category.indicators.length})
                   </span>
                 </summary>
-                <div className={styles.indicatorsList}>
+                <div className={styles.indicatorsList} role="group" aria-label={`${category.name} indicators`}>
                   {category.indicators.map((indicator) => (
                     <label key={indicator.id} className={styles.checkboxLabel}>
                       <input
@@ -418,6 +427,7 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
                         checked={filters.indicators[indicator.id] || false}
                         onChange={(e) => handleIndicatorChange(indicator.id, e.target.checked)}
                         className={styles.checkbox}
+                        aria-label={indicator.label}
                       />
                       <span>{indicator.label}</span>
                     </label>
