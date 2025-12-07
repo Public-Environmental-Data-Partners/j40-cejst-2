@@ -242,14 +242,8 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
     setFilters(defaultFilters);
     setCategoryStates({});
     setExpandedCategories(new Set()); // Collapse all categories on reset
-
-    // Clear all indeterminate states
-    Object.keys(categoryCheckboxRefs.current).forEach((categoryId) => {
-      if (categoryCheckboxRefs.current[categoryId]) {
-        categoryCheckboxRefs.current[categoryId]!.indeterminate = false;
-      }
-    });
-
+    // Note: Indeterminate states are automatically cleared by the useEffect
+    // that syncs indeterminate states when filters.indicators changes
     onFiltersChange(defaultFilters);
   };
 
