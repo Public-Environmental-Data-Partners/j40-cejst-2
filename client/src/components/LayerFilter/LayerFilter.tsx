@@ -29,6 +29,7 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
   const [justExpanded, setJustExpanded] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const categoryRefs = useRef<{[key: string]: HTMLDetailsElement | null}>({});
+  const categoryCheckboxRefs = useRef<{[key: string]: HTMLInputElement | null}>({});
 
   // Category structure with indicators
   const categories = [
@@ -145,16 +146,21 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
       ).length;
 
       // Update category checkbox state:
-      // - If all indicators selected → category checked
-      // - If no indicators selected → category unchecked
-      // - If some indicators selected → category checked (we'll add indeterminate in Phase 6)
+      // - If all indicators selected → category checked, not indeterminate
+      // - If no indicators selected → category unchecked, not indeterminate
+      // - If some indicators selected → category checked AND indeterminate
       const allSelected = selectedCount === category.indicators.length;
-      const noneSelected = selectedCount === 0;
+      const someSelected = selectedCount > 0 && selectedCount < category.indicators.length;
 
       setCategoryStates((prev) => ({
         ...prev,
-        [category.id]: allSelected || (selectedCount > 0 && !noneSelected),
+        [category.id]: allSelected || someSelected,
       }));
+
+      // Set indeterminate state on checkbox element
+      if (categoryCheckboxRefs.current[category.id]) {
+        categoryCheckboxRefs.current[category.id]!.indeterminate = someSelected;
+      }
     }
 
     setFilters(newFilters);
@@ -189,11 +195,19 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
       setExpandedCategories((prev) => new Set(prev).add(categoryId));
       // Mark as just expanded for smooth scroll
       setJustExpanded(categoryId);
+      // Clear indeterminate state (all indicators are now selected)
+      if (categoryCheckboxRefs.current[categoryId]) {
+        categoryCheckboxRefs.current[categoryId]!.indeterminate = false;
+      }
     } else {
       // Deselect all indicators in this category
       category.indicators.forEach((indicator) => {
         delete newFilters.indicators[indicator.id];
       });
+      // Clear indeterminate state (no indicators are selected)
+      if (categoryCheckboxRefs.current[categoryId]) {
+        categoryCheckboxRefs.current[categoryId]!.indeterminate = false;
+      }
     }
 
     setFilters(newFilters);
@@ -343,6 +357,9 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
                 <summary className={styles.categorySummary}>
                   <span className={styles.chevronIcon}>▶</span>
                   <input
+                    ref={(el) => {
+                      categoryCheckboxRefs.current[category.id] = el;
+                    }}
                     type="checkbox"
                     checked={categoryStates[category.id] || false}
                     onChange={(e) => {
