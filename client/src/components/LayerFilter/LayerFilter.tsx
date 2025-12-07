@@ -239,10 +239,11 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
                       e.stopPropagation(); // Prevent details toggle when clicking checkbox
                       handleCategoryChange(category.id, e.target.checked);
                     }}
-                    className={styles.checkbox}
+                    className={styles.categoryCheckbox}
                     onClick={(e) => e.stopPropagation()} // Also stop on click
                   />
                   <span className={styles.categoryName}>{category.name}</span>
+                  <span className={styles.countBadge}>(0/{category.indicators.length})</span>
                 </summary>
                 <div className={styles.indicatorsList}>
                   {category.indicators.map((indicator) => (
