@@ -505,8 +505,9 @@ const J40Map = ({location}: IJ40Interface) => {
 
           { /* Tribal layer is baked into Mapbox source,
              * only render here if we're not using that
+             * Show/hide based on "Lands of federally recognized tribes" checkbox
              **/
-            process.env.MAPBOX_STYLES_READ_TOKEN ||
+            (!process.env.MAPBOX_STYLES_READ_TOKEN && layerFilters.indicators.tribalLands) &&
             <MapTribalLayer />
           }
 
