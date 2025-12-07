@@ -242,6 +242,14 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
     setFilters(defaultFilters);
     setCategoryStates({});
     setExpandedCategories(new Set()); // Collapse all categories on reset
+
+    // Clear all indeterminate states
+    Object.keys(categoryCheckboxRefs.current).forEach((categoryId) => {
+      if (categoryCheckboxRefs.current[categoryId]) {
+        categoryCheckboxRefs.current[categoryId]!.indeterminate = false;
+      }
+    });
+
     onFiltersChange(defaultFilters);
   };
 
