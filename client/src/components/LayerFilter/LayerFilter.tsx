@@ -145,19 +145,24 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
         newFilters.indicators[ind.id],
       ).length;
 
-      // Update category checkbox state:
+      // Update category checkbox state based on selection count:
       // - If all indicators selected → category checked, not indeterminate
       // - If no indicators selected → category unchecked, not indeterminate
       // - If some indicators selected → category checked AND indeterminate
       const allSelected = selectedCount === category.indicators.length;
       const someSelected = selectedCount > 0 && selectedCount < category.indicators.length;
 
+      // Category is checked if any indicators are selected (all or some)
+      // Category is unchecked only if no indicators are selected
+      const categoryChecked = allSelected || someSelected;
+
       setCategoryStates((prev) => ({
         ...prev,
-        [category.id]: allSelected || someSelected,
+        [category.id]: categoryChecked,
       }));
 
       // Set indeterminate state on checkbox element
+      // Indeterminate only when some (but not all) indicators are selected
       if (categoryCheckboxRefs.current[category.id]) {
         categoryCheckboxRefs.current[category.id]!.indeterminate = someSelected;
       }
