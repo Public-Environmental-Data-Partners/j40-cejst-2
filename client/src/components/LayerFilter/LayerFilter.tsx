@@ -205,6 +205,16 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
     setIsOpen(false);
   };
 
+  // Calculate count of selected indicators for a category
+  const getCategorySelectedCount = (categoryId: string): number => {
+    const category = categories.find((cat) => cat.id === categoryId);
+    if (!category) return 0;
+
+    return category.indicators.filter((indicator) =>
+      filters.indicators[indicator.id],
+    ).length;
+  };
+
   // Handle wheel events to prevent map scrolling when dropdown is open
   useEffect(() => {
     if (!isOpen || !dropdownRef.current) return;
@@ -294,7 +304,9 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
                     onClick={(e) => e.stopPropagation()} // Also stop on click
                   />
                   <span className={styles.categoryName}>{category.name}</span>
-                  <span className={styles.countBadge}>(0/{category.indicators.length})</span>
+                  <span className={styles.countBadge}>
+                    ({getCategorySelectedCount(category.id)}/{category.indicators.length})
+                  </span>
                 </summary>
                 <div className={styles.indicatorsList}>
                   {category.indicators.map((indicator) => (
