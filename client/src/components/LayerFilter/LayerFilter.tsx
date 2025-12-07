@@ -21,6 +21,8 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
     identifiedAsDisadvantaged: true,
     indicators: {},
   });
+  // Track category checkbox states independently (not connected to indicators yet)
+  const [categoryStates, setCategoryStates] = useState<{[key: string]: boolean}>({});
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Category structure with indicators
@@ -129,12 +131,22 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
     onFiltersChange(newFilters);
   };
 
+  const handleCategoryChange = (categoryId: string, checked: boolean) => {
+    // For now, just track the checkbox state independently
+    // In Phase 3, this will connect to indicators
+    setCategoryStates((prev) => ({
+      ...prev,
+      [categoryId]: checked,
+    }));
+  };
+
   const handleResetFilters = () => {
     const defaultFilters: LayerFilters = {
       identifiedAsDisadvantaged: true,
       indicators: {},
     };
     setFilters(defaultFilters);
+    setCategoryStates({});
     onFiltersChange(defaultFilters);
   };
 
@@ -220,6 +232,16 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
               <details key={category.id} className={styles.categoryDetails}>
                 <summary className={styles.categorySummary}>
                   <span className={styles.chevronIcon}>▶</span>
+                  <input
+                    type="checkbox"
+                    checked={categoryStates[category.id] || false}
+                    onChange={(e) => {
+                      e.stopPropagation(); // Prevent details toggle when clicking checkbox
+                      handleCategoryChange(category.id, e.target.checked);
+                    }}
+                    className={styles.checkbox}
+                    onClick={(e) => e.stopPropagation()} // Also stop on click
+                  />
                   <span className={styles.categoryName}>{category.name}</span>
                 </summary>
                 <div className={styles.indicatorsList}>
