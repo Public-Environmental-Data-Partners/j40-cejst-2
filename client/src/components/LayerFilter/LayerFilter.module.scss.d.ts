@@ -15,6 +15,14 @@ declare namespace LayerFilterModuleScssNamespace {
     actionButtons: string;
     resetButton: string;
     applyButton: string;
+    categorySummary: string;
+    chevronIcon: string;
+    categoryCheckbox: string;
+    categoryName: string;
+    countBadge: string;
+    categoryDetails: string;
+    categoriesContainer: string;
+
   }
 }
 
