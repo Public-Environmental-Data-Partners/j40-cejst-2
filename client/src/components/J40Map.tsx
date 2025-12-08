@@ -320,6 +320,14 @@ const J40Map = ({location}: IJ40Interface) => {
     removeGeolocateLock();
 
     if (isMobile) setIsMobileMapState(true);
+
+    // Fix ARIA accessibility issue: remove invalid role="list" from attribution control
+    // The attribution control has role="list" with anchor tags as direct children,
+    // which violates ARIA rules. Removing the role fixes the accessibility issue.
+    const attributionElement = document.querySelector('.maplibregl-ctrl-attrib-inner');
+    if (attributionElement) {
+      attributionElement.removeAttribute('role');
+    }
   };
 
 
