@@ -106,7 +106,6 @@ describe('LayerFilter Component', () => {
       const chevrons = screen.getAllByText('▶');
       expect(chevrons.length).toBeGreaterThan(0);
     });
-
   });
 
   describe('1.3 Category Checkbox (Test IDs: 1.3.4, 1.3.5, 1.3.6)', () => {
@@ -362,7 +361,7 @@ describe('LayerFilter Component', () => {
 
       // Click checkbox - should auto-expand due to selection logic
       fireEvent.click(climateCheckbox);
-      
+
       // Wait for auto-expand (happens synchronously but waitFor ensures DOM update)
       await waitFor(() => {
         expect(climateDetails).toHaveAttribute('open');
@@ -1023,7 +1022,6 @@ describe('LayerFilter Component', () => {
       // Selections should be preserved
       expect(getIndicatorCheckbox('Expected agriculture loss rate')).toBeChecked();
     });
-
   });
 
   // ============================================================================
@@ -1046,7 +1044,6 @@ describe('LayerFilter Component', () => {
       const climateDetailsAfter = getCategoryDetails('Climate change');
       expect(climateDetailsAfter).not.toHaveAttribute('open');
     });
-
   });
 
   describe('6.2 Selection State (Test IDs: 6.2.1, 6.2.2, 6.2.3, 6.2.4)', () => {
