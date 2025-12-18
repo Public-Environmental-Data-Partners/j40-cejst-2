@@ -1,7 +1,8 @@
 import React, {useState, useRef, useEffect} from 'react';
-// import {useIntl} from 'gatsby-plugin-intl';
+import {useIntl} from 'gatsby-plugin-intl';
 import {Button} from '@trussworks/react-uswds';
 import * as styles from './LayerFilter.module.scss';
+import * as LAYER_FILTER_COPY from '../../data/copy/layerFilter';
 
 interface ILayerFilter {
   onFiltersChange: (filters: LayerFilters) => void;
@@ -15,7 +16,7 @@ export interface LayerFilters {
 }
 
 const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
-//   const intl = useIntl();
+  const intl = useIntl();
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState<LayerFilters>({
     identifiedAsDisadvantaged: true,
@@ -33,83 +34,92 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
   const categoryRefs = useRef<{[key: string]: HTMLDetailsElement | null}>({});
   const categoryCheckboxRefs = useRef<{[key: string]: HTMLInputElement | null}>({});
 
+  // Helper function to get indicator label message - all use explore.tsx messages
+  const getIndicatorLabelMessage = (indicatorId: string) => {
+    return LAYER_FILTER_COPY.getIndicatorMessage(indicatorId);
+  };
+
   // Category structure with indicators
+  // Using message objects for i18n - names and labels will be formatted with intl.formatMessage()
   const categories = [
     {
       id: 'climate',
-      name: 'Climate change',
+      nameMessage: LAYER_FILTER_COPY.CATEGORIES.CLIMATE,
       indicators: [
-        {id: 'expAgLoss', label: 'Expected agriculture loss rate', property: 'EAL_ET'},
-        {id: 'expBldLoss', label: 'Expected building loss rate', property: 'EBL_ET'},
-        {id: 'expPopLoss', label: 'Expected population loss rate', property: 'EPL_ET'},
-        {id: 'floodRisk', label: 'Projected flood risk', property: 'FLD_ET'},
-        {id: 'wildfireRisk', label: 'Projected wildfire risk', property: 'WFR_ET'},
+        {id: 'expAgLoss', property: 'EAL_ET'},
+        {id: 'expBldLoss', property: 'EBL_ET'},
+        {id: 'expPopLoss', property: 'EPL_ET'},
+        {id: 'floodRisk', property: 'FLD_ET'},
+        {id: 'wildfireRisk', property: 'WFR_ET'},
       ],
     },
     {
       id: 'energy',
-      name: 'Energy',
+      nameMessage: LAYER_FILTER_COPY.CATEGORIES.ENERGY,
       indicators: [
-        {id: 'energyBurden', label: 'Energy burden', property: 'EB_ET'},
-        {id: 'pm25', label: 'PM2.5', property: 'PM25_ET'},
+        {id: 'energyBurden', property: 'EB_ET'},
+        {id: 'pm25', property: 'PM25_ET'},
       ],
     },
     {
       id: 'health',
-      name: 'Health',
+      nameMessage: LAYER_FILTER_COPY.CATEGORIES.HEALTH,
       indicators: [
-        {id: 'asthma', label: 'Asthma', property: 'A_ET'},
-        {id: 'diabetes', label: 'Diabetes', property: 'DB_ET'},
-        {id: 'heartDisease', label: 'Heart disease', property: 'HD_ET'},
-        {id: 'lifeExpectancy', label: 'Low life expectancy', property: 'LLE_ET'},
+        {id: 'asthma', property: 'A_ET'},
+        {id: 'diabetes', property: 'DB_ET'},
+        {id: 'heartDisease', property: 'HD_ET'},
+        {id: 'lifeExpectancy', property: 'LLE_ET'},
       ],
     },
     {
       id: 'housing',
-      name: 'Housing',
+      nameMessage: LAYER_FILTER_COPY.CATEGORIES.HOUSING,
       indicators: [
-        {id: 'housingBurden', label: 'Housing burden', property: 'HB_ET'},
-        {id: 'leadPaint', label: 'Lead paint', property: 'LPP_ET'},
-        {id: 'kitchenPlumb', label: 'Lack of kitchen or indoor plumbing', property: 'KP_ET'},
-        {id: 'impervious', label: 'Impervious surface', property: 'IS_ET'},
+        {id: 'housingBurden', property: 'HB_ET'},
+        {id: 'histUnderinvest', property: 'HRS_ET'},
+        {id: 'lackGreenSpace', property: 'IS_ET'},
+        {id: 'kitchenPlumb', property: 'KP_ET'},
+        {id: 'leadPaint', property: 'LPP_ET'},
+        {id: 'medHomeVal', property: 'LPP_ET'},
       ],
     },
     {
       id: 'pollution',
-      name: 'Legacy pollution',
+      nameMessage: LAYER_FILTER_COPY.CATEGORIES.POLLUTION,
       indicators: [
-        {id: 'abandonMines', label: 'Abandoned mine lands', property: 'AML_ET'},
-        {id: 'fuds', label: 'Formerly used defense sites', property: 'FUDS_ET'},
-        {id: 'hazWaste', label: 'Proximity to hazardous waste facilities', property: 'TSDF_ET'},
-        {id: 'rmp', label: 'Proximity to RMP facilities', property: 'RMP_ET'},
-        {id: 'superfund', label: 'Proximity to Superfund sites', property: 'NPL_ET'},
+        {id: 'abandonMines', property: 'AML_ET'},
+        {id: 'fuds', property: 'FUDS_ET'},
+        {id: 'hazWaste', property: 'TSDF_ET'},
+        {id: 'rmp', property: 'RMP_ET'},
+        {id: 'superfund', property: 'NPL_ET'},
       ],
     },
     {
       id: 'transportation',
-      name: 'Transportation',
+      nameMessage: LAYER_FILTER_COPY.CATEGORIES.TRANSPORTATION,
       indicators: [
-        {id: 'diesel', label: 'Diesel particulate matter exposure', property: 'DS_ET'},
-        {id: 'traffic', label: 'Traffic proximity and volume', property: 'TP_ET'},
-        {id: 'travelBurden', label: 'Transportation barriers', property: 'TD_ET'},
+        {id: 'diesel', property: 'DS_ET'},
+        {id: 'traffic', property: 'TP_ET'},
+        {id: 'travelBurden', property: 'TD_ET'},
       ],
     },
     {
       id: 'water',
-      name: 'Water and wastewater',
+      nameMessage: LAYER_FILTER_COPY.CATEGORIES.WATER,
       indicators: [
-        {id: 'leakyTanks', label: 'Leaky underground storage tanks', property: 'UST_ET'},
-        {id: 'wastewater', label: 'Wastewater discharge', property: 'WD_ET'},
+        {id: 'leakyTanks', property: 'UST_ET'},
+        {id: 'wastewater', property: 'WD_ET'},
       ],
     },
     {
       id: 'workforce',
-      name: 'Workforce development',
+      nameMessage: LAYER_FILTER_COPY.CATEGORIES.WORKFORCE,
       indicators: [
-        {id: 'unemployment', label: 'Unemployment', property: 'UN_ET'},
-        {id: 'poverty', label: 'Poverty', property: 'POV_ET'},
-        {id: 'lowIncome', label: 'Low median income', property: 'LMI_ET'},
-        {id: 'education', label: 'Lack of high school education', property: 'LISO_ET'},
+        {id: 'unemployment', property: 'UN_ET'},
+        {id: 'poverty', property: 'POV_ET'},
+        {id: 'lowIncome', property: 'LMI_ET'},
+        {id: 'lingIso', property: 'LISO_ET'},
+        {id: 'education', property: 'LHE'},
       ],
     },
   ];
@@ -197,7 +207,7 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
 
     // Handle edge case: category with no indicators
     if (category.indicators.length === 0) {
-      console.warn(`Category "${category.name}" has no indicators`);
+      console.warn(`Category "${intl.formatMessage(category.nameMessage)}" has no indicators`);
       return;
     }
 
@@ -336,14 +346,17 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
       }}
     >
       <div className={styles.filterHeader}>
-        <span className={styles.newFeatureBadge}>new feature</span>
+        <span className={styles.newFeatureBadge}>
+          {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.NEW_FEATURE_BADGE)}
+        </span>
         <button
           type="button"
           className={styles.layersButton}
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
+          aria-label={intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.LAYERS_BUTTON_ARIA_LABEL)}
         >
-          Layers
+          {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.LAYERS_BUTTON)}
           <span className={styles.chevron}>{isOpen ? '▲' : '▼'}</span>
         </button>
       </div>
@@ -353,7 +366,9 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
           ref={dropdownRef}
           className={styles.dropdownPanel}
         >
-          <div className={styles.panelTitle}>Categories of burden</div>
+          <div className={styles.panelTitle}>
+            {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.PANEL_TITLE)}
+          </div>
 
           {/* Identified as disadvantaged checkbox */}
           <label className={styles.mainCheckboxLabel}>
@@ -363,7 +378,7 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
               onChange={(e) => handleIdentifiedAsDisadvantagedChange(e.target.checked)}
               className={styles.checkbox}
             />
-            <span>Identified as disadvantaged</span>
+            <span>{intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.IDENTIFIED_AS_DISADVANTAGED)}</span>
           </label>
 
           {/* Low income checkbox */}
@@ -374,7 +389,7 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
               onChange={(e) => handleIndicatorChange('lowIncomeFPL', e.target.checked)}
               className={styles.checkbox}
             />
-            <span>Low income</span>
+            <span>{intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.LOW_INCOME_CHECKBOX)}</span>
           </label>
 
           {/* Category details/summary */}
@@ -416,34 +431,62 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
                     }}
                     className={styles.categoryCheckbox}
                     onClick={(e) => e.stopPropagation()} // Also stop on click
-                    aria-label={`${category.name}, 
-                    ${getCategorySelectedCount(category.id)} of 
-                    ${category.indicators.length} indicators selected`}
+                    aria-label={intl.formatMessage(
+                        LAYER_FILTER_COPY.LAYER_FILTER.CATEGORY_ARIA_LABEL,
+                        {
+                          categoryName: intl.formatMessage(category.nameMessage),
+                          selectedCount: getCategorySelectedCount(category.id),
+                          totalCount: category.indicators.length,
+                        },
+                    )}
                     aria-describedby={`category-${category.id}-count`}
                   />
-                  <span className={styles.categoryName}>{category.name}</span>
+                  <span className={styles.categoryName}>
+                    {intl.formatMessage(category.nameMessage)}
+                  </span>
                   <span
                     id={`category-${category.id}-count`}
                     className={styles.countBadge}
                     aria-live="polite"
                     aria-atomic="true"
                   >
-                    ({getCategorySelectedCount(category.id)}/{category.indicators.length})
+                    {intl.formatMessage(
+                        LAYER_FILTER_COPY.LAYER_FILTER.CATEGORY_COUNT_BADGE,
+                        {
+                          selectedCount: getCategorySelectedCount(category.id),
+                          totalCount: category.indicators.length,
+                        },
+                    )}
                   </span>
                 </summary>
-                <div className={styles.indicatorsList} role="group" aria-label={`${category.name} indicators`}>
-                  {category.indicators.map((indicator) => (
-                    <label key={indicator.id} className={styles.checkboxLabel}>
-                      <input
-                        type="checkbox"
-                        checked={filters.indicators[indicator.id] || false}
-                        onChange={(e) => handleIndicatorChange(indicator.id, e.target.checked)}
-                        className={styles.checkbox}
-                        aria-label={indicator.label}
-                      />
-                      <span>{indicator.label}</span>
-                    </label>
-                  ))}
+                <div
+                  className={styles.indicatorsList}
+                  role="group"
+                  aria-label={intl.formatMessage(
+                      LAYER_FILTER_COPY.LAYER_FILTER.INDICATORS_GROUP_LABEL,
+                      {
+                        categoryName: intl.formatMessage(category.nameMessage),
+                      },
+                  )}
+                >
+                  {category.indicators.map((indicator) => {
+                    const labelMessage = getIndicatorLabelMessage(indicator.id);
+                    const indicatorLabel = labelMessage ?
+                      intl.formatMessage(labelMessage) :
+                      indicator.id; // Fallback to ID if message not found
+                    return (
+                      <label key={indicator.id} className={styles.checkboxLabel}>
+                        <input
+                          type="checkbox"
+                          checked={filters.indicators[indicator.id] || false}
+                          onChange={(e) => handleIndicatorChange(indicator.id, e.target.checked)}
+                          className={styles.checkbox}
+                          aria-label={indicatorLabel}
+                        />
+                        <span>{indicatorLabel}</span>
+                      </label>
+                    );
+                  })}
                 </div>
               </details>
             ))}
@@ -457,7 +500,7 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
               onChange={(e) => handleIndicatorChange('tribalLands', e.target.checked)}
               className={styles.checkbox}
             />
-            <span>Lands of federally recognized tribes</span>
+            <span>{intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.TRIBAL_LANDS)}</span>
           </label>
 
           {/* Action buttons */}
@@ -468,14 +511,14 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
               onClick={handleResetFilters}
               className={styles.resetButton}
             >
-              Reset filters
+              {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.RESET_FILTERS)}
             </Button>
             <Button
               type="button"
               onClick={handleApply}
               className={styles.applyButton}
             >
-              Apply
+              {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.APPLY)}
             </Button>
           </div>
         </div>

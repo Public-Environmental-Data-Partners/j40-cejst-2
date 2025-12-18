@@ -36,9 +36,11 @@ const INDICATOR_PROPERTY_MAP: { [key: string]: string } = {
 
   // Housing
   housingBurden: constants.IS_EXCEEDS_THRESH_FOR_HOUSE_BURDEN,
-  leadPaint: constants.IS_EXCEEDS_THRESH_FOR_LEAD_PAINT_AND_MEDIAN_HOME_VAL,
+  histUnderinvest: constants.HISTORIC_UNDERINVESTMENT_EXCEED_THRESH,
+  lackGreenSpace: constants.IS_EXCEEDS_THRESH_IMPERVIOUS,
   kitchenPlumb: constants.IS_EXCEEDS_THRESH_KITCHEN_PLUMB,
-  impervious: constants.IS_EXCEEDS_THRESH_IMPERVIOUS,
+  leadPaint: constants.IS_EXCEEDS_THRESH_FOR_LEAD_PAINT_AND_MEDIAN_HOME_VAL,
+  medHomeVal: constants.IS_EXCEEDS_THRESH_FOR_LEAD_PAINT_AND_MEDIAN_HOME_VAL,
 
   // Legacy pollution
   abandonMines: constants.ABANDON_LAND_MINES_EXCEEDS_THRESH,
@@ -60,7 +62,8 @@ const INDICATOR_PROPERTY_MAP: { [key: string]: string } = {
   unemployment: constants.IS_EXCEEDS_THRESH_FOR_UNEMPLOYMENT,
   poverty: constants.IS_EXCEEDS_THRESH_FOR_BELOW_100_POVERTY,
   lowIncome: constants.IS_EXCEEDS_THRESH_FOR_LOW_MEDIAN_INCOME,
-  education: constants.IS_EXCEEDS_THRESH_FOR_LINGUISITIC_ISO,
+  lingIso: constants.IS_EXCEEDS_THRESH_FOR_LINGUISITIC_ISO,
+  education: constants.IS_LOW_HS_EDUCATION_LOW_HIGHER_ED_PRIORITIZED,
 
   // Low income (FPL200S) - standalone checkbox
   lowIncomeFPL: constants.IS_FEDERAL_POVERTY_LEVEL_200,

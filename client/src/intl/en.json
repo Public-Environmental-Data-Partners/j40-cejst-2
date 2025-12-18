@@ -1479,6 +1479,54 @@
     "defaultMessage": "Workforce development",
     "description": "Navigate to the methodology page. Navigate to the category section. This will set the category title"
   },
+  "layer.filter.apply": {
+    "defaultMessage": "Apply",
+    "description": "Button text to apply the selected filters"
+  },
+  "layer.filter.category.aria.label": {
+    "defaultMessage": "{categoryName}, {selectedCount} of {totalCount} indicators selected",
+    "description": "Accessibility label for category checkbox indicating selection count"
+  },
+  "layer.filter.category.count.badge": {
+    "defaultMessage": "({selectedCount}/{totalCount})",
+    "description": "Count badge showing number of selected indicators in a category"
+  },
+  "layer.filter.identified.as.disadvantaged": {
+    "defaultMessage": "Identified as disadvantaged",
+    "description": "Checkbox label for filtering by identified as disadvantaged communities"
+  },
+  "layer.filter.indicators.group.label": {
+    "defaultMessage": "{categoryName} indicators",
+    "description": "Accessibility label for the group of indicators within a category"
+  },
+  "layer.filter.layers.button": {
+    "defaultMessage": "Layers",
+    "description": "Button text to open/close the layers filter panel"
+  },
+  "layer.filter.layers.button.aria.label": {
+    "defaultMessage": "Toggle layers filter panel",
+    "description": "Accessibility label for the layers button describing its action"
+  },
+  "layer.filter.low.income.checkbox": {
+    "defaultMessage": "Low income",
+    "description": "Checkbox label for filtering by low income indicator"
+  },
+  "layer.filter.new.feature.badge": {
+    "defaultMessage": "new feature",
+    "description": "Badge text indicating this is a new feature in the layer filter"
+  },
+  "layer.filter.panel.title": {
+    "defaultMessage": "Categories of burden",
+    "description": "Title of the layer filter dropdown panel"
+  },
+  "layer.filter.reset.filters": {
+    "defaultMessage": "Reset filters",
+    "description": "Button text to reset all filters to default state"
+  },
+  "layer.filter.tribal.lands": {
+    "defaultMessage": "Lands of federally recognized tribes",
+    "description": "Checkbox label for filtering by tribal lands"
+  },
   "map.territoryFocus.focusOn": {
     "defaultMessage": "Focus on {territory}",
     "description": "Focus on the bounds of a specific territory"
