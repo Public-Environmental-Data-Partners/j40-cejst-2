@@ -1,7 +1,7 @@
 /* eslint-disable valid-jsdoc */
 /* eslint-disable no-unused-vars */
 // External Libs:
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useCallback} from 'react';
 import {Map, MapGeoJSONFeature, LngLatBoundsLike} from 'maplibre-gl';
 import ReactMapGL, {
   MapEvent,
@@ -106,6 +106,7 @@ const J40Map = ({location}: IJ40Interface) => {
     identifiedAsDisadvantaged: true,
     indicators: {},
   });
+  const [isLayerFilterOpen, setIsLayerFilterOpen] = useState(false);
   const {width: windowWidth} = useWindowSize();
 
   /**
@@ -330,6 +331,11 @@ const J40Map = ({location}: IJ40Interface) => {
     }
   };
 
+  // Handle overlay state changes to disable/enable double-click zoom
+  const handleOverlayStateChange = useCallback((isOpen: boolean) => {
+    setIsLayerFilterOpen(isOpen);
+  }, []);
+
 
   /**
    * This function will move the map (with easing) to the given lat/long bounds.
@@ -491,6 +497,7 @@ const J40Map = ({location}: IJ40Interface) => {
           minZoom={constants.GLOBAL_MIN_ZOOM}
           dragRotate={false}
           touchRotate={false}
+          doubleClickZoom={!isLayerFilterOpen}
           // eslint-disable-next-line max-len
           interactiveLayerIds={
             [
@@ -531,6 +538,7 @@ const J40Map = ({location}: IJ40Interface) => {
             onFiltersChange={(filters) => {
               setLayerFilters(filters);
             }}
+            onOverlayStateChange={handleOverlayStateChange}
           />
 
           {/* This is the first overlayed row on the map: Search and Geolocation */}

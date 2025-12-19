@@ -6,6 +6,7 @@ import * as LAYER_FILTER_COPY from '../../data/copy/layerFilter';
 
 interface ILayerFilter {
   onFiltersChange: (filters: LayerFilters) => void;
+  onOverlayStateChange?: (isOpen: boolean) => void;
 }
 
 export interface LayerFilters {
@@ -15,7 +16,7 @@ export interface LayerFilters {
   };
 }
 
-const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
+const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
   const intl = useIntl();
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState<LayerFilters>({
@@ -301,6 +302,13 @@ const LayerFilter = ({onFiltersChange}: ILayerFilter) => {
       document.removeEventListener('wheel', handleWheel, {capture: true});
     };
   }, [isOpen]);
+
+  // Notify parent when overlay state changes (to disable/enable map double-click zoom)
+  useEffect(() => {
+    if (onOverlayStateChange) {
+      onOverlayStateChange(isOpen);
+    }
+  }, [isOpen, onOverlayStateChange]);
 
   // Smooth scroll to category when it's auto-expanded
   useEffect(() => {
