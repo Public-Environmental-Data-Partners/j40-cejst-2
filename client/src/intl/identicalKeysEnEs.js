@@ -27,6 +27,7 @@ const identicalKeysEnEs = [
   'explore.map.page.side.panel.indicator.diabetes',
   'explore.map.page.side.panel.info.para.4',
   'explore.map.page.side.panel.not.community.of.focus',
+  'layer.filter.category.count.badge',
   'methodology.page.dataset.indicator.diabetes.title.text',
 ];
 module.exports = {identicalKeysEnEs};
