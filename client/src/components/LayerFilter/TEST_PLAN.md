@@ -16,15 +16,9 @@ These tests are automated and run in the test suite (`LayerFilter.test.tsx`).
 - **1.1.1** All 8 categories are visible in the dropdown
 - **1.1.2** Category names are displayed correctly (Climate change, Energy, Health, Housing, Legacy pollution, Transportation, Water and wastewater, Workforce development)
 
-#### 1.2 Chevron Icon
-- **1.2.1** Chevron (▶) appears to the left of each category name
-- **1.2.2** Chevron rotates 90° (becomes ▼) when category is expanded
-- **1.2.3** Chevron rotation animation is smooth
-
 #### 1.3 Category Checkbox
 - **1.3.4** Checkbox shows checked state when category is selected
 - **1.3.5** Checkbox shows unchecked state when category is not selected
-- **1.3.6** Checkbox shows indeterminate state (dash) when some indicators are selected
 
 #### 1.4 Count Badge
 - **1.4.3** Count badge is readable and properly positioned
@@ -37,11 +31,6 @@ These tests are automated and run in the test suite (`LayerFilter.test.tsx`).
 ---
 
 ### 2. Expand/Collapse Functionality
-
-#### 2.1 Manual Expand/Collapse
-- **2.1.1** Clicking category summary row expands the category
-- **2.1.2** Clicking category summary row again collapses the category
-- **2.1.4** Multiple categories can be expanded simultaneously
 
 #### 2.2 Auto-Expand
 - **2.2.1** Checking a category checkbox automatically expands that category
@@ -63,16 +52,8 @@ These tests are automated and run in the test suite (`LayerFilter.test.tsx`).
 #### 3.2 Category State Synchronization
 - **3.2.1** When all indicators in a category are selected, category checkbox is checked
 - **3.2.2** When no indicators in a category are selected, category checkbox is unchecked
-- **3.2.3** When some indicators in a category are selected, category checkbox shows indeterminate state
+- **3.2.3** When some indicators in a category are selected, category checkbox is checked
 - **3.2.4** Category checkbox state updates immediately when indicators change
-- **3.2.5** Category checkbox state is accurate after dropdown close/reopen
-
-#### 3.3 Indeterminate State
-- **3.3.1** Indeterminate state shows when some (but not all) indicators are selected
-- **3.3.2** Indeterminate state clears when all indicators are selected
-- **3.3.3** Indeterminate state clears when no indicators are selected
-- **3.3.4** Indeterminate state persists when dropdown is closed and reopened
-- **3.3.5** Indeterminate state is visually distinct (shows dash)
 
 ---
 
@@ -85,8 +66,6 @@ These tests are automated and run in the test suite (`LayerFilter.test.tsx`).
 #### 4.2 Category State Updates
 - **4.2.1** Selecting an indicator checks its parent category checkbox
 - **4.2.2** Deselecting the last indicator in a category unchecks the category
-- **4.2.3** Deselecting one indicator (when others remain) keeps category checked with indeterminate
-- **4.2.4** Selecting all indicators in a category removes indeterminate state
 
 #### 4.3 Count Badge Updates
 - **4.3.2** Count badge updates immediately when indicator is deselected
@@ -117,9 +96,8 @@ These tests are automated and run in the test suite (`LayerFilter.test.tsx`).
 #### 5.4 Reset Filters Button
 - **5.4.1** "Reset filters" button clears all indicator selections
 - **5.4.2** "Reset filters" button unchecks all category checkboxes
-- **5.4.4** "Reset filters" button sets "Identified as Disadvantaged" to checked
-- **5.4.5** "Reset filters" button clears all indeterminate states
-- **5.4.6** After reset, all count badges show "(0/X)"
+- **5.4.3** "Reset filters" button sets "Identified as Disadvantaged" to checked
+- **5.4.4** After reset, all count badges show "(0/X)"
 
 #### 5.5 Apply Button
 - **5.5.1** "Apply" button closes the dropdown
@@ -135,8 +113,7 @@ These tests are automated and run in the test suite (`LayerFilter.test.tsx`).
 #### 6.2 Selection State
 - **6.2.1** Selected indicators persist when dropdown is closed and reopened
 - **6.2.2** Category checkbox states persist when dropdown is closed and reopened
-- **6.2.3** Indeterminate states persist when dropdown is closed and reopened
-- **6.2.4** Count badges show correct counts after dropdown reopen
+- **6.2.3** Count badges show correct counts after dropdown reopen
 
 ---
 
@@ -145,7 +122,6 @@ These tests are automated and run in the test suite (`LayerFilter.test.tsx`).
 #### 7.2 Keyboard Navigation
 - **7.2.1** Tab key navigates through all checkboxes
 - **7.2.2** Space key toggles checkbox states
-- **7.2.3** Enter key expands/collapses details elements
 
 #### 7.3 ARIA Attributes
 - **7.3.1** Category checkboxes have proper aria-label attributes
@@ -173,15 +149,11 @@ These tests are automated and run in the test suite (`LayerFilter.test.tsx`).
 #### 8.3 Category Variations
 - **8.3.1** Categories with 2 indicators work correctly (e.g., Energy)
 - **8.3.2** Categories with many indicators work correctly (e.g., Climate change has 5)
-- **8.3.3** All category sizes handle indeterminate state correctly
-- **8.3.4** Count badges work correctly for all category sizes
+- **8.3.3** Count badges work correctly for all category sizes
 
 #### 8.4 State Transitions
 - **8.4.1** Transition from unchecked → checked works correctly
 - **8.4.2** Transition from checked → unchecked works correctly
-- **8.4.3** Transition to indeterminate state works correctly
-- **8.4.4** Transition from indeterminate → checked works correctly
-- **8.4.5** Transition from indeterminate → unchecked works correctly
 
 ---
 
@@ -202,11 +174,8 @@ These tests require visual inspection, browser testing, or end-to-end scenarios.
 - **1.1.3** Categories are properly separated with visual dividers
 - **1.1.4** Layout is responsive on different screen sizes
 
-#### 1.2 Chevron Icon
-- **1.2.4** Chevron state matches expand/collapse state (visual verification)
-
 #### 1.3 Category Checkbox
-- **1.3.1** Category checkbox appears between chevron and category name
+- **1.3.1** Category checkbox appears before category name
 - **1.3.2** Checkbox is properly aligned with other elements
 - **1.3.3** Checkbox styling matches other checkboxes in component
 
@@ -224,9 +193,9 @@ These tests require visual inspection, browser testing, or end-to-end scenarios.
 
 ### 2. Expand/Collapse Functionality
 
-#### 2.1 Manual Expand/Collapse
-- **2.1.3** Clicking chevron expands/collapses the category
-- **2.1.5** Expand/collapse state persists when dropdown is closed and reopened
+#### 2.1 Category Expansion
+- **2.1.1** Categories expand when their checkbox is checked
+- **2.1.2** Categories stay open once expanded (cannot be collapsed)
 
 #### 2.3 Smooth Scroll
 - **2.3.1** When category auto-expands, it smoothly scrolls into view
@@ -235,10 +204,8 @@ These tests require visual inspection, browser testing, or end-to-end scenarios.
 
 #### 2.4 Animations
 - **2.4.1** Expand animation (slideDown) works for auto-expand
-- **2.4.2** Expand animation works for first manual expand
-- **2.4.3** Chevron rotation animation is smooth
-- **2.4.4** Animations don't cause layout jumps
-- **2.4.5** Animations don't cause performance issues
+- **2.4.2** Animations don't cause layout jumps
+- **2.4.3** Animations don't cause performance issues
 
 ---
 
@@ -256,7 +223,7 @@ These tests require visual inspection, browser testing, or end-to-end scenarios.
 ### 5. Integration with Existing Features
 
 #### 5.4 Reset Filters Button
-- **5.4.3** "Reset filters" button collapses all categories
+- **5.4.3** "Reset filters" button resets all category states
 
 #### 5.5 Apply Button
 - **5.5.3** "Apply" button preserves expanded state
@@ -337,13 +304,11 @@ These tests require visual inspection, browser testing, or end-to-end scenarios.
 - **10.2.1** All functionality works in Firefox
 - **10.2.2** Visual appearance is consistent
 - **10.2.3** Animations work correctly
-- **10.2.4** Indeterminate state displays correctly
 
 #### 10.3 Safari
 - **10.3.1** All functionality works in Safari (if available)
 - **10.3.2** Visual appearance is consistent
 - **10.3.3** Animations work correctly
-- **10.3.4** Indeterminate state displays correctly
 
 ---
 
@@ -353,8 +318,7 @@ These tests require visual inspection, browser testing, or end-to-end scenarios.
 - **11.1.1** Touch targets are adequate size (44x44px minimum)
 - **11.1.2** Tapping category checkbox works correctly
 - **11.1.3** Tapping indicator checkbox works correctly
-- **11.1.4** Tapping summary row expands/collapses correctly
-- **11.1.5** No accidental triggers from small touch targets
+- **11.1.4** No accidental triggers from small touch targets
 
 #### 11.2 Layout
 - **11.2.1** Layout works on mobile screen sizes

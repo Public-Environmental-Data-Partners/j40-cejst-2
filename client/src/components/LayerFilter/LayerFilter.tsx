@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useMemo} from 'react';
 import {useIntl} from 'gatsby-plugin-intl';
 import {Button} from '@trussworks/react-uswds';
 import * as styles from './LayerFilter.module.scss';
@@ -15,6 +15,91 @@ export interface LayerFilters {
     [key: string]: boolean;
   };
 }
+
+// Category structure with indicators
+// Using message objects for i18n - names and labels will be formatted with intl.formatMessage()
+const CATEGORIES = [
+  {
+    id: 'climate',
+    nameMessage: LAYER_FILTER_COPY.CATEGORIES.CLIMATE,
+    indicators: [
+      {id: 'expAgLoss', property: 'EAL_ET'},
+      {id: 'expBldLoss', property: 'EBL_ET'},
+      {id: 'expPopLoss', property: 'EPL_ET'},
+      {id: 'floodRisk', property: 'FLD_ET'},
+      {id: 'wildfireRisk', property: 'WFR_ET'},
+    ],
+  },
+  {
+    id: 'energy',
+    nameMessage: LAYER_FILTER_COPY.CATEGORIES.ENERGY,
+    indicators: [
+      {id: 'energyBurden', property: 'EB_ET'},
+      {id: 'pm25', property: 'PM25_ET'},
+    ],
+  },
+  {
+    id: 'health',
+    nameMessage: LAYER_FILTER_COPY.CATEGORIES.HEALTH,
+    indicators: [
+      {id: 'asthma', property: 'A_ET'},
+      {id: 'diabetes', property: 'DB_ET'},
+      {id: 'heartDisease', property: 'HD_ET'},
+      {id: 'lifeExpectancy', property: 'LLE_ET'},
+    ],
+  },
+  {
+    id: 'housing',
+    nameMessage: LAYER_FILTER_COPY.CATEGORIES.HOUSING,
+    indicators: [
+      {id: 'housingBurden', property: 'HB_ET'},
+      {id: 'histUnderinvest', property: 'HRS_ET'},
+      {id: 'lackGreenSpace', property: 'IS_ET'},
+      {id: 'kitchenPlumb', property: 'KP_ET'},
+      {id: 'leadPaint', property: 'LPP_ET'},
+      {id: 'medHomeVal', property: 'LPP_ET'},
+    ],
+  },
+  {
+    id: 'pollution',
+    nameMessage: LAYER_FILTER_COPY.CATEGORIES.POLLUTION,
+    indicators: [
+      {id: 'abandonMines', property: 'AML_ET'},
+      {id: 'fuds', property: 'FUDS_ET'},
+      {id: 'hazWaste', property: 'TSDF_ET'},
+      {id: 'rmp', property: 'RMP_ET'},
+      {id: 'superfund', property: 'NPL_ET'},
+    ],
+  },
+  {
+    id: 'transportation',
+    nameMessage: LAYER_FILTER_COPY.CATEGORIES.TRANSPORTATION,
+    indicators: [
+      {id: 'diesel', property: 'DS_ET'},
+      {id: 'traffic', property: 'TP_ET'},
+      {id: 'travelBurden', property: 'TD_ET'},
+    ],
+  },
+  {
+    id: 'water',
+    nameMessage: LAYER_FILTER_COPY.CATEGORIES.WATER,
+    indicators: [
+      {id: 'leakyTanks', property: 'UST_ET'},
+      {id: 'wastewater', property: 'WD_ET'},
+    ],
+  },
+  {
+    id: 'workforce',
+    nameMessage: LAYER_FILTER_COPY.CATEGORIES.WORKFORCE,
+    indicators: [
+      {id: 'unemployment', property: 'UN_ET'},
+      {id: 'poverty', property: 'POV_ET'},
+      {id: 'lowIncome', property: 'LMI_ET'},
+      {id: 'lingIso', property: 'LISO_ET'},
+      {id: 'education', property: 'LHE'},
+    ],
+  },
+];
 
 const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
   const intl = useIntl();
@@ -40,90 +125,10 @@ const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
     return LAYER_FILTER_COPY.getIndicatorMessage(indicatorId);
   };
 
-  // Category structure with indicators
-  // Using message objects for i18n - names and labels will be formatted with intl.formatMessage()
-  const categories = [
-    {
-      id: 'climate',
-      nameMessage: LAYER_FILTER_COPY.CATEGORIES.CLIMATE,
-      indicators: [
-        {id: 'expAgLoss', property: 'EAL_ET'},
-        {id: 'expBldLoss', property: 'EBL_ET'},
-        {id: 'expPopLoss', property: 'EPL_ET'},
-        {id: 'floodRisk', property: 'FLD_ET'},
-        {id: 'wildfireRisk', property: 'WFR_ET'},
-      ],
-    },
-    {
-      id: 'energy',
-      nameMessage: LAYER_FILTER_COPY.CATEGORIES.ENERGY,
-      indicators: [
-        {id: 'energyBurden', property: 'EB_ET'},
-        {id: 'pm25', property: 'PM25_ET'},
-      ],
-    },
-    {
-      id: 'health',
-      nameMessage: LAYER_FILTER_COPY.CATEGORIES.HEALTH,
-      indicators: [
-        {id: 'asthma', property: 'A_ET'},
-        {id: 'diabetes', property: 'DB_ET'},
-        {id: 'heartDisease', property: 'HD_ET'},
-        {id: 'lifeExpectancy', property: 'LLE_ET'},
-      ],
-    },
-    {
-      id: 'housing',
-      nameMessage: LAYER_FILTER_COPY.CATEGORIES.HOUSING,
-      indicators: [
-        {id: 'housingBurden', property: 'HB_ET'},
-        {id: 'histUnderinvest', property: 'HRS_ET'},
-        {id: 'lackGreenSpace', property: 'IS_ET'},
-        {id: 'kitchenPlumb', property: 'KP_ET'},
-        {id: 'leadPaint', property: 'LPP_ET'},
-        {id: 'medHomeVal', property: 'LPP_ET'},
-      ],
-    },
-    {
-      id: 'pollution',
-      nameMessage: LAYER_FILTER_COPY.CATEGORIES.POLLUTION,
-      indicators: [
-        {id: 'abandonMines', property: 'AML_ET'},
-        {id: 'fuds', property: 'FUDS_ET'},
-        {id: 'hazWaste', property: 'TSDF_ET'},
-        {id: 'rmp', property: 'RMP_ET'},
-        {id: 'superfund', property: 'NPL_ET'},
-      ],
-    },
-    {
-      id: 'transportation',
-      nameMessage: LAYER_FILTER_COPY.CATEGORIES.TRANSPORTATION,
-      indicators: [
-        {id: 'diesel', property: 'DS_ET'},
-        {id: 'traffic', property: 'TP_ET'},
-        {id: 'travelBurden', property: 'TD_ET'},
-      ],
-    },
-    {
-      id: 'water',
-      nameMessage: LAYER_FILTER_COPY.CATEGORIES.WATER,
-      indicators: [
-        {id: 'leakyTanks', property: 'UST_ET'},
-        {id: 'wastewater', property: 'WD_ET'},
-      ],
-    },
-    {
-      id: 'workforce',
-      nameMessage: LAYER_FILTER_COPY.CATEGORIES.WORKFORCE,
-      indicators: [
-        {id: 'unemployment', property: 'UN_ET'},
-        {id: 'poverty', property: 'POV_ET'},
-        {id: 'lowIncome', property: 'LMI_ET'},
-        {id: 'lingIso', property: 'LISO_ET'},
-        {id: 'education', property: 'LHE'},
-      ],
-    },
-  ];
+  // Helper function to find category by ID
+  const findCategoryById = (categoryId: string) => {
+    return CATEGORIES.find((cat) => cat.id === categoryId);
+  };
 
   const handleIdentifiedAsDisadvantagedChange = (checked: boolean) => {
     const newFilters: LayerFilters = {
@@ -132,15 +137,9 @@ const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
     };
 
     // When "Identified as Disadvantaged" is checked, clear all category checkbox states
-    // and indeterminate states since all indicators are cleared
+    // since all indicators are cleared
     if (checked) {
       setCategoryStates({});
-      // Clear all indeterminate states
-      Object.keys(categoryCheckboxRefs.current).forEach((categoryId) => {
-        if (categoryCheckboxRefs.current[categoryId]) {
-          categoryCheckboxRefs.current[categoryId]!.indeterminate = false;
-        }
-      });
     }
 
     setFilters(newFilters);
@@ -161,7 +160,7 @@ const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
     }
 
     // Find which category this indicator belongs to and update category checkbox state
-    const category = categories.find((cat) =>
+    const category = CATEGORIES.find((cat) =>
       cat.indicators.some((ind) => ind.id === indicatorId),
     );
 
@@ -171,27 +170,14 @@ const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
         newFilters.indicators[ind.id],
       ).length;
 
-      // Update category checkbox state based on selection count:
-      // - If all indicators selected → category checked, not indeterminate
-      // - If no indicators selected → category unchecked, not indeterminate
-      // - If some indicators selected → category checked AND indeterminate
-      const allSelected = selectedCount === category.indicators.length;
-      const someSelected = selectedCount > 0 && selectedCount < category.indicators.length;
-
-      // Category is checked if any indicators are selected (all or some)
-      // Category is unchecked only if no indicators are selected
-      const categoryChecked = allSelected || someSelected;
+      // Category is checked if any indicators are selected
+      // Category is unchecked if no indicators are selected
+      const categoryChecked = selectedCount > 0;
 
       setCategoryStates((prev) => ({
         ...prev,
         [category.id]: categoryChecked,
       }));
-
-      // Set indeterminate state on checkbox element
-      // Indeterminate only when some (but not all) indicators are selected
-      if (categoryCheckboxRefs.current[category.id]) {
-        categoryCheckboxRefs.current[category.id]!.indeterminate = someSelected;
-      }
     }
 
     setFilters(newFilters);
@@ -200,7 +186,7 @@ const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
 
   const handleCategoryChange = (categoryId: string, checked: boolean) => {
     // Find the category
-    const category = categories.find((cat) => cat.id === categoryId);
+    const category = findCategoryById(categoryId);
     if (!category) {
       console.warn(`Category with id "${categoryId}" not found`);
       return;
@@ -235,19 +221,11 @@ const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
       setExpandedCategories((prev) => new Set(prev).add(categoryId));
       // Mark as just expanded for smooth scroll
       setJustExpanded(categoryId);
-      // Clear indeterminate state (all indicators are now selected)
-      if (categoryCheckboxRefs.current[categoryId]) {
-        categoryCheckboxRefs.current[categoryId]!.indeterminate = false;
-      }
     } else {
       // Deselect all indicators in this category
       category.indicators.forEach((indicator) => {
         delete newFilters.indicators[indicator.id];
       });
-      // Clear indeterminate state (no indicators are selected)
-      if (categoryCheckboxRefs.current[categoryId]) {
-        categoryCheckboxRefs.current[categoryId]!.indeterminate = false;
-      }
     }
 
     setFilters(newFilters);
@@ -262,8 +240,6 @@ const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
     setFilters(defaultFilters);
     setCategoryStates({});
     setExpandedCategories(new Set()); // Collapse all categories on reset
-    // Note: Indeterminate states are automatically cleared by the useEffect
-    // that syncs indeterminate states when filters.indicators changes
     onFiltersChange(defaultFilters);
   };
 
@@ -271,18 +247,18 @@ const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
     setIsOpen(false);
   };
 
-  // Calculate count of selected indicators for a category
-  const getCategorySelectedCount = (categoryId: string): number => {
-    const category = categories.find((cat) => cat.id === categoryId);
-    if (!category) return 0;
-
-    // Handle edge case: category with no indicators
-    if (category.indicators.length === 0) return 0;
-
-    return category.indicators.filter((indicator) =>
-      filters.indicators[indicator.id],
-    ).length;
-  };
+  // Calculate count of selected indicators for a category (memoized)
+  const getCategorySelectedCount = useMemo(() => {
+    const countMap: {[key: string]: number} = {};
+    CATEGORIES.forEach((category) => {
+      countMap[category.id] = category.indicators.filter((indicator) =>
+        filters.indicators[indicator.id],
+      ).length;
+    });
+    return (categoryId: string): number => {
+      return countMap[categoryId] ?? 0;
+    };
+  }, [filters.indicators]);
 
   // Handle wheel events to prevent map scrolling when dropdown is open
   useEffect(() => {
@@ -328,31 +304,9 @@ const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
     }
   }, [justExpanded]);
 
-  // Sync indeterminate states for all categories when filters or dropdown state changes
-  // This ensures indeterminate state is restored when dropdown reopens
-  useEffect(() => {
-    categories.forEach((category) => {
-      if (categoryCheckboxRefs.current[category.id]) {
-        const selectedCount = category.indicators.filter((ind) =>
-          filters.indicators[ind.id],
-        ).length;
-        const someSelected = selectedCount > 0 && selectedCount < category.indicators.length;
-        categoryCheckboxRefs.current[category.id]!.indeterminate = someSelected;
-      }
-    });
-  }, [filters.indicators, isOpen]);
-
-  // Render categories using details/summary instead of accordion
 
   return (
-    <div
-      className={styles.layerFilterContainer}
-      onWheel={(e) => {
-        if (isOpen) {
-          e.stopPropagation();
-        }
-      }}
-    >
+    <div className={styles.layerFilterContainer}>
       <div className={styles.filterHeader}>
         <span className={styles.newFeatureBadge}>
           {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.NEW_FEATURE_BADGE)}
@@ -402,7 +356,7 @@ const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
 
           {/* Category details/summary */}
           <div className={styles.categoriesContainer}>
-            {categories.map((category) => (
+            {CATEGORIES.map((category) => (
               <details
                 key={category.id}
                 ref={(el) => {
@@ -411,22 +365,18 @@ const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
                 className={styles.categoryDetails}
                 open={expandedCategories.has(category.id)}
                 onToggle={(e) => {
-                  // Sync expanded state when user manually expands/collapses category
-                  // This ensures state stays in sync with the native details element behavior
-                  const details = e.currentTarget;
-                  if (details.open) {
-                    setExpandedCategories((prev) => new Set(prev).add(category.id));
-                  } else {
-                    setExpandedCategories((prev) => {
-                      const next = new Set(prev);
-                      next.delete(category.id);
-                      return next;
-                    });
-                  }
+                  // Prevent default toggle behavior - categories can only be opened via checkbox
+                  e.preventDefault();
                 }}
               >
-                <summary className={styles.categorySummary}>
-                  <span className={styles.chevronIcon} aria-hidden="true">▶</span>
+                <summary
+                  className={styles.categorySummary}
+                  tabIndex={-1}
+                  onClick={(e) => {
+                    // Prevent summary click from toggling details
+                    e.preventDefault();
+                  }}
+                >
                   <input
                     ref={(el) => {
                       categoryCheckboxRefs.current[category.id] = el;

@@ -58,6 +58,16 @@ describe('LayerFilter Component', () => {
     return categoryElement as HTMLDetailsElement;
   };
 
+  // Helper function to expand a category by clicking its checkbox
+  // Categories auto-expand when their checkbox is checked
+  const expandCategory = (categoryName: string) => {
+    const checkbox = getCategoryCheckbox(categoryName);
+    // Only click if not already checked (to avoid toggling)
+    if (!checkbox.checked) {
+      fireEvent.click(checkbox);
+    }
+  };
+
   // ============================================================================
   // Section 1: Visual Structure Tests
   // ============================================================================
@@ -98,17 +108,7 @@ describe('LayerFilter Component', () => {
     });
   });
 
-  describe('1.2 Chevron Icon (Test IDs: 1.2.1, 1.2.2, 1.2.3)', () => {
-    it('displays chevron icon for each category', () => {
-      renderComponent();
-      openDropdown();
-
-      const chevrons = screen.getAllByText('▶');
-      expect(chevrons.length).toBeGreaterThan(0);
-    });
-  });
-
-  describe('1.3 Category Checkbox (Test IDs: 1.3.4, 1.3.5, 1.3.6)', () => {
+  describe('1.3 Category Checkbox (Test IDs: 1.3.4, 1.3.5)', () => {
     it('shows unchecked state when category is not selected', () => {
       renderComponent();
       openDropdown();
@@ -127,20 +127,18 @@ describe('LayerFilter Component', () => {
       expect(climateCheckbox).toBeChecked();
     });
 
-    it('shows indeterminate state when some indicators are selected', () => {
+    it('shows checked state when some indicators are selected', () => {
       renderComponent();
       openDropdown();
 
-      // Expand climate category
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
+      // Expand climate category by checking it
+      expandCategory('Climate change');
 
       // Select only one indicator
       const expAgLossCheckbox = getIndicatorCheckbox('Expected agriculture loss rate');
       fireEvent.click(expAgLossCheckbox);
 
       const climateCheckbox = getCategoryCheckbox('Climate change');
-      expect(climateCheckbox.indeterminate).toBe(true);
       expect(climateCheckbox).toBeChecked();
     });
   });
@@ -150,9 +148,10 @@ describe('LayerFilter Component', () => {
       renderComponent();
       openDropdown();
 
-      // Expand climate category
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
+      // Expand category (checks it and selects all), then uncheck to deselect all
+      const climateCheckbox = getCategoryCheckbox('Climate change');
+      fireEvent.click(climateCheckbox); // Expand and select all
+      fireEvent.click(climateCheckbox); // Uncheck to deselect all (category stays open)
 
       // Select one indicator
       const expAgLossCheckbox = getIndicatorCheckbox('Expected agriculture loss rate');
@@ -178,9 +177,10 @@ describe('LayerFilter Component', () => {
       renderComponent();
       openDropdown();
 
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
+      // Expand category by checking it
+      expandCategory('Climate change');
 
+      const climateDetails = getCategoryDetails('Climate change');
       expect(climateDetails).toHaveAttribute('open');
       expect(screen.getByText('Expected agriculture loss rate')).toBeVisible();
     });
@@ -189,48 +189,6 @@ describe('LayerFilter Component', () => {
   // ============================================================================
   // Section 2: Expand/Collapse Functionality
   // ============================================================================
-
-  describe('2.1 Manual Expand/Collapse (Test IDs: 2.1.1, 2.1.2, 2.1.4)', () => {
-    it('expands category when clicking summary row', () => {
-      renderComponent();
-      openDropdown();
-
-      const climateDetails = getCategoryDetails('Climate change');
-      const summary = climateDetails?.querySelector('summary');
-
-      expect(climateDetails).not.toHaveAttribute('open');
-      fireEvent.click(summary!);
-      expect(climateDetails).toHaveAttribute('open');
-    });
-
-    it('collapses category when clicking summary row again', () => {
-      renderComponent();
-      openDropdown();
-
-      const climateDetails = getCategoryDetails('Climate change');
-      const summary = climateDetails?.querySelector('summary');
-
-      fireEvent.click(summary!);
-      expect(climateDetails).toHaveAttribute('open');
-
-      fireEvent.click(summary!);
-      expect(climateDetails).not.toHaveAttribute('open');
-    });
-
-    it('allows multiple categories to be expanded simultaneously', () => {
-      renderComponent();
-      openDropdown();
-
-      const climateDetails = getCategoryDetails('Climate change');
-      const energyDetails = getCategoryDetails('Energy');
-
-      fireEvent.click(climateDetails?.querySelector('summary')!);
-      fireEvent.click(energyDetails?.querySelector('summary')!);
-
-      expect(climateDetails).toHaveAttribute('open');
-      expect(energyDetails).toHaveAttribute('open');
-    });
-  });
 
   describe('2.2 Auto-Expand (Test IDs: 2.2.1, 2.2.2, 2.2.3)', () => {
     it('automatically expands category when checkbox is checked', () => {
@@ -257,13 +215,9 @@ describe('LayerFilter Component', () => {
       fireEvent.click(climateCheckbox);
       expect(climateDetails).toHaveAttribute('open');
 
-      // Manually collapse
-      fireEvent.click(climateDetails?.querySelector('summary')!);
-      expect(climateDetails).not.toHaveAttribute('open');
-
-      // Uncheck - should not auto-expand
+      // Uncheck - category stays open (cannot be collapsed)
       fireEvent.click(climateCheckbox);
-      expect(climateDetails).not.toHaveAttribute('open');
+      expect(climateDetails).toHaveAttribute('open');
     });
 
     it('shows all indicators when auto-expanded', () => {
@@ -292,10 +246,6 @@ describe('LayerFilter Component', () => {
       renderComponent();
       openDropdown();
 
-      // Expand climate category
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
-
       const climateCheckbox = getCategoryCheckbox('Climate change');
       fireEvent.click(climateCheckbox);
 
@@ -319,9 +269,7 @@ describe('LayerFilter Component', () => {
       renderComponent();
       openDropdown();
 
-      // Expand and select climate category
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
+      // Select climate category (auto-expands)
       const climateCheckbox = getCategoryCheckbox('Climate change');
       fireEvent.click(climateCheckbox);
 
@@ -369,15 +317,15 @@ describe('LayerFilter Component', () => {
     });
   });
 
-  describe('3.2 Category State Synchronization (Test IDs: 3.2.1, 3.2.2, 3.2.3, 3.2.4)', () => {
+  describe('3.2 Category State Synchronization (Test IDs: 3.2.1, 3.2.2)', () => {
     it('checks category checkbox when all indicators are selected', () => {
       renderComponent();
       openDropdown();
 
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
-
+      // Expand category (checks it and selects all), then uncheck to deselect all
       const climateCheckbox = getCategoryCheckbox('Climate change');
+      fireEvent.click(climateCheckbox); // Expand and select all
+      fireEvent.click(climateCheckbox); // Uncheck to deselect all (category stays open)
 
       // Select all indicators manually
       fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
@@ -387,15 +335,11 @@ describe('LayerFilter Component', () => {
       fireEvent.click(getIndicatorCheckbox('Projected wildfire risk'));
 
       expect(climateCheckbox).toBeChecked();
-      expect(climateCheckbox.indeterminate).toBe(false);
     });
 
     it('unchecks category checkbox when no indicators are selected', () => {
       renderComponent();
       openDropdown();
-
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
 
       const climateCheckbox = getCategoryCheckbox('Climate change');
 
@@ -404,131 +348,44 @@ describe('LayerFilter Component', () => {
       fireEvent.click(climateCheckbox);
 
       expect(climateCheckbox).not.toBeChecked();
-      expect(climateCheckbox.indeterminate).toBe(false);
     });
 
-    it('shows indeterminate state when some indicators are selected', () => {
+    it('checks category checkbox when some indicators are selected', () => {
       renderComponent();
       openDropdown();
 
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
-
+      expandCategory('Climate change');
       const climateCheckbox = getCategoryCheckbox('Climate change');
 
       // Select only one indicator
       fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
 
       expect(climateCheckbox).toBeChecked();
-      expect(climateCheckbox.indeterminate).toBe(true);
     });
 
     it('updates category checkbox state immediately when indicators change', () => {
       renderComponent();
       openDropdown();
 
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
-
+      // Expand category (checks it and selects all), then uncheck to deselect all
       const climateCheckbox = getCategoryCheckbox('Climate change');
+      fireEvent.click(climateCheckbox); // Expand and select all
+      fireEvent.click(climateCheckbox); // Uncheck to deselect all (category stays open)
 
       // Start with none selected
       expect(climateCheckbox).not.toBeChecked();
 
-      // Select one - should be checked and indeterminate
+      // Select one - should be checked
       fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
       expect(climateCheckbox).toBeChecked();
-      expect(climateCheckbox.indeterminate).toBe(true);
 
-      // Select all - should be checked and not indeterminate
+      // Select all - should remain checked
       fireEvent.click(getIndicatorCheckbox('Expected building loss rate'));
       fireEvent.click(getIndicatorCheckbox('Expected population loss rate'));
       fireEvent.click(getIndicatorCheckbox('Projected flood risk'));
       fireEvent.click(getIndicatorCheckbox('Projected wildfire risk'));
 
       expect(climateCheckbox).toBeChecked();
-      expect(climateCheckbox.indeterminate).toBe(false);
-    });
-  });
-
-  describe('3.3 Indeterminate State (Test IDs: 3.3.1, 3.3.2, 3.3.3, 3.3.4)', () => {
-    it('shows indeterminate state when some indicators are selected', () => {
-      renderComponent();
-      openDropdown();
-
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
-
-      const climateCheckbox = getCategoryCheckbox('Climate change');
-
-      // Select 2 out of 5 indicators
-      fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
-      fireEvent.click(getIndicatorCheckbox('Expected building loss rate'));
-
-      expect(climateCheckbox.indeterminate).toBe(true);
-    });
-
-    it('clears indeterminate state when all indicators are selected', () => {
-      renderComponent();
-      openDropdown();
-
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
-
-      const climateCheckbox = getCategoryCheckbox('Climate change');
-
-      // Select some indicators
-      fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
-      expect(climateCheckbox.indeterminate).toBe(true);
-
-      // Select all remaining indicators
-      fireEvent.click(getIndicatorCheckbox('Expected building loss rate'));
-      fireEvent.click(getIndicatorCheckbox('Expected population loss rate'));
-      fireEvent.click(getIndicatorCheckbox('Projected flood risk'));
-      fireEvent.click(getIndicatorCheckbox('Projected wildfire risk'));
-
-      expect(climateCheckbox.indeterminate).toBe(false);
-    });
-
-    it('clears indeterminate state when no indicators are selected', () => {
-      renderComponent();
-      openDropdown();
-
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
-
-      const climateCheckbox = getCategoryCheckbox('Climate change');
-
-      // Select some indicators
-      fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
-      expect(climateCheckbox.indeterminate).toBe(true);
-
-      // Deselect all
-      fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
-      expect(climateCheckbox.indeterminate).toBe(false);
-      expect(climateCheckbox).not.toBeChecked();
-    });
-
-    it('persists indeterminate state when dropdown is closed and reopened', () => {
-      renderComponent();
-      openDropdown();
-
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
-
-      const climateCheckbox = getCategoryCheckbox('Climate change');
-
-      // Select some indicators
-      fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
-      expect(climateCheckbox.indeterminate).toBe(true);
-
-      // Close and reopen dropdown
-      const layersButton = screen.getByRole('button', {name: /layers/i});
-      fireEvent.click(layersButton);
-      fireEvent.click(layersButton);
-
-      const climateCheckboxAfter = getCategoryCheckbox('Climate change');
-      expect(climateCheckboxAfter.indeterminate).toBe(true);
     });
   });
 
@@ -541,8 +398,10 @@ describe('LayerFilter Component', () => {
       renderComponent();
       openDropdown();
 
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
+      // Expand category (checks it and selects all), then uncheck to deselect all
+      const climateCheckbox = getCategoryCheckbox('Climate change');
+      fireEvent.click(climateCheckbox); // Expand and select all
+      fireEvent.click(climateCheckbox); // Uncheck to deselect all (category stays open)
 
       const expAgLossCheckbox = getIndicatorCheckbox('Expected agriculture loss rate');
       const expBldLossCheckbox = getIndicatorCheckbox('Expected building loss rate');
@@ -564,33 +423,36 @@ describe('LayerFilter Component', () => {
       renderComponent();
       openDropdown();
 
-      // Expand both categories
-      const climateDetails = getCategoryDetails('Climate change');
-      const energyDetails = getCategoryDetails('Energy');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
-      fireEvent.click(energyDetails?.querySelector('summary')!);
+      // Expand both categories (checks them and selects all), then uncheck to deselect all
+      const climateCheckbox = getCategoryCheckbox('Climate change');
+      const energyCheckbox = getCategoryCheckbox('Energy');
+      fireEvent.click(climateCheckbox); // Expand and select all
+      fireEvent.click(climateCheckbox); // Uncheck to deselect all (category stays open)
+      fireEvent.click(energyCheckbox); // Expand and select all
+      fireEvent.click(energyCheckbox); // Uncheck to deselect all (category stays open)
 
       // Select indicator from climate
       fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
 
       // Select indicator from energy
-      fireEvent.click(getIndicatorCheckbox('Energy burden'));
+      fireEvent.click(getIndicatorCheckbox('Energy cost'));
 
       // Both should be selected
       expect(getIndicatorCheckbox('Expected agriculture loss rate')).toBeChecked();
-      expect(getIndicatorCheckbox('Energy burden')).toBeChecked();
+      expect(getIndicatorCheckbox('Energy cost')).toBeChecked();
     });
   });
 
-  describe('4.2 Category State Updates (Test IDs: 4.2.1, 4.2.2, 4.2.3, 4.2.4)', () => {
+  describe('4.2 Category State Updates (Test IDs: 4.2.1, 4.2.2)', () => {
     it('checks parent category checkbox when indicator is selected', () => {
       renderComponent();
       openDropdown();
 
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
-
+      // Expand category (checks it and selects all), then uncheck to deselect all
       const climateCheckbox = getCategoryCheckbox('Climate change');
+      fireEvent.click(climateCheckbox); // Expand and select all
+      fireEvent.click(climateCheckbox); // Uncheck to deselect all (category stays open)
+
       expect(climateCheckbox).not.toBeChecked();
 
       fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
@@ -601,10 +463,11 @@ describe('LayerFilter Component', () => {
       renderComponent();
       openDropdown();
 
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
-
+      // Expand category (checks it and selects all), then uncheck to deselect all
       const climateCheckbox = getCategoryCheckbox('Climate change');
+      fireEvent.click(climateCheckbox); // Expand and select all
+      fireEvent.click(climateCheckbox); // Uncheck to deselect all (category stays open)
+
       const expAgLossCheckbox = getIndicatorCheckbox('Expected agriculture loss rate');
 
       // Select one indicator
@@ -616,45 +479,18 @@ describe('LayerFilter Component', () => {
       expect(climateCheckbox).not.toBeChecked();
     });
 
-    it('keeps category checked with indeterminate when one indicator is deselected', () => {
+    it('keeps category checked when one indicator is deselected', () => {
       renderComponent();
       openDropdown();
-
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
 
       const climateCheckbox = getCategoryCheckbox('Climate change');
 
       // Select all indicators
       fireEvent.click(climateCheckbox);
-      expect(climateCheckbox.indeterminate).toBe(false);
 
       // Deselect one
       fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
       expect(climateCheckbox).toBeChecked();
-      expect(climateCheckbox.indeterminate).toBe(true);
-    });
-
-    it('removes indeterminate state when all indicators are selected', () => {
-      renderComponent();
-      openDropdown();
-
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
-
-      const climateCheckbox = getCategoryCheckbox('Climate change');
-
-      // Select some indicators
-      fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
-      fireEvent.click(getIndicatorCheckbox('Expected building loss rate'));
-      expect(climateCheckbox.indeterminate).toBe(true);
-
-      // Select remaining indicators
-      fireEvent.click(getIndicatorCheckbox('Expected population loss rate'));
-      fireEvent.click(getIndicatorCheckbox('Projected flood risk'));
-      fireEvent.click(getIndicatorCheckbox('Projected wildfire risk'));
-
-      expect(climateCheckbox.indeterminate).toBe(false);
     });
   });
 
@@ -663,8 +499,12 @@ describe('LayerFilter Component', () => {
       renderComponent();
       openDropdown();
 
+      // Expand category (checks it and selects all), then uncheck to deselect all
+      const climateCheckbox = getCategoryCheckbox('Climate change');
+      fireEvent.click(climateCheckbox); // Expand and select all
+      fireEvent.click(climateCheckbox); // Uncheck to deselect all (category stays open)
+
       const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
 
       const expAgLossCheckbox = getIndicatorCheckbox('Expected agriculture loss rate');
       fireEvent.click(expAgLossCheckbox);
@@ -678,18 +518,20 @@ describe('LayerFilter Component', () => {
       renderComponent();
       openDropdown();
 
-      // Expand multiple categories
-      const climateDetails = getCategoryDetails('Climate change');
-      const energyDetails = getCategoryDetails('Energy');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
-      fireEvent.click(energyDetails?.querySelector('summary')!);
+      // Expand multiple categories (checks them and selects all), then uncheck to deselect all
+      const climateCheckbox = getCategoryCheckbox('Climate change');
+      const energyCheckbox = getCategoryCheckbox('Energy');
+      fireEvent.click(climateCheckbox); // Expand and select all
+      fireEvent.click(climateCheckbox); // Uncheck to deselect all (category stays open)
+      fireEvent.click(energyCheckbox); // Expand and select all
+      fireEvent.click(energyCheckbox); // Uncheck to deselect all (category stays open)
 
       // Select from climate (5 indicators)
       fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
       expect(screen.getByText(/\(1\/5\)/)).toBeInTheDocument();
 
       // Select from energy (2 indicators)
-      fireEvent.click(getIndicatorCheckbox('Energy burden'));
+      fireEvent.click(getIndicatorCheckbox('Energy cost'));
       expect(screen.getByText(/\(1\/2\)/)).toBeInTheDocument();
     });
 
@@ -697,8 +539,12 @@ describe('LayerFilter Component', () => {
       renderComponent();
       openDropdown();
 
+      // Expand category (checks it and selects all), then uncheck to deselect all
+      const climateCheckbox = getCategoryCheckbox('Climate change');
+      fireEvent.click(climateCheckbox); // Expand and select all
+      fireEvent.click(climateCheckbox); // Uncheck to deselect all (category stays open)
+
       const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
 
       // Check format for different counts - query within specific category
       const climateCountBadge = climateDetails?.querySelector('[id="category-climate-count"]');
@@ -740,8 +586,7 @@ describe('LayerFilter Component', () => {
       openDropdown();
 
       // Select some indicators
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
+      expandCategory('Climate change');
       fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
 
       // Check "Identified as Disadvantaged"
@@ -780,8 +625,7 @@ describe('LayerFilter Component', () => {
       });
       expect(identifiedCheckbox).toBeChecked();
 
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
+      expandCategory('Climate change');
       fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
 
       expect(identifiedCheckbox).not.toBeChecked();
@@ -792,8 +636,7 @@ describe('LayerFilter Component', () => {
       openDropdown();
 
       // Select some indicators first
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
+      expandCategory('Climate change');
       fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
 
       // Check "Identified as Disadvantaged" (clears selections)
@@ -923,8 +766,7 @@ describe('LayerFilter Component', () => {
       openDropdown();
 
       // Select some indicators
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
+      expandCategory('Climate change');
       fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
 
       // Click reset
@@ -975,8 +817,7 @@ describe('LayerFilter Component', () => {
       openDropdown();
 
       // Select some indicators
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
+      expandCategory('Climate change');
       fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
 
       // Click reset
@@ -1009,8 +850,12 @@ describe('LayerFilter Component', () => {
       openDropdown();
 
       // Make some selections
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
+      // Expand category (checks it and selects all), then uncheck to deselect all
+      const climateCheckbox = getCategoryCheckbox('Climate change');
+      fireEvent.click(climateCheckbox); // Expand and select all
+      fireEvent.click(climateCheckbox); // Uncheck to deselect all (category stays open)
+
+      // Now select individual indicator
       fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
 
       const applyButton = screen.getByRole('button', {name: /apply/i});
@@ -1051,8 +896,12 @@ describe('LayerFilter Component', () => {
       renderComponent();
       openDropdown();
 
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
+      // Expand category (checks it and selects all), then uncheck to deselect all
+      const climateCheckbox = getCategoryCheckbox('Climate change');
+      fireEvent.click(climateCheckbox); // Expand and select all
+      fireEvent.click(climateCheckbox); // Uncheck to deselect all (category stays open)
+
+      // Now select individual indicator
       fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
 
       // Close and reopen
@@ -1060,9 +909,9 @@ describe('LayerFilter Component', () => {
       fireEvent.click(layersButton);
       fireEvent.click(layersButton);
 
-      // Expand again to see indicator
+      // Category should still be expanded (stays open once opened)
       const climateDetailsAfter = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetailsAfter?.querySelector('summary')!);
+      expect(climateDetailsAfter).toHaveAttribute('open');
 
       expect(getIndicatorCheckbox('Expected agriculture loss rate')).toBeChecked();
     });
@@ -1084,16 +933,15 @@ describe('LayerFilter Component', () => {
       expect(climateCheckboxAfter).toBeChecked();
     });
 
-    it('persists indeterminate states when dropdown is closed and reopened', () => {
+    it('persists category checked state when dropdown is closed and reopened', () => {
       renderComponent();
       openDropdown();
 
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
+      expandCategory('Climate change');
       fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
 
       const climateCheckbox = getCategoryCheckbox('Climate change');
-      expect(climateCheckbox.indeterminate).toBe(true);
+      expect(climateCheckbox).toBeChecked();
 
       // Close and reopen
       const layersButton = screen.getByRole('button', {name: /layers/i});
@@ -1101,15 +949,19 @@ describe('LayerFilter Component', () => {
       fireEvent.click(layersButton);
 
       const climateCheckboxAfter = getCategoryCheckbox('Climate change');
-      expect(climateCheckboxAfter.indeterminate).toBe(true);
+      expect(climateCheckboxAfter).toBeChecked();
     });
 
     it('shows correct counts after dropdown reopen', () => {
       renderComponent();
       openDropdown();
 
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
+      // Expand category (checks it and selects all), then uncheck to deselect all
+      const climateCheckbox = getCategoryCheckbox('Climate change');
+      fireEvent.click(climateCheckbox); // Expand and select all
+      fireEvent.click(climateCheckbox); // Uncheck to deselect all (category stays open)
+
+      // Now select individual indicators
       fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
       fireEvent.click(getIndicatorCheckbox('Expected building loss rate'));
 
@@ -1141,8 +993,7 @@ describe('LayerFilter Component', () => {
       renderComponent();
       openDropdown();
 
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
+      expandCategory('Climate change');
 
       const expAgLossCheckbox = getIndicatorCheckbox('Expected agriculture loss rate');
       expect(expAgLossCheckbox).toHaveAttribute('aria-label', 'Expected agriculture loss rate');
@@ -1159,22 +1010,13 @@ describe('LayerFilter Component', () => {
       expect(climateCountBadge).toHaveAttribute('aria-atomic', 'true');
     });
 
-    it('decorative elements have aria-hidden="true"', () => {
-      renderComponent();
-      openDropdown();
-
-      const chevrons = screen.getAllByText('▶');
-      chevrons.forEach((chevron) => {
-        expect(chevron).toHaveAttribute('aria-hidden', 'true');
-      });
-    });
 
     it('groups have proper role and aria-label attributes', () => {
       renderComponent();
       openDropdown();
 
+      expandCategory('Climate change');
       const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
 
       const indicatorsGroup = climateDetails?.querySelector('[role="group"]');
       expect(indicatorsGroup).toHaveAttribute('aria-label', 'Climate change indicators');
@@ -1208,19 +1050,6 @@ describe('LayerFilter Component', () => {
       // Note: Space key on checkbox should trigger change event
       // This is a basic test - full keyboard testing may need userEvent
     });
-
-    it('Enter key expands/collapses details elements', () => {
-      renderComponent();
-      openDropdown();
-
-      const climateDetails = getCategoryDetails('Climate change');
-      const summary = climateDetails?.querySelector('summary');
-      summary?.focus();
-
-      expect(climateDetails).not.toHaveAttribute('open');
-      fireEvent.keyDown(summary!, {key: 'Enter'});
-      // Note: Enter on summary should toggle details
-    });
   });
 
   // ============================================================================
@@ -1250,8 +1079,7 @@ describe('LayerFilter Component', () => {
       renderComponent();
       openDropdown();
 
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
+      expandCategory('Climate change');
 
       const expAgLossCheckbox = getIndicatorCheckbox('Expected agriculture loss rate');
 
@@ -1264,21 +1092,6 @@ describe('LayerFilter Component', () => {
       expect(() => {
         expect(expAgLossCheckbox).toBeInTheDocument();
       }).not.toThrow();
-    });
-
-    it('handles rapid expand/collapse without errors', () => {
-      renderComponent();
-      openDropdown();
-
-      const climateDetails = getCategoryDetails('Climate change');
-      const summary = climateDetails?.querySelector('summary')!;
-
-      // Rapid expand/collapse
-      for (let i = 0; i < 5; i++) {
-        fireEvent.click(summary);
-      }
-
-      expect(climateDetails).toBeDefined();
     });
   });
 
@@ -1342,8 +1155,7 @@ describe('LayerFilter Component', () => {
       ];
 
       categories.forEach((categoryName) => {
-        const details = getCategoryDetails(categoryName);
-        fireEvent.click(details?.querySelector('summary')!);
+        expandCategory(categoryName);
       });
 
       categories.forEach((categoryName) => {
@@ -1358,14 +1170,12 @@ describe('LayerFilter Component', () => {
       renderComponent();
       openDropdown();
 
-      const energyDetails = getCategoryDetails('Energy');
-      fireEvent.click(energyDetails?.querySelector('summary')!);
-
+      // Check the category checkbox (expands and selects all indicators)
       const energyCheckbox = getCategoryCheckbox('Energy');
       fireEvent.click(energyCheckbox);
 
-      expect(getIndicatorCheckbox('Energy burden')).toBeChecked();
-      expect(getIndicatorCheckbox('PM2.5')).toBeChecked();
+      expect(getIndicatorCheckbox('Energy cost')).toBeChecked();
+      expect(getIndicatorCheckbox('PM2.5 in the air')).toBeChecked();
       expect(screen.getByText(/\(2\/2\)/)).toBeInTheDocument();
     });
 
@@ -1373,37 +1183,15 @@ describe('LayerFilter Component', () => {
       renderComponent();
       openDropdown();
 
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
-
       const climateCheckbox = getCategoryCheckbox('Climate change');
       fireEvent.click(climateCheckbox);
 
       expect(screen.getByText(/\(5\/5\)/)).toBeInTheDocument();
-      expect(climateCheckbox.indeterminate).toBe(false);
-    });
-
-    it('handles indeterminate state correctly for all category sizes', () => {
-      renderComponent();
-      openDropdown();
-
-      // Test with Energy (2 indicators)
-      const energyDetails = getCategoryDetails('Energy');
-      fireEvent.click(energyDetails?.querySelector('summary')!);
-      fireEvent.click(getIndicatorCheckbox('Energy burden'));
-      const energyCheckbox = getCategoryCheckbox('Energy');
-      expect(energyCheckbox.indeterminate).toBe(true);
-
-      // Test with Climate (5 indicators)
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
-      fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
-      const climateCheckbox = getCategoryCheckbox('Climate change');
-      expect(climateCheckbox.indeterminate).toBe(true);
+      expect(climateCheckbox).toBeChecked();
     });
   });
 
-  describe('8.4 State Transitions (Test IDs: 8.4.1, 8.4.2, 8.4.3, 8.4.4, 8.4.5)', () => {
+  describe('8.4 State Transitions (Test IDs: 8.4.1, 8.4.2)', () => {
     it('handles transition from unchecked → checked correctly', () => {
       renderComponent();
       openDropdown();
@@ -1413,7 +1201,6 @@ describe('LayerFilter Component', () => {
 
       fireEvent.click(climateCheckbox);
       expect(climateCheckbox).toBeChecked();
-      expect(climateCheckbox.indeterminate).toBe(false);
     });
 
     it('handles transition from checked → unchecked correctly', () => {
@@ -1426,66 +1213,21 @@ describe('LayerFilter Component', () => {
 
       fireEvent.click(climateCheckbox);
       expect(climateCheckbox).not.toBeChecked();
-      expect(climateCheckbox.indeterminate).toBe(false);
     });
 
-    it('handles transition to indeterminate state correctly', () => {
+    it('handles transition to checked state when indicator is selected', () => {
       renderComponent();
       openDropdown();
 
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
-
+      // Expand category (checks it and selects all), then uncheck to deselect all
       const climateCheckbox = getCategoryCheckbox('Climate change');
+      fireEvent.click(climateCheckbox); // Expand and select all
+      fireEvent.click(climateCheckbox); // Uncheck to deselect all (category stays open)
       expect(climateCheckbox).not.toBeChecked();
-      expect(climateCheckbox.indeterminate).toBe(false);
 
+      // Now select an indicator - category should become checked
       fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
       expect(climateCheckbox).toBeChecked();
-      expect(climateCheckbox.indeterminate).toBe(true);
-    });
-
-    it('handles transition from indeterminate → checked correctly', () => {
-      renderComponent();
-      openDropdown();
-
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
-
-      const climateCheckbox = getCategoryCheckbox('Climate change');
-
-      // Create indeterminate state
-      fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
-      expect(climateCheckbox.indeterminate).toBe(true);
-
-      // Select all remaining indicators
-      fireEvent.click(getIndicatorCheckbox('Expected building loss rate'));
-      fireEvent.click(getIndicatorCheckbox('Expected population loss rate'));
-      fireEvent.click(getIndicatorCheckbox('Projected flood risk'));
-      fireEvent.click(getIndicatorCheckbox('Projected wildfire risk'));
-
-      expect(climateCheckbox).toBeChecked();
-      expect(climateCheckbox.indeterminate).toBe(false);
-    });
-
-    it('handles transition from indeterminate → unchecked correctly', () => {
-      renderComponent();
-      openDropdown();
-
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
-
-      const climateCheckbox = getCategoryCheckbox('Climate change');
-
-      // Create indeterminate state
-      fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
-      expect(climateCheckbox.indeterminate).toBe(true);
-
-      // Deselect the indicator
-      fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
-
-      expect(climateCheckbox).not.toBeChecked();
-      expect(climateCheckbox.indeterminate).toBe(false);
     });
   });
 
@@ -1498,8 +1240,12 @@ describe('LayerFilter Component', () => {
       renderComponent();
       openDropdown();
 
-      const climateDetails = getCategoryDetails('Climate change');
-      fireEvent.click(climateDetails?.querySelector('summary')!);
+      // Expand category (checks it and selects all), then uncheck to deselect all
+      const climateCheckbox = getCategoryCheckbox('Climate change');
+      fireEvent.click(climateCheckbox); // Expand and select all
+      fireEvent.click(climateCheckbox); // Uncheck to deselect all (category stays open)
+
+      // Now select individual indicator
       fireEvent.click(getIndicatorCheckbox('Expected agriculture loss rate'));
 
       expect(mockOnFiltersChange).toHaveBeenCalled();
