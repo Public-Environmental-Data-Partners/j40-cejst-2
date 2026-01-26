@@ -3,6 +3,8 @@ import {useIntl} from 'gatsby-plugin-intl';
 import {Button} from '@trussworks/react-uswds';
 import * as styles from './LayerFilter.module.scss';
 import * as LAYER_FILTER_COPY from '../../data/copy/layerFilter';
+import * as EXPLORE_COPY from '../../data/copy/explore';
+import {INDICATOR_REGISTRY, getIndicatorsByCategory, getIndicatorById} from '../../data/indicators/registry';
 
 interface ILayerFilter {
   onFiltersChange: (filters: LayerFilters) => void;
@@ -16,90 +18,64 @@ export interface LayerFilters {
   };
 }
 
+/**
+ * Builds the CATEGORIES array from the indicator registry.
+ * Uses canonical IDs (AreaDetail variable names) as indicator IDs.
+ * Category messages come directly from EXPLORE_COPY to match AreaDetail.
+ * @return {Array} Array of category objects matching the CATEGORIES structure
+ */
+export const buildCategoriesFromRegistry = () => {
+  // Map category IDs (from registry) to their message descriptors (from EXPLORE_COPY)
+  // This ensures LayerFilter uses the same category names as AreaDetail
+  const categoryMessageMap: {[key: string]: any} = {
+    climate: EXPLORE_COPY.SIDE_PANEL_CATEGORY.CLIMATE,
+    energy: EXPLORE_COPY.SIDE_PANEL_CATEGORY.CLEAN_ENERGY,
+    health: EXPLORE_COPY.SIDE_PANEL_CATEGORY.HEALTH_BURDEN,
+    housing: EXPLORE_COPY.SIDE_PANEL_CATEGORY.SUSTAIN_HOUSE,
+    pollution: EXPLORE_COPY.SIDE_PANEL_CATEGORY.LEG_POLLUTE,
+    transportation: EXPLORE_COPY.SIDE_PANEL_CATEGORY.CLEAN_TRANSPORT,
+    water: EXPLORE_COPY.SIDE_PANEL_CATEGORY.CLEAN_WATER,
+    workforce: EXPLORE_COPY.SIDE_PANEL_CATEGORY.WORK_DEV,
+  };
+
+  // Get all indicators from registry, grouped by category
+  const categories: Array<{
+    id: string;
+    nameMessage: any;
+    indicators: Array<{id: string; property: string}>;
+  }> = [];
+
+  // Get unique category IDs (excluding 'shared')
+  const categoryIds = Array.from(
+      new Set(
+          Object.values(INDICATOR_REGISTRY)
+              .map((indicator) => indicator.category)
+              .filter((category) => category !== 'shared'),
+      ),
+  ).sort();
+
+  // Build category structure
+  for (const categoryId of categoryIds) {
+    const indicators = getIndicatorsByCategory(categoryId);
+    const categoryIndicators = indicators.map((indicator) => ({
+      id: indicator.id, // Use canonical ID (AreaDetail variable name)
+      property: indicator.thresholdPropertyName, // Use threshold property name
+    }));
+
+    categories.push({
+      id: categoryId,
+      nameMessage: categoryMessageMap[categoryId],
+      indicators: categoryIndicators,
+    });
+  }
+
+  return categories;
+};
+
 // Category structure with indicators
+// Generated from registry using canonical IDs (AreaDetail variable names)
 // Using message objects for i18n - names and labels will be formatted with intl.formatMessage()
-const CATEGORIES = [
-  {
-    id: 'climate',
-    nameMessage: LAYER_FILTER_COPY.CATEGORIES.CLIMATE,
-    indicators: [
-      {id: 'expAgLoss', property: 'EAL_ET'},
-      {id: 'expBldLoss', property: 'EBL_ET'},
-      {id: 'expPopLoss', property: 'EPL_ET'},
-      {id: 'floodRisk', property: 'FLD_ET'},
-      {id: 'wildfireRisk', property: 'WFR_ET'},
-    ],
-  },
-  {
-    id: 'energy',
-    nameMessage: LAYER_FILTER_COPY.CATEGORIES.ENERGY,
-    indicators: [
-      {id: 'energyBurden', property: 'EB_ET'},
-      {id: 'pm25', property: 'PM25_ET'},
-    ],
-  },
-  {
-    id: 'health',
-    nameMessage: LAYER_FILTER_COPY.CATEGORIES.HEALTH,
-    indicators: [
-      {id: 'asthma', property: 'A_ET'},
-      {id: 'diabetes', property: 'DB_ET'},
-      {id: 'heartDisease', property: 'HD_ET'},
-      {id: 'lifeExpectancy', property: 'LLE_ET'},
-    ],
-  },
-  {
-    id: 'housing',
-    nameMessage: LAYER_FILTER_COPY.CATEGORIES.HOUSING,
-    indicators: [
-      {id: 'housingBurden', property: 'HB_ET'},
-      {id: 'histUnderinvest', property: 'HRS_ET'},
-      {id: 'lackGreenSpace', property: 'IS_ET'},
-      {id: 'kitchenPlumb', property: 'KP_ET'},
-      {id: 'leadPaint', property: 'LPP_ET'},
-      {id: 'medHomeVal', property: 'LPP_ET'},
-    ],
-  },
-  {
-    id: 'pollution',
-    nameMessage: LAYER_FILTER_COPY.CATEGORIES.POLLUTION,
-    indicators: [
-      {id: 'abandonMines', property: 'AML_ET'},
-      {id: 'fuds', property: 'FUDS_ET'},
-      {id: 'hazWaste', property: 'TSDF_ET'},
-      {id: 'rmp', property: 'RMP_ET'},
-      {id: 'superfund', property: 'NPL_ET'},
-    ],
-  },
-  {
-    id: 'transportation',
-    nameMessage: LAYER_FILTER_COPY.CATEGORIES.TRANSPORTATION,
-    indicators: [
-      {id: 'diesel', property: 'DS_ET'},
-      {id: 'traffic', property: 'TP_ET'},
-      {id: 'travelBurden', property: 'TD_ET'},
-    ],
-  },
-  {
-    id: 'water',
-    nameMessage: LAYER_FILTER_COPY.CATEGORIES.WATER,
-    indicators: [
-      {id: 'leakyTanks', property: 'UST_ET'},
-      {id: 'wastewater', property: 'WD_ET'},
-    ],
-  },
-  {
-    id: 'workforce',
-    nameMessage: LAYER_FILTER_COPY.CATEGORIES.WORKFORCE,
-    indicators: [
-      {id: 'unemployment', property: 'UN_ET'},
-      {id: 'poverty', property: 'POV_ET'},
-      {id: 'lowIncome', property: 'LMI_ET'},
-      {id: 'lingIso', property: 'LISO_ET'},
-      {id: 'education', property: 'LHE'},
-    ],
-  },
-];
+export const CATEGORIES = buildCategoriesFromRegistry();
 
 const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
   const intl = useIntl();
@@ -120,9 +96,11 @@ const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
   const categoryRefs = useRef<{[key: string]: HTMLDetailsElement | null}>({});
   const categoryCheckboxRefs = useRef<{[key: string]: HTMLInputElement | null}>({});
 
-  // Helper function to get indicator label message - all use explore.tsx messages
-  const getIndicatorLabelMessage = (indicatorId: string) => {
-    return LAYER_FILTER_COPY.getIndicatorMessage(indicatorId);
+  // Helper function to get indicator label message from registry
+  // Uses registry as single source of truth for i18n keys
+  const getIndicatorLabelMessage = (indicatorId: keyof typeof INDICATOR_REGISTRY) => {
+    const indicator = getIndicatorById(indicatorId);
+    return indicator.i18nKey;
   };
 
   // Helper function to find category by ID
@@ -347,8 +325,8 @@ const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
           <label className={styles.mainCheckboxLabel}>
             <input
               type="checkbox"
-              checked={filters.indicators.lowIncomeFPL || false}
-              onChange={(e) => handleIndicatorChange('lowIncomeFPL', e.target.checked)}
+              checked={filters.indicators.lowInc || false}
+              onChange={(e) => handleIndicatorChange('lowInc', e.target.checked)}
               className={styles.checkbox}
             />
             <span>{intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.LOW_INCOME_CHECKBOX)}</span>
@@ -429,9 +407,7 @@ const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
                 >
                   {category.indicators.map((indicator) => {
                     const labelMessage = getIndicatorLabelMessage(indicator.id);
-                    const indicatorLabel = labelMessage ?
-                      intl.formatMessage(labelMessage) :
-                      indicator.id; // Fallback to ID if message not found
+                    const indicatorLabel = intl.formatMessage(labelMessage);
                     return (
                       <label key={indicator.id} className={styles.checkboxLabel}>
                         <input

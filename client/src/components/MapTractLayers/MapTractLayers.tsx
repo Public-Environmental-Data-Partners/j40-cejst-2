@@ -9,67 +9,34 @@ import * as constants from '../../data/constants';
 import * as COMMON_COPY from '../../data/copy/common';
 // Type definition for indicator selections (used for color-based approach)
 import {LayerFilters} from '../LayerFilter';
+import {INDICATOR_REGISTRY} from '../../data/indicators/registry';
 
 /**
- * Maps indicator IDs from the LayerFilter component to their corresponding
+ * Builds indicator property map from registry using canonical IDs.
+ *
+ * Maps indicator IDs (canonical IDs from LayerFilter) to their corresponding
  * tile property constants used in MapLibre GL expressions.
  * This mapping is used for the color-based approach to determine
  * which tracts to color based on selected indicators.
+ *
+ * Uses registry as single source of truth - map automatically stays in sync.
+ *
+ * @return {Object<string, string>} Map of indicator canonical IDs to threshold property names
  */
-const INDICATOR_PROPERTY_MAP: { [key: string]: string } = {
-  // Climate change
-  expAgLoss: constants.IS_EXCEEDS_THRESH_FOR_EXP_AGR_LOSS,
-  expBldLoss: constants.IS_EXCEEDS_THRESH_FOR_EXP_BLD_LOSS,
-  expPopLoss: constants.IS_EXCEEDS_THRESH_FOR_EXP_POP_LOSS,
-  floodRisk: constants.IS_EXCEEDS_THRESH_FLOODING,
-  wildfireRisk: constants.IS_EXCEEDS_THRESH_WILDFIRE,
+const buildIndicatorPropertyMap = (): {[key: string]: string} => {
+  const map: {[key: string]: string} = {};
 
-  // Energy
-  energyBurden: constants.IS_EXCEEDS_THRESH_FOR_ENERGY_BURDEN,
-  pm25: constants.IS_EXCEEDS_THRESH_FOR_PM25,
-
-  // Health
-  asthma: constants.IS_EXCEEDS_THRESH_FOR_ASTHMA,
-  diabetes: constants.IS_EXCEEDS_THRESH_FOR_DIABETES,
-  heartDisease: constants.IS_EXCEEDS_THRESH_FOR_HEART_DISEASE,
-  lifeExpectancy: constants.IS_EXCEEDS_THRESH_FOR_LOW_LIFE_EXP,
-
-  // Housing
-  housingBurden: constants.IS_EXCEEDS_THRESH_FOR_HOUSE_BURDEN,
-  histUnderinvest: constants.HISTORIC_UNDERINVESTMENT_EXCEED_THRESH,
-  lackGreenSpace: constants.IS_EXCEEDS_THRESH_IMPERVIOUS,
-  kitchenPlumb: constants.IS_EXCEEDS_THRESH_KITCHEN_PLUMB,
-  leadPaint: constants.IS_EXCEEDS_THRESH_FOR_LEAD_PAINT_AND_MEDIAN_HOME_VAL,
-  medHomeVal: constants.IS_EXCEEDS_THRESH_FOR_LEAD_PAINT_AND_MEDIAN_HOME_VAL,
-
-  // Legacy pollution
-  abandonMines: constants.ABANDON_LAND_MINES_EXCEEDS_THRESH,
-  fuds: constants.FORMER_DEF_SITES_EXCEEDS_THRESH,
-  hazWaste: constants.IS_EXCEEDS_THRESH_FOR_HAZARD_WASTE,
-  rmp: constants.IS_EXCEEDS_THRESH_FOR_RMP,
-  superfund: constants.IS_EXCEEDS_THRESH_FOR_SUPERFUND,
-
-  // Transportation
-  diesel: constants.IS_EXCEEDS_THRESH_FOR_DIESEL_PM,
-  traffic: constants.IS_EXCEEDS_THRESH_FOR_TRAFFIC_PROX,
-  travelBurden: constants.IS_EXCEEDS_THRESH_TRAVEL_DISADV,
-
-  // Water and wastewater
-  leakyTanks: constants.IS_EXCEEDS_THRESH_LEAKY_UNDER,
-  wastewater: constants.IS_EXCEEDS_THRESH_FOR_WASTEWATER,
-
-  // Workforce development
-  unemployment: constants.IS_EXCEEDS_THRESH_FOR_UNEMPLOYMENT,
-  poverty: constants.IS_EXCEEDS_THRESH_FOR_BELOW_100_POVERTY,
-  lowIncome: constants.IS_EXCEEDS_THRESH_FOR_LOW_MEDIAN_INCOME,
-  lingIso: constants.IS_EXCEEDS_THRESH_FOR_LINGUISITIC_ISO,
-  education: constants.IS_LOW_HS_EDUCATION_LOW_HIGHER_ED_PRIORITIZED,
-
-  // Low income (FPL200S) - standalone checkbox
-  lowIncomeFPL: constants.IS_FEDERAL_POVERTY_LEVEL_200,
+  // Add all registry indicators using their canonical IDs (what LayerFilter uses)
+  Object.values(INDICATOR_REGISTRY).forEach((indicator) => {
+    map[indicator.id] = indicator.thresholdPropertyName;
+  });
 
   // Note: tribalLands is handled as a separate layer (MapTribalLayer), not as a tract filter
+
+  return map;
 };
+
+const INDICATOR_PROPERTY_MAP = buildIndicatorPropertyMap();
 
 interface IMapTractLayers {
     selectedFeatures: MapGeoJSONFeature[] | undefined,
