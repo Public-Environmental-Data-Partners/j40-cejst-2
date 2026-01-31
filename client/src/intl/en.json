@@ -1523,6 +1523,14 @@
     "defaultMessage": "Reset filters",
     "description": "Button text to reset all filters to default state"
   },
+  "layer.filter.tract.count.aria.label": {
+    "defaultMessage": "Tracts matching current filters: {selectedCount} of {totalCount}",
+    "description": "Accessibility label for the tract count summary"
+  },
+  "layer.filter.tract.count.summary": {
+    "defaultMessage": "{selectedCount} of {totalCount}",
+    "description": "Tract count summary displayed at bottom-right of map: selected tracts of total tracts"
+  },
   "layer.filter.tribal.lands": {
     "defaultMessage": "Lands of federally recognized tribes",
     "description": "Checkbox label for filtering by tribal lands"

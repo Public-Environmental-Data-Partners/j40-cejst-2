@@ -67,5 +67,17 @@ export const LAYER_FILTER = defineMessages({
     defaultMessage: '{categoryName} indicators',
     description: 'Accessibility label for the group of indicators within a category',
   },
+
+  // Tract count summary (X of Y) on the map
+  TRACT_COUNT_SUMMARY: {
+    id: 'layer.filter.tract.count.summary',
+    defaultMessage: '{selectedCount} of {totalCount}',
+    description: 'Tract count summary displayed at bottom-right of map: selected tracts of total tracts',
+  },
+  TRACT_COUNT_ARIA_LABEL: {
+    id: 'layer.filter.tract.count.aria.label',
+    defaultMessage: 'Tracts matching current filters: {selectedCount} of {totalCount}',
+    description: 'Accessibility label for the tract count summary',
+  },
 });
 

@@ -33,6 +33,8 @@ import MapTribalLayer from './MapTribalLayers/MapTribalLayers';
 import TerritoryFocusControl from './territoryFocusControl';
 // Layer filtering component and type definitions for managing map layer visibility
 import LayerFilter, {LayerFilters} from './LayerFilter';
+import TractCountSummary from './TractCountSummary';
+import {getSelectedTractCount, TOTAL_TRACT_COUNT} from '../data/indicators/tractCounts';
 
 // Styles and constants
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -579,6 +581,12 @@ const J40Map = ({location}: IJ40Interface) => {
           pan/zoom to US territories */}
           {windowWidth > constants.USWDS_BREAKPOINTS.MOBILE_LG &&
             <TerritoryFocusControl onClick={onClick} />}
+
+          {/* Tract count summary: X of Y (selected tracts matching filter / total tracts) */}
+          <TractCountSummary
+            selectedCount={getSelectedTractCount(layerFilters)}
+            totalCount={TOTAL_TRACT_COUNT}
+          />
 
           {/* Enable fullscreen pop-up behind a feature flag */}
           {('fs' in flags && detailViewData && !transitionInProgress) && (
