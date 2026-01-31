@@ -380,6 +380,8 @@
   "layer.filter.new.feature.badge": "nueva función",
   "layer.filter.panel.title": "Categorías de carga",
   "layer.filter.reset.filters": "Restablecer filtros",
+  "layer.filter.tract.count.aria.label": "Tractos que coinciden con los filtros actuales: {selectedCount} de {totalCount}",
+  "layer.filter.tract.count.summary": "{selectedCount} de {totalCount}",
   "layer.filter.tribal.lands": "Tierras de tribus reconocidas a nivel federal",
   "map.territoryFocus.focusOn": "Enfoque en {territory}",
   "methodology.page.cat.res.part.BIA": "Oficina de Asuntos Indígenas (BIA )",
