@@ -261,8 +261,8 @@ describe('LayerFilter Component', () => {
       expect(lastCall.indicators.expAgLoss).toBe(true);
       expect(lastCall.indicators.expBldLoss).toBe(true);
       expect(lastCall.indicators.expPopLoss).toBe(true);
-      expect(lastCall.indicators.floodRisk).toBe(true);
-      expect(lastCall.indicators.wildfireRisk).toBe(true);
+      expect(lastCall.indicators.flooding).toBe(true);
+      expect(lastCall.indicators.wildfire).toBe(true);
     });
 
     it('deselects all indicators when category checkbox is unchecked', () => {
@@ -1266,8 +1266,8 @@ describe('LayerFilter Component', () => {
       expect(lastCall.indicators.expAgLoss).toBe(true);
       expect(lastCall.indicators.expBldLoss).toBe(true);
       expect(lastCall.indicators.expPopLoss).toBe(true);
-      expect(lastCall.indicators.floodRisk).toBe(true);
-      expect(lastCall.indicators.wildfireRisk).toBe(true);
+      expect(lastCall.indicators.flooding).toBe(true);
+      expect(lastCall.indicators.wildfire).toBe(true);
     });
 
     it('calls onFiltersChange when "Identified as Disadvantaged" is checked', () => {
