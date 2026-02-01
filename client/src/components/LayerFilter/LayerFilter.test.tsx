@@ -16,10 +16,14 @@ describe('LayerFilter Component', () => {
     jest.clearAllMocks();
   });
 
-  const renderComponent = () => {
+  const renderComponent = (props = {}) => {
     return render(
         <LocalizedComponent>
-          <LayerFilter onFiltersChange={mockOnFiltersChange} />
+          <LayerFilter
+            zoom={5}
+            onFiltersChange={mockOnFiltersChange}
+            {...props}
+          />
         </LocalizedComponent>,
     );
   };
