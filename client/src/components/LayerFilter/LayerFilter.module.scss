@@ -1,3 +1,5 @@
+@use '../../styles/design-system.scss' as *;
+
 .layerFilterContainer {
   position: absolute;
   top: 10px;
@@ -12,14 +14,35 @@
   gap: 4px;
 }
 
-.newFeatureBadge {
-  background-color: #cc4d1f;
+.zoomMessageBanner {
+  background-color: #5c5c5c;
   color: white;
-  font-size: 10px;
-  font-weight: bold;
-  padding: 2px 6px;
+  font-size: 12px;
+  padding: 6px 10px;
   border-radius: 4px;
-  text-transform: uppercase;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.zoomMessageBannerFadeIn {
+  animation: zoomMessageFadeIn 0.4s ease-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes zoomMessageFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.zoomMessageBannerEnabled {
+  background-color: #e46200;
 }
 
 .layersButton {
@@ -36,6 +59,18 @@
 
   &:hover {
     background-color: #f5f5f5;
+  }
+}
+
+.layersButtonDisabled {
+  background-color: #e5e5e5;
+  border-color: #adadad;
+  color: #5c5c5c;
+  cursor: not-allowed;
+  box-shadow: none;
+
+  &:hover {
+    background-color: #e5e5e5;
   }
 }
 

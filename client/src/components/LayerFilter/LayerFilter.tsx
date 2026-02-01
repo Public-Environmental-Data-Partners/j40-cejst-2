@@ -5,8 +5,11 @@ import * as styles from './LayerFilter.module.scss';
 import * as LAYER_FILTER_COPY from '../../data/copy/layerFilter';
 import * as EXPLORE_COPY from '../../data/copy/explore';
 import {INDICATOR_REGISTRY, getIndicatorsByCategory, getIndicatorById} from '../../data/indicators/registry';
+import * as constants from '../../data/constants';
 
 interface ILayerFilter {
+  /** Current map zoom level; used for enable/disable and messaging (zl < 5 = low zoom) */
+  zoom?: number;
   onFiltersChange: (filters: LayerFilters) => void;
   onOverlayStateChange?: (isOpen: boolean) => void;
 }
@@ -77,7 +80,7 @@ export const buildCategoriesFromRegistry = () => {
 // Using message objects for i18n - names and labels will be formatted with intl.formatMessage()
 export const CATEGORIES = buildCategoriesFromRegistry();
 
-const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
+const LayerFilter = ({zoom, onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
   const intl = useIntl();
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState<LayerFilters>({
@@ -95,6 +98,14 @@ const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const categoryRefs = useRef<{[key: string]: HTMLDetailsElement | null}>({});
   const categoryCheckboxRefs = useRef<{[key: string]: HTMLInputElement | null}>({});
+
+  // Zoom-based UI state: zl < 5 = low zoom (disable + messages); zl >= 5 = enabled
+  const zoomLevel = zoom ?? constants.GLOBAL_MIN_ZOOM;
+  const isLowZoom = zoomLevel < constants.GLOBAL_MIN_ZOOM_HIGH;
+  const defaultOnly =
+    filters.identifiedAsDisadvantaged &&
+    !Object.values(filters.indicators).some(Boolean);
+  const zoomUiState = isLowZoom && defaultOnly ? 1 : isLowZoom ? 3 : 2; // 1 | 2 | 3
 
   // Helper function to get indicator label message from registry
   // Uses registry as single source of truth for i18n keys
@@ -264,6 +275,13 @@ const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
     }
   }, [isOpen, onOverlayStateChange]);
 
+  // Close dropdown when zoom drops below high-zoom threshold (zl < 5)
+  useEffect(() => {
+    if (isLowZoom && isOpen) {
+      setIsOpen(false);
+    }
+  }, [isLowZoom, isOpen]);
+
   // Smooth scroll to category when it's auto-expanded
   useEffect(() => {
     if (justExpanded && categoryRefs.current[justExpanded]) {
@@ -283,22 +301,53 @@ const LayerFilter = ({onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
   }, [justExpanded]);
 
 
+  // Message above: State 1 = zoom in to enable, State 2 = select burdens, State 3 = zoom in to view selection
+  const messageAbove =
+    zoomUiState === 1 ?
+      intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.ZOOM_IN_TO_ENABLE) :
+      zoomUiState === 2 ?
+        intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.SELECT_BURDENS) :
+        intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.ZOOM_IN_TO_VIEW_SELECTION);
+
   return (
-    <div className={styles.layerFilterContainer}>
+    <div className={styles.layerFilterContainer} data-zoom-ui-state={zoomUiState}>
       <div className={styles.filterHeader}>
-        <span className={styles.newFeatureBadge}>
-          {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.NEW_FEATURE_BADGE)}
-        </span>
+        <div
+          key={zoomUiState}
+          className={`${styles.zoomMessageBanner} ${styles.zoomMessageBannerFadeIn} ${zoomUiState === 2 ?
+            styles.zoomMessageBannerEnabled : ''}`}
+          id="layer-filter-zoom-message-above"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {messageAbove}
+        </div>
         <button
           type="button"
-          className={styles.layersButton}
-          onClick={() => setIsOpen(!isOpen)}
+          className={`${styles.layersButton} ${isLowZoom ? styles.layersButtonDisabled : ''}`}
+          disabled={isLowZoom}
+          aria-disabled={isLowZoom}
+          aria-describedby={zoomUiState === 3 ?
+            'layer-filter-zoom-message-above layer-filter-zoom-message-below' : 'layer-filter-zoom-message-above'}
+          onClick={() => !isLowZoom && setIsOpen(!isOpen)}
           aria-expanded={isOpen}
           aria-label={intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.LAYERS_BUTTON_ARIA_LABEL)}
         >
           {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.LAYERS_BUTTON)}
           <span className={styles.chevron}>{isOpen ? '▲' : '▼'}</span>
         </button>
+        {zoomUiState === 3 && (
+          <div
+            className={styles.zoomMessageBanner}
+            id="layer-filter-zoom-message-below"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.DISPLAYING_ALL_DISADVANTAGED_TRACT)}
+          </div>
+        )}
       </div>
 
       {isOpen && (
