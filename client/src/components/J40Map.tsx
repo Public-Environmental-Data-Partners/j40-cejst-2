@@ -534,9 +534,9 @@ const J40Map = ({location}: IJ40Interface) => {
             indicatorFilters={layerFilters}
           />
 
-          {/* Layer Filter Dropdown: UI component for users to select indicators
-              Selected indicators will be used for color-based tract visualization */}
+          {/* Layer Filter Dropdown: always visible; zoom controls enable/disable and messaging */}
           <LayerFilter
+            zoom={viewport.zoom ?? constants.GLOBAL_MIN_ZOOM}
             onFiltersChange={(filters) => {
               setLayerFilters(filters);
             }}

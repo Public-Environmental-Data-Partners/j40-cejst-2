@@ -4,11 +4,6 @@ import {defineMessages} from 'react-intl';
 // LayerFilter-specific UI messages
 export const LAYER_FILTER = defineMessages({
   // UI Elements
-  NEW_FEATURE_BADGE: {
-    id: 'layer.filter.new.feature.badge',
-    defaultMessage: 'new feature',
-    description: 'Badge text indicating this is a new feature in the layer filter',
-  },
   LAYERS_BUTTON: {
     id: 'layer.filter.layers.button',
     defaultMessage: 'Layers',
@@ -78,6 +73,28 @@ export const LAYER_FILTER = defineMessages({
     id: 'layer.filter.tract.count.aria.label',
     defaultMessage: 'Tracts matching current filters: {selectedCount} of {totalCount}',
     description: 'Accessibility label for the tract count summary',
+  },
+
+  // Zoom-based messaging (zl < 5 vs zl >= 5)
+  ZOOM_IN_TO_ENABLE: {
+    id: 'layer.filter.zoom.in.to.enable',
+    defaultMessage: 'zoom in to enable',
+    description: 'Message when map zoom is below 5 and only default indicator is selected',
+  },
+  SELECT_BURDENS: {
+    id: 'layer.filter.select.burdens',
+    defaultMessage: 'select burdens',
+    description: 'Message when map zoom is 5 or above; prompt to select burden indicators',
+  },
+  ZOOM_IN_TO_VIEW_SELECTION: {
+    id: 'layer.filter.zoom.in.to.view.selection',
+    defaultMessage: 'Zoom in to view selection.',
+    description: 'Message when map zoom is below 5 and user has other indicators selected',
+  },
+  DISPLAYING_ALL_DISADVANTAGED_TRACT: {
+    id: 'layer.filter.displaying.all.disadvantaged.tracts',
+    defaultMessage: 'Displaying all disadvantaged tracts.',
+    description: 'Status when zoom is below 5 and map shows low-zoom (all disadvantaged) view',
   },
 });
 

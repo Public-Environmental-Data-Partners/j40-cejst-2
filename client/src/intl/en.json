@@ -1491,6 +1491,10 @@
     "defaultMessage": "({selectedCount}/{totalCount})",
     "description": "Count badge showing number of selected indicators in a category"
   },
+  "layer.filter.displaying.all.disadvantaged.tracts": {
+    "defaultMessage": "Displaying all disadvantaged tracts.",
+    "description": "Status when zoom is below 5 and map shows low-zoom (all disadvantaged) view"
+  },
   "layer.filter.identified.as.disadvantaged": {
     "defaultMessage": "Identified as disadvantaged",
     "description": "Checkbox label for filtering by identified as disadvantaged communities"
@@ -1511,10 +1515,6 @@
     "defaultMessage": "Low income",
     "description": "Checkbox label for filtering by low income indicator"
   },
-  "layer.filter.new.feature.badge": {
-    "defaultMessage": "new feature",
-    "description": "Badge text indicating this is a new feature in the layer filter"
-  },
   "layer.filter.panel.title": {
     "defaultMessage": "Categories of burden",
     "description": "Title of the layer filter dropdown panel"
@@ -1522,6 +1522,10 @@
   "layer.filter.reset.filters": {
     "defaultMessage": "Reset filters",
     "description": "Button text to reset all filters to default state"
+  },
+  "layer.filter.select.burdens": {
+    "defaultMessage": "select burdens",
+    "description": "Message when map zoom is 5 or above; prompt to select burden indicators"
   },
   "layer.filter.tract.count.aria.label": {
     "defaultMessage": "Tracts matching current filters: {selectedCount} of {totalCount}",
@@ -1534,6 +1538,14 @@
   "layer.filter.tribal.lands": {
     "defaultMessage": "Lands of federally recognized tribes",
     "description": "Checkbox label for filtering by tribal lands"
+  },
+  "layer.filter.zoom.in.to.enable": {
+    "defaultMessage": "zoom in to enable",
+    "description": "Message when map zoom is below 5 and only default indicator is selected"
+  },
+  "layer.filter.zoom.in.to.view.selection": {
+    "defaultMessage": "Zoom in to view selection.",
+    "description": "Message when map zoom is below 5 and user has other indicators selected"
   },
   "map.territoryFocus.focusOn": {
     "defaultMessage": "Focus on {territory}",

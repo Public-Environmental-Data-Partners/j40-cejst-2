@@ -2,8 +2,11 @@ declare namespace LayerFilterModuleScssNamespace {
   export interface ILayerFilterModuleScss {
     layerFilterContainer: string;
     filterHeader: string;
-    newFeatureBadge: string;
+    zoomMessageBanner: string;
+    zoomMessageBannerFadeIn: string;
+    zoomMessageBannerEnabled: string;
     layersButton: string;
+    layersButtonDisabled: string;
     chevron: string;
     dropdownPanel: string;
     panelTitle: string;
