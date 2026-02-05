@@ -289,6 +289,7 @@
   "explore.map.page.side.panel.send.feedback.alt.img": "Enviar comentarios",
   "explore.map.page.side.panel.send.feedback.email.body": "Aporte comentarios acerca de este distrito censal, incluidos los conjuntos de datos, las categorías de datos proporcionadas para este distrito censal, las comunidades que viven en este distrito censal y toda la información pertinente que el Consejo sobre la Calidad del Medio Ambiente (CEQ, por sus siglas en inglés) debe saber acerca de este distrito censal.",
   "explore.map.page.side.panel.send.feedback.title": "Enviar comentarios",
+  "explore.map.page.side.panel.selected.burdens.summary": "Este distrito censal supera el umbral en {x} de las {yBold} {y, plural, one {carga seleccionada} other {cargas seleccionadas}}.",
   "explore.map.page.side.panel.spacer.and": "Y",
   "explore.map.page.side.panel.tribalInfo.landAreaName": "Nombre del área de la tierra:",
   "explore.map.page.side.panel.version.title": "Versión de la metodología {version}",

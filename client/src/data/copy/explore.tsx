@@ -828,6 +828,19 @@ export const numberOfCategoriesExceeded = (categoryCount:number) => <FormattedMe
   }}
 />;
 
+export const selectedBurdensSummary = (exceedCountX: number, selectedBurdenCountY: number) => (
+  <FormattedMessage
+    id="explore.map.page.side.panel.selected.burdens.summary"
+    defaultMessage="This tract is above the threshold for {x} of the {yBold} selected {y, plural, one {burden} other {burdens}}."
+    description="Side panel when custom indicators are selected; x = count exceeding threshold, y = total selected"
+    values={{
+      x: <strong>{exceedCountX}</strong>,
+      y: selectedBurdenCountY,
+      yBold: <strong>{selectedBurdenCountY}</strong>,
+    }}
+  />
+);
+
 // Temporarily commenting out as it may be needed again:
 // export const numberOfThresholdsExceeded = (thresholds:number) => <FormattedMessage
 //   id={'explore.map.page.side.panel.num.thresholds.exceeded'}

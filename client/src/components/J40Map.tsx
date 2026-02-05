@@ -603,6 +603,7 @@ const J40Map = ({location}: IJ40Interface) => {
               <AreaDetail
                 properties={detailViewData.properties}
                 hash={zoomLatLngHash}
+                layerFilters={layerFilters}
               />
             </Popup>
           )}
@@ -625,6 +626,7 @@ const J40Map = ({location}: IJ40Interface) => {
             className={styles.mapInfoPanel}
             featureProperties={detailViewData?.properties}
             hash={zoomLatLngHash}
+            layerFilters={layerFilters}
           />
         }
       </Grid>

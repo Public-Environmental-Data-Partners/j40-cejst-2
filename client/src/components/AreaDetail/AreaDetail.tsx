@@ -17,7 +17,8 @@ import TractPrioritization from "../TractPrioritization";
 // Styles and constants:
 import * as constants from "../../data/constants";
 import * as EXPLORE_COPY from "../../data/copy/explore";
-import {getIndicatorById} from "../../data/indicators/registry";
+import {getIndicatorById, INDICATOR_REGISTRY} from "../../data/indicators/registry";
+import type {LayerFilters} from "../LayerFilter";
 import * as styles from "./areaDetail.module.scss";
 
 // @ts-ignore
@@ -26,6 +27,8 @@ import IslandCopy from "../IslandCopy/IslandCopy";
 interface IAreaDetailProps {
   properties: constants.J40Properties;
   hash: string[];
+  /** LayerFilter state; when provided, used to filter content and show selected-burdens summary. */
+  layerFilters?: LayerFilters;
 }
 
 /**
@@ -122,14 +125,63 @@ export const getTribalPercentValue = (tribalPercentRaw: number) => {
 };
 
 /**
+ * Map AreaDetail category IDs to registry/LayerFilter category IDs (for filtering by LayerFilter selection).
+ */
+const AREA_DETAIL_TO_REGISTRY_CATEGORY: {[key: string]: string} = {
+  "climate-change": "climate",
+  "clean-energy": "energy",
+  "health-burdens": "health",
+  "sustain-house": "housing",
+  "leg-pollute": "pollution",
+  "clean-transport": "transportation",
+  "clean-water": "water",
+  "work-dev": "workforce",
+};
+
+/**
  * This is the main component. It will render the entire side panel and show the details
  * of the area/feature that is selected.
  *
  * @param {IAreaDetailProps} {}
  * @return {void}
  */
-const AreaDetail = ({properties}: IAreaDetailProps) => {
+const AreaDetail = ({properties, layerFilters}: IAreaDetailProps) => {
   const intl = useIntl();
+
+  /**
+   * "ID as disadv only" = show full panel (current behavior).
+   * "Custom selection" = show only selected indicators and X-of-Y summary.
+   */
+  const useCustomIndicatorView = Boolean(
+      layerFilters &&
+    !(
+      layerFilters.identifiedAsDisadvantaged &&
+      Object.keys(layerFilters.indicators).length === 0
+    ),
+  );
+
+  /**
+   * Selected burden IDs (registry only; excludes e.g. tribalLands).
+   */
+  const selectedBurdenIds =
+    useCustomIndicatorView && layerFilters ?
+      Object.keys(layerFilters.indicators).filter((id) =>
+        Object.prototype.hasOwnProperty.call(INDICATOR_REGISTRY, id),
+      ) :
+      [];
+
+  const selectedBurdenCountY = selectedBurdenIds.length;
+
+  /**
+   * Count of selected burdens for which this tract exceeds the threshold (*_ET). Used for X-of-Y summary.
+   */
+  const exceedCountX =
+    useCustomIndicatorView && properties ?
+      selectedBurdenIds.filter((id) => {
+        const def = INDICATOR_REGISTRY[id];
+        return def && Boolean(properties[def.thresholdPropertyName]);
+      }).length :
+      0;
 
   /**
    * Set the indicators for a given category.
@@ -1079,6 +1131,40 @@ const AreaDetail = ({properties}: IAreaDetailProps) => {
     categories[0].indicators = [lowMedInc, unemploy, poverty];
   }
 
+  // Custom view: show only selected categories/indicators; if none selected, show none.
+  if (useCustomIndicatorView) {
+    // Registry category ids that have at least one selected indicator (e.g. climate, health).
+    const selectedRegistryCategoryIds = new Set(
+        selectedBurdenIds
+            .map((id) => INDICATOR_REGISTRY[id]?.category)
+            .filter(Boolean),
+    );
+    categories = categories
+        // Keep only AreaDetail categories whose registry category is in the selected set.
+        .filter((cat) =>
+          selectedRegistryCategoryIds.has(
+              AREA_DETAIL_TO_REGISTRY_CATEGORY[cat.id],
+          ),
+        )
+        // Within each category, keep only indicators that are in the selected burden set.
+        .map((cat) => ({
+          ...cat,
+          indicators: cat.indicators.filter(
+              (ind): ind is indicatorInfo =>
+                Boolean(ind.id && selectedBurdenIds.includes(ind.id)),
+          ),
+          socioEcIndicators: cat.socioEcIndicators.filter(
+              (ind): ind is indicatorInfo =>
+                Boolean(ind.id && selectedBurdenIds.includes(ind.id)),
+          ),
+        }))
+        // Drop categories that end up with no indicators to show.
+        .filter(
+            (cat) =>
+              cat.indicators.length > 0 || cat.socioEcIndicators.length > 0,
+        );
+  }
+
   const isTerritory = constants.TILES_ISLAND_AREA_FIPS_CODES.some((code) => {
     return properties[constants.GEOID_PROPERTY].startsWith(code);
   });
@@ -1130,10 +1216,12 @@ const AreaDetail = ({properties}: IAreaDetailProps) => {
           return <Indicator key={`ind${index}`} indicator={indicator} />;
         })}
 
-        {/* AND */}
-        <div className={styles.categorySpacer}>
-          {EXPLORE_COPY.SIDE_PANEL_SPACERS.AND}
-        </div>
+        {/* AND - only when both indicator lists have items */}
+        {category.indicators.length > 0 && category.socioEcIndicators.length > 0 && (
+          <div className={styles.categorySpacer}>
+            {EXPLORE_COPY.SIDE_PANEL_SPACERS.AND}
+          </div>
+        )}
 
         {/* socioeconomic indicators */}
         {category.socioEcIndicators.map((indicator: any, index: number) => {
@@ -1150,7 +1238,7 @@ const AreaDetail = ({properties}: IAreaDetailProps) => {
         })}
       </>
     ),
-    expanded: false,
+    expanded: useCustomIndicatorView,
   }));
 
   return (
@@ -1167,91 +1255,98 @@ const AreaDetail = ({properties}: IAreaDetailProps) => {
       {/* Demographics */}
       <TractDemographics properties={properties} />
 
-      {/* Disadvantaged? */}
+      {/* Disadvantaged? or X-of-Y selected burdens summary (custom view) */}
       <div className={styles.categorization}>
-        {/* Questions asking if disadvantaged? */}
-        <div className={styles.isInFocus}>
-          {EXPLORE_COPY.COMMUNITY.IS_FOCUS}
-        </div>
+        {useCustomIndicatorView ? (
+          <p className="selectedBurdensSummary">
+            {EXPLORE_COPY.selectedBurdensSummary(exceedCountX, selectedBurdenCountY)}
+          </p>
+        ) : (
+          <>
+            {/* Questions asking if disadvantaged? */}
+            <div className={styles.isInFocus}>
+              {EXPLORE_COPY.COMMUNITY.IS_FOCUS}
+            </div>
 
-        {/* YES, NO or PARTIALLY disadvantaged  */}
-        <div className={styles.communityOfFocus}>
-          <TractPrioritization
-            scoreNCommunities={
-              properties[constants.SCORE_N_COMMUNITIES] === true ?
-                properties[constants.SCORE_N_COMMUNITIES] :
-                false
-            }
-            tribalCountAK={
-              properties[constants.TRIBAL_AREAS_COUNT_AK] >= 1 ?
-                properties[constants.TRIBAL_AREAS_COUNT_AK] :
-                null
-            }
-            tribalCountUS={
-              properties[constants.TRIBAL_AREAS_COUNT_CONUS] >= 1 ?
-                properties[constants.TRIBAL_AREAS_COUNT_CONUS] :
-                null
-            }
-            percentTractTribal={percentTractTribal}
-          />
-        </div>
-
-        <div className={styles.prioCopy}>
-          <PrioritizationCopy
-            totalCategoriesPrioritized={
-              properties[constants.COUNT_OF_CATEGORIES_DISADV]
-            }
-            totalBurdensPrioritized={
-              properties[constants.TOTAL_NUMBER_OF_DISADVANTAGE_INDICATORS]
-            }
-            isAdjacencyThreshMet={
-              properties[constants.ADJACENCY_EXCEEDS_THRESH]
-            }
-            isAdjacencyLowIncome={
-              properties[constants.ADJACENCY_LOW_INCOME_EXCEEDS_THRESH]
-            }
-            isIslandLowIncome={
-              properties[constants.IS_FEDERAL_POVERTY_LEVEL_200] &&
-              constants.TILES_ISLAND_AREA_FIPS_CODES.some((code) => {
-                return properties[constants.GEOID_PROPERTY].startsWith(code);
-              })
-            }
-            tribalCountAK={
-              properties[constants.TRIBAL_AREAS_COUNT_AK] >= 1 ?
-                properties[constants.TRIBAL_AREAS_COUNT_AK] :
-                null
-            }
-            tribalCountUS={
-              properties[constants.TRIBAL_AREAS_COUNT_CONUS] >= 1 ?
-                properties[constants.TRIBAL_AREAS_COUNT_CONUS] :
-                null
-            }
-            percentTractTribal={percentTractTribal}
-            isGrandfathered={properties[constants.IS_GRANDFATHERED]}
-          />
-          <PrioritizationCopy2
-            totalCategoriesPrioritized={
-              properties[constants.COUNT_OF_CATEGORIES_DISADV]
-            }
-            isAdjacencyThreshMet={
-              properties[constants.ADJACENCY_EXCEEDS_THRESH]
-            }
-            isAdjacencyLowIncome={
-              properties[constants.ADJACENCY_LOW_INCOME_EXCEEDS_THRESH]
-            }
-            tribalCountAK={
-              properties[constants.TRIBAL_AREAS_COUNT_AK] >= 1 ?
-                properties[constants.TRIBAL_AREAS_COUNT_AK] :
-                null
-            }
-            tribalCountUS={
-              properties[constants.TRIBAL_AREAS_COUNT_CONUS] >= 1 ?
-                properties[constants.TRIBAL_AREAS_COUNT_CONUS] :
-                null
-            }
-            percentTractTribal={percentTractTribal}
-          />
-        </div>
+            {/* YES, NO or PARTIALLY disadvantaged  */}
+            <div className={styles.communityOfFocus}>
+              <TractPrioritization
+                scoreNCommunities={
+                  properties[constants.SCORE_N_COMMUNITIES] === true ?
+                    properties[constants.SCORE_N_COMMUNITIES] :
+                    false
+                }
+                tribalCountAK={
+                  properties[constants.TRIBAL_AREAS_COUNT_AK] >= 1 ?
+                    properties[constants.TRIBAL_AREAS_COUNT_AK] :
+                    null
+                }
+                tribalCountUS={
+                  properties[constants.TRIBAL_AREAS_COUNT_CONUS] >= 1 ?
+                    properties[constants.TRIBAL_AREAS_COUNT_CONUS] :
+                    null
+                }
+                percentTractTribal={percentTractTribal}
+              />
+            </div>
+            <div className={styles.prioCopy}>
+              <PrioritizationCopy
+                totalCategoriesPrioritized={
+                  properties[constants.COUNT_OF_CATEGORIES_DISADV]
+                }
+                totalBurdensPrioritized={
+                  properties[constants.TOTAL_NUMBER_OF_DISADVANTAGE_INDICATORS]
+                }
+                isAdjacencyThreshMet={
+                  properties[constants.ADJACENCY_EXCEEDS_THRESH]
+                }
+                isAdjacencyLowIncome={
+                  properties[constants.ADJACENCY_LOW_INCOME_EXCEEDS_THRESH]
+                }
+                isIslandLowIncome={
+                  properties[constants.IS_FEDERAL_POVERTY_LEVEL_200] &&
+                  constants.TILES_ISLAND_AREA_FIPS_CODES.some((code) => {
+                    return properties[constants.GEOID_PROPERTY].startsWith(code);
+                  })
+                }
+                tribalCountAK={
+                  properties[constants.TRIBAL_AREAS_COUNT_AK] >= 1 ?
+                    properties[constants.TRIBAL_AREAS_COUNT_AK] :
+                    null
+                }
+                tribalCountUS={
+                  properties[constants.TRIBAL_AREAS_COUNT_CONUS] >= 1 ?
+                    properties[constants.TRIBAL_AREAS_COUNT_CONUS] :
+                    null
+                }
+                percentTractTribal={percentTractTribal}
+                isGrandfathered={properties[constants.IS_GRANDFATHERED]}
+              />
+              <PrioritizationCopy2
+                totalCategoriesPrioritized={
+                  properties[constants.COUNT_OF_CATEGORIES_DISADV]
+                }
+                isAdjacencyThreshMet={
+                  properties[constants.ADJACENCY_EXCEEDS_THRESH]
+                }
+                isAdjacencyLowIncome={
+                  properties[constants.ADJACENCY_LOW_INCOME_EXCEEDS_THRESH]
+                }
+                tribalCountAK={
+                  properties[constants.TRIBAL_AREAS_COUNT_AK] >= 1 ?
+                    properties[constants.TRIBAL_AREAS_COUNT_AK] :
+                    null
+                }
+                tribalCountUS={
+                  properties[constants.TRIBAL_AREAS_COUNT_CONUS] >= 1 ?
+                    properties[constants.TRIBAL_AREAS_COUNT_CONUS] :
+                    null
+                }
+                percentTractTribal={percentTractTribal}
+              />
+            </div>
+          </>
+        )}
       </div>
 
       {showIslandCopy && <IslandCopy povertyPercentile={poveryPercentile} />}
@@ -1288,9 +1383,10 @@ const AreaDetail = ({properties}: IAreaDetailProps) => {
         </Button>
       </a> */}
 
-      {/* All category accordions in this component */}
+      {/* Key remounts accordion when switching to custom view so categories open. */}
       {
         <Accordion
+          key={useCustomIndicatorView ? "custom-indicators" : "all-indicators"}
           multiselectable={true}
           items={categoryItems}
           className="-AreaDetail"

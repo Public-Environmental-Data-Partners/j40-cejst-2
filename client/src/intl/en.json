@@ -1147,6 +1147,10 @@
     "defaultMessage": "The lands of Federally Recognized Tribes that cover {amount} of this tract and the {numPoints} tribes that are Federally Recognized are also considered disadvantaged.",
     "description": "Navigate to the explore the map page. Click on tract, The Federally Recognized Tribal lands that cover {amount} of this tract and the {numPoints} tribes that are Federally Recognized are also considered disadvantaged."
   },
+  "explore.map.page.side.panel.selected.burdens.summary": {
+    "defaultMessage": "This tract is above the threshold for {x} of the {yBold} selected {y, plural, one {burden} other {burdens}}.",
+    "description": "Side panel when custom indicators are selected; x = count exceeding threshold, y = total selected"
+  },
   "explore.map.page.side.panel.send.feedback.alt.img": {
     "defaultMessage": "Send feedback",
     "description": "Navigate to the explore the map page. When the map is in view, click on the map. The side panel will show a send feedback icon, this is the images alt tag"
