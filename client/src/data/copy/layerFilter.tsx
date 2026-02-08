@@ -96,5 +96,10 @@ export const LAYER_FILTER = defineMessages({
     defaultMessage: 'Displaying all disadvantaged tracts.',
     description: 'Status when zoom is below 5 and map shows low-zoom (all disadvantaged) view',
   },
+  SHOWING_TRACT_MEET_ALL_BURDENS: {
+    id: 'layer.filter.showing.tract.meet.all.burdens',
+    defaultMessage: 'Showing tracts that meet all selected burdens',
+    description: 'Status when multiple burden indicators are selected; map uses AND logic',
+  },
 });
 

@@ -5,6 +5,7 @@ declare namespace LayerFilterModuleScssNamespace {
     zoomMessageBanner: string;
     zoomMessageBannerFadeIn: string;
     zoomMessageBannerEnabled: string;
+    zoomMessageBannerReserveSpace: string;
     layersButton: string;
     layersButtonDisabled: string;
     chevron: string;

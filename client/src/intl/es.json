@@ -387,6 +387,7 @@
   "layer.filter.select.burdens": "seleccione cargas",
   "layer.filter.zoom.in.to.view.selection": "Acerca para ver la selección.",
   "layer.filter.displaying.all.disadvantaged.tracts": "Mostrando todos los tractos desfavorecidos.",
+  "layer.filter.showing.tract.meet.all.burdens": "Mostrando tractos que cumplen con todas las cargas seleccionadas.",
   "map.territoryFocus.focusOn": "Enfoque en {territory}",
   "methodology.page.cat.res.part.BIA": "Oficina de Asuntos Indígenas (BIA )",
   "methodology.page.cat.res.part.CDC": "Centros para el Control y la Prevención de Enfermedades (CDC)",

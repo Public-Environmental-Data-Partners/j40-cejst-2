@@ -1531,6 +1531,10 @@
     "defaultMessage": "select burdens",
     "description": "Message when map zoom is 5 or above; prompt to select burden indicators"
   },
+  "layer.filter.showing.tract.meet.all.burdens": {
+    "defaultMessage": "Showing tracts that meet all selected burdens",
+    "description": "Status when multiple burden indicators are selected; map uses AND logic"
+  },
   "layer.filter.tract.count.aria.label": {
     "defaultMessage": "Tracts matching current filters: {selectedCount} of {totalCount}",
     "description": "Accessibility label for the tract count summary"

@@ -301,6 +301,11 @@ const LayerFilter = ({zoom, onFiltersChange, onOverlayStateChange}: ILayerFilter
   }, [justExpanded]);
 
 
+  // Selected indicator count (for AND-message when 2+ selected)
+  const selectedIndicatorCount = Object.keys(filters.indicators).filter(
+      (id) => filters.indicators[id],
+  ).length;
+
   // Message above: State 1 = zoom in to enable, State 2 = select burdens, State 3 = zoom in to view selection
   const messageAbove =
     zoomUiState === 1 ?
@@ -328,7 +333,7 @@ const LayerFilter = ({zoom, onFiltersChange, onOverlayStateChange}: ILayerFilter
           className={`${styles.layersButton} ${isLowZoom ? styles.layersButtonDisabled : ''}`}
           disabled={isLowZoom}
           aria-disabled={isLowZoom}
-          aria-describedby={zoomUiState === 3 ?
+          aria-describedby={zoomUiState === 3 || (zoomUiState === 2 && selectedIndicatorCount >= 2) ?
             'layer-filter-zoom-message-above layer-filter-zoom-message-below' : 'layer-filter-zoom-message-above'}
           onClick={() => !isLowZoom && setIsOpen(!isOpen)}
           aria-expanded={isOpen}
@@ -346,6 +351,19 @@ const LayerFilter = ({zoom, onFiltersChange, onOverlayStateChange}: ILayerFilter
             aria-atomic="true"
           >
             {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.DISPLAYING_ALL_DISADVANTAGED_TRACT)}
+          </div>
+        )}
+        {zoomUiState === 2 && (
+          <div
+            className={`${styles.zoomMessageBanner} 
+              ${selectedIndicatorCount < 2 ? styles.zoomMessageBannerReserveSpace : ''}`}
+            id="layer-filter-zoom-message-below"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            aria-hidden={selectedIndicatorCount < 2}
+          >
+            {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.SHOWING_TRACT_MEET_ALL_BURDENS)}
           </div>
         )}
       </div>

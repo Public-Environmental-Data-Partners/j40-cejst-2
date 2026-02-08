@@ -45,6 +45,11 @@
   background-color: #e46200;
 }
 
+// Reserves space for the "all burdens" message to prevent layout shift when it appears
+.zoomMessageBannerReserveSpace {
+  visibility: hidden;
+}
+
 .layersButton {
   background-color: white;
   border: 1px solid #757575;
