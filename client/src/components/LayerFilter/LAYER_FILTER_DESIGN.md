@@ -94,6 +94,20 @@ In custom view, all shown category accordions should start **open**. The trusswo
 
 ---
 
+## 5. Mobile overlay
+
+On viewports ≤ 480px (`USWDS_BREAKPOINTS.MOBILE_LG`), J40Map passes `isMobile={true}` and wraps the map header row and LayerFilter in a single strip so the Layers control sits **below** the search bar and location icon. On mobile, the Layers button has no chevron; when opened, a **full-screen overlay** is shown (opaque, full viewport) with a header row (tract count left, close X right) and the same filter content below. Desktop keeps the dropdown panel below the button.
+
+### 5.1 Portal
+
+The mobile overlay is rendered with **`ReactDOM.createPortal(overlayElement, document.body)`** so it mounts as a direct child of `document.body`, not inside the map DOM. That way the overlay is not clipped by the map container’s overflow or stacking context and can truly cover the entire viewport (including any page chrome above the map). Without the portal, the overlay would stay inside the map subtree and could sit under other UI or be cut off.
+
+### 5.2 `typeof document !== 'undefined'`
+
+The overlay is only rendered when `isOpen && isMobile && typeof document !== 'undefined'`. Gatsby (and similar setups) run React on the **server** during build or SSR, where there is no `document`. Calling `createPortal(..., document.body)` there would throw. The guard ensures we only use the portal in a browser. Using `typeof document` (instead of e.g. `if (document)`) avoids a ReferenceError when `document` is not defined at all.
+
+---
+
 ## Related docs
 
 - **Indicator registry:** `client/src/data/indicators/REGISTRY_DOCUMENTATION.md`

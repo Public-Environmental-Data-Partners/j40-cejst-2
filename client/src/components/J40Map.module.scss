@@ -8,6 +8,40 @@
     height: 55vh;
   }
 
+  // Single overlay strip: search + geolocate, then LayerFilter. Desktop: row (left/right). Mobile: column so LayerFilter is below.
+  .mapOverlayStrip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    @include at-media-max("mobile-lg") {
+      flex-direction: column;
+      align-items: stretch; // Full width for header row
+      gap: 32px; // Clear space so "select burdens" and LayerFilter sit fully below location icon
+    }
+  }
+
+  // On mobile, wrapper is in-flow so LayerFilter sits below the header row; right-justify the block.
+  .layerFilterWrapper {
+    @include at-media-max("mobile-lg") {
+      position: relative;
+      min-height: 0;
+      align-self: flex-end; // Right-justify the LayerFilter block
+      margin-top: 4px; // Extra clearance so "select burdens" does not overlay the location icon
+    }
+    // Very narrow widths: more clearance below location icon
+    @media (max-width: 340px) {
+      margin-top: 12px;
+    }
+  }
+
   .mapHeaderRow{
     @include u-display("flex");
     @include u-padding-left(1.5);

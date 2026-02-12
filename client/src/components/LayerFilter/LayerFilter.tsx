@@ -1,4 +1,5 @@
 import React, {useState, useRef, useEffect, useMemo} from 'react';
+import ReactDOM from 'react-dom';
 import {useIntl} from 'gatsby-plugin-intl';
 import {Button} from '@trussworks/react-uswds';
 import * as styles from './LayerFilter.module.scss';
@@ -12,6 +13,12 @@ interface ILayerFilter {
   zoom?: number;
   onFiltersChange: (filters: LayerFilters) => void;
   onOverlayStateChange?: (isOpen: boolean) => void;
+  /** When true, use mobile layout (full-screen overlay); layout is handled by parent. */
+  isMobile?: boolean;
+  /** Selected tract count (for mobile overlay header); from getSelectedTractCount(layerFilters). */
+  selectedCount?: number;
+  /** Total tract count (for mobile overlay header). */
+  totalCount?: number;
 }
 
 export interface LayerFilters {
@@ -80,7 +87,14 @@ export const buildCategoriesFromRegistry = () => {
 // Using message objects for i18n - names and labels will be formatted with intl.formatMessage()
 export const CATEGORIES = buildCategoriesFromRegistry();
 
-const LayerFilter = ({zoom, onFiltersChange, onOverlayStateChange}: ILayerFilter) => {
+const LayerFilter = ({
+  zoom,
+  onFiltersChange,
+  onOverlayStateChange,
+  isMobile,
+  selectedCount = 0,
+  totalCount = 0,
+}: ILayerFilter) => {
   const intl = useIntl();
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState<LayerFilters>({
@@ -319,8 +333,149 @@ const LayerFilter = ({zoom, onFiltersChange, onOverlayStateChange}: ILayerFilter
           intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.SELECT_BURDENS)) :
         intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.ZOOM_IN_TO_VIEW_SELECTION);
 
+  /**
+   * Shared panel body for both mobile overlay and desktop dropdown.
+   * @return {JSX.Element} Panel content (title, checkboxes, categories, actions).
+   */
+  const renderPanelContent = () => (
+    <>
+      <div className={styles.panelTitle}>
+        {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.PANEL_TITLE)}
+      </div>
+
+      <label className={styles.mainCheckboxLabel}>
+        <input
+          type="checkbox"
+          checked={filters.identifiedAsDisadvantaged}
+          onChange={(e) => handleIdentifiedAsDisadvantagedChange(e.target.checked)}
+          className={styles.checkbox}
+        />
+        <span>{intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.IDENTIFIED_AS_DISADVANTAGED)}</span>
+      </label>
+
+      <label className={styles.mainCheckboxLabel}>
+        <input
+          type="checkbox"
+          checked={filters.indicators.lowInc || false}
+          onChange={(e) => handleIndicatorChange('lowInc', e.target.checked)}
+          className={styles.checkbox}
+        />
+        <span>{intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.LOW_INCOME_CHECKBOX)}</span>
+      </label>
+
+      <div className={styles.categoriesContainer}>
+        {CATEGORIES.map((category) => (
+          <details
+            key={category.id}
+            ref={(el) => {
+              categoryRefs.current[category.id] = el;
+            }}
+            className={styles.categoryDetails}
+            open={expandedCategories.has(category.id)}
+            onToggle={(e) => e.preventDefault()}
+          >
+            <summary className={styles.categorySummary} tabIndex={-1} onClick={(e) => e.preventDefault()}>
+              <input
+                ref={(el) => {
+                  categoryCheckboxRefs.current[category.id] = el;
+                }}
+                type="checkbox"
+                checked={categoryStates[category.id] || false}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  handleCategoryChange(category.id, e.target.checked);
+                }}
+                className={styles.categoryCheckbox}
+                onClick={(e) => e.stopPropagation()}
+                aria-label={intl.formatMessage(
+                    LAYER_FILTER_COPY.LAYER_FILTER.CATEGORY_ARIA_LABEL,
+                    {
+                      categoryName: intl.formatMessage(category.nameMessage),
+                      selectedCount: getCategorySelectedCount(category.id),
+                      totalCount: category.indicators.length,
+                    },
+                )}
+                aria-describedby={`category-${category.id}-count`}
+              />
+              <span className={styles.categoryName}>
+                {intl.formatMessage(category.nameMessage)}
+              </span>
+              <span
+                id={`category-${category.id}-count`}
+                className={styles.countBadge}
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {intl.formatMessage(
+                    LAYER_FILTER_COPY.LAYER_FILTER.CATEGORY_COUNT_BADGE,
+                    {
+                      selectedCount: getCategorySelectedCount(category.id),
+                      totalCount: category.indicators.length,
+                    },
+                )}
+              </span>
+            </summary>
+            <div
+              className={styles.indicatorsList}
+              role="group"
+              aria-label={intl.formatMessage(
+                  LAYER_FILTER_COPY.LAYER_FILTER.INDICATORS_GROUP_LABEL,
+                  {categoryName: intl.formatMessage(category.nameMessage)},
+              )}
+            >
+              {category.indicators.map((indicator) => {
+                const labelMessage = getIndicatorLabelMessage(indicator.id);
+                const indicatorLabel = intl.formatMessage(labelMessage);
+                return (
+                  <label key={indicator.id} className={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      checked={filters.indicators[indicator.id] || false}
+                      onChange={(e) => handleIndicatorChange(indicator.id, e.target.checked)}
+                      className={styles.checkbox}
+                      aria-label={indicatorLabel}
+                    />
+                    <span>{indicatorLabel}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </details>
+        ))}
+      </div>
+
+      <label className={styles.mainCheckboxLabel}>
+        <input
+          type="checkbox"
+          checked={filters.indicators.tribalLands || false}
+          onChange={(e) => handleIndicatorChange('tribalLands', e.target.checked)}
+          className={styles.checkbox}
+        />
+        <span>{intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.TRIBAL_LANDS)}</span>
+      </label>
+
+      <div className={styles.actionButtons}>
+        <Button
+          type="button"
+          outline
+          onClick={handleResetFilters}
+          className={styles.resetButton}
+        >
+          {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.RESET_FILTERS)}
+        </Button>
+        <Button
+          type="button"
+          onClick={handleApply}
+          className={styles.applyButton}
+        >
+          {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.APPLY)}
+        </Button>
+      </div>
+    </>
+  );
+
   return (
-    <div className={styles.layerFilterContainer} data-zoom-ui-state={zoomUiState}>
+    <div className={styles.layerFilterContainer} data-zoom-ui-state={zoomUiState} data-mobile={isMobile}>
       <div className={styles.filterHeader}>
         <div
           key={zoomUiState}
@@ -345,7 +500,7 @@ const LayerFilter = ({zoom, onFiltersChange, onOverlayStateChange}: ILayerFilter
           aria-label={intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.LAYERS_BUTTON_ARIA_LABEL)}
         >
           {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.LAYERS_BUTTON)}
-          <span className={styles.chevron}>{isOpen ? '▲' : '▼'}</span>
+          {!isMobile && <span className={styles.chevron}>{isOpen ? '▲' : '▼'}</span>}
         </button>
         {(zoomUiState === 2 || zoomUiState === 3) && (
           <div
@@ -361,160 +516,48 @@ const LayerFilter = ({zoom, onFiltersChange, onOverlayStateChange}: ILayerFilter
         )}
       </div>
 
-      {isOpen && (
+      {isOpen && isMobile && typeof document !== 'undefined' && ReactDOM.createPortal(
+          <div
+            ref={dropdownRef}
+            className={styles.fullScreenOverlay}
+            role="dialog"
+            aria-modal="true"
+            aria-label={intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.PANEL_TITLE)}
+          >
+            <div className={styles.fullScreenHeader}>
+              <span className={styles.fullScreenTractCount}>
+                {intl.formatMessage(
+                    LAYER_FILTER_COPY.LAYER_FILTER.TRACT_COUNT_SUMMARY,
+                    {
+                      selectedCount: selectedCount.toLocaleString(),
+                      totalCount: totalCount.toLocaleString(),
+                    },
+                )}
+                {' '}
+                {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.TRACT_COUNT_SUMMARY_SUFFIX)}
+              </span>
+              <button
+                type="button"
+                className={styles.fullScreenClose}
+                onClick={() => setIsOpen(false)}
+                aria-label={intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.CLOSE_LAYERS)}
+              >
+              ×
+              </button>
+            </div>
+            <div className={styles.fullScreenPanel}>
+              {renderPanelContent()}
+            </div>
+          </div>,
+          document.body,
+      )}
+
+      {isOpen && !isMobile && (
         <div
           ref={dropdownRef}
           className={styles.dropdownPanel}
         >
-          <div className={styles.panelTitle}>
-            {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.PANEL_TITLE)}
-          </div>
-
-          {/* Identified as disadvantaged checkbox */}
-          <label className={styles.mainCheckboxLabel}>
-            <input
-              type="checkbox"
-              checked={filters.identifiedAsDisadvantaged}
-              onChange={(e) => handleIdentifiedAsDisadvantagedChange(e.target.checked)}
-              className={styles.checkbox}
-            />
-            <span>{intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.IDENTIFIED_AS_DISADVANTAGED)}</span>
-          </label>
-
-          {/* Low income checkbox */}
-          <label className={styles.mainCheckboxLabel}>
-            <input
-              type="checkbox"
-              checked={filters.indicators.lowInc || false}
-              onChange={(e) => handleIndicatorChange('lowInc', e.target.checked)}
-              className={styles.checkbox}
-            />
-            <span>{intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.LOW_INCOME_CHECKBOX)}</span>
-          </label>
-
-          {/* Category details/summary */}
-          <div className={styles.categoriesContainer}>
-            {CATEGORIES.map((category) => (
-              <details
-                key={category.id}
-                ref={(el) => {
-                  categoryRefs.current[category.id] = el;
-                }}
-                className={styles.categoryDetails}
-                open={expandedCategories.has(category.id)}
-                onToggle={(e) => {
-                  // Prevent default toggle behavior - categories can only be opened via checkbox
-                  e.preventDefault();
-                }}
-              >
-                <summary
-                  className={styles.categorySummary}
-                  tabIndex={-1}
-                  onClick={(e) => {
-                    // Prevent summary click from toggling details
-                    e.preventDefault();
-                  }}
-                >
-                  <input
-                    ref={(el) => {
-                      categoryCheckboxRefs.current[category.id] = el;
-                    }}
-                    type="checkbox"
-                    checked={categoryStates[category.id] || false}
-                    onChange={(e) => {
-                      e.stopPropagation(); // Prevent details toggle when clicking checkbox
-                      handleCategoryChange(category.id, e.target.checked);
-                    }}
-                    className={styles.categoryCheckbox}
-                    onClick={(e) => e.stopPropagation()} // Also stop on click
-                    aria-label={intl.formatMessage(
-                        LAYER_FILTER_COPY.LAYER_FILTER.CATEGORY_ARIA_LABEL,
-                        {
-                          categoryName: intl.formatMessage(category.nameMessage),
-                          selectedCount: getCategorySelectedCount(category.id),
-                          totalCount: category.indicators.length,
-                        },
-                    )}
-                    aria-describedby={`category-${category.id}-count`}
-                  />
-                  <span className={styles.categoryName}>
-                    {intl.formatMessage(category.nameMessage)}
-                  </span>
-                  <span
-                    id={`category-${category.id}-count`}
-                    className={styles.countBadge}
-                    aria-live="polite"
-                    aria-atomic="true"
-                  >
-                    {intl.formatMessage(
-                        LAYER_FILTER_COPY.LAYER_FILTER.CATEGORY_COUNT_BADGE,
-                        {
-                          selectedCount: getCategorySelectedCount(category.id),
-                          totalCount: category.indicators.length,
-                        },
-                    )}
-                  </span>
-                </summary>
-                <div
-                  className={styles.indicatorsList}
-                  role="group"
-                  aria-label={intl.formatMessage(
-                      LAYER_FILTER_COPY.LAYER_FILTER.INDICATORS_GROUP_LABEL,
-                      {
-                        categoryName: intl.formatMessage(category.nameMessage),
-                      },
-                  )}
-                >
-                  {category.indicators.map((indicator) => {
-                    const labelMessage = getIndicatorLabelMessage(indicator.id);
-                    const indicatorLabel = intl.formatMessage(labelMessage);
-                    return (
-                      <label key={indicator.id} className={styles.checkboxLabel}>
-                        <input
-                          type="checkbox"
-                          checked={filters.indicators[indicator.id] || false}
-                          onChange={(e) => handleIndicatorChange(indicator.id, e.target.checked)}
-                          className={styles.checkbox}
-                          aria-label={indicatorLabel}
-                        />
-                        <span>{indicatorLabel}</span>
-                      </label>
-                    );
-                  })}
-                </div>
-              </details>
-            ))}
-          </div>
-
-          {/* Lands of federally recognized tribes checkbox */}
-          <label className={styles.mainCheckboxLabel}>
-            <input
-              type="checkbox"
-              checked={filters.indicators.tribalLands || false}
-              onChange={(e) => handleIndicatorChange('tribalLands', e.target.checked)}
-              className={styles.checkbox}
-            />
-            <span>{intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.TRIBAL_LANDS)}</span>
-          </label>
-
-          {/* Action buttons */}
-          <div className={styles.actionButtons}>
-            <Button
-              type="button"
-              outline
-              onClick={handleResetFilters}
-              className={styles.resetButton}
-            >
-              {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.RESET_FILTERS)}
-            </Button>
-            <Button
-              type="button"
-              onClick={handleApply}
-              className={styles.applyButton}
-            >
-              {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.APPLY)}
-            </Button>
-          </div>
+          {renderPanelContent()}
         </div>
       )}
     </div>

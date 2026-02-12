@@ -1239,6 +1239,45 @@ describe('LayerFilter Component', () => {
   // Additional Tests: onFiltersChange Callback
   // ============================================================================
 
+  // ============================================================================
+  // Mobile overlay
+  // ============================================================================
+
+  describe('Mobile overlay (isMobile)', () => {
+    it('does not render chevron when isMobile is true', () => {
+      renderComponent({isMobile: true});
+      const layersButton = screen.getByRole('button', {name: /toggle layers filter panel/i});
+      // Chevron shows ▼ or ▲; mobile has no chevron
+      expect(layersButton.textContent).toBe('Layers');
+      expect(layersButton.textContent).not.toMatch(/[▼▲]/);
+    });
+
+    it('renders full-screen overlay (dialog with close button) when open on mobile', () => {
+      renderComponent({
+        isMobile: true,
+        selectedCount: 1000,
+        totalCount: 74000,
+      });
+      openDropdown();
+
+      expect(screen.getByRole('dialog', {name: /categories of burden/i})).toBeInTheDocument();
+      expect(screen.getByRole('button', {name: /close layers/i})).toBeInTheDocument();
+      expect(screen.getByText('Categories of burden')).toBeInTheDocument();
+    });
+
+    it('close button closes the overlay on mobile', () => {
+      renderComponent({isMobile: true});
+      openDropdown();
+
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+      const closeButton = screen.getByRole('button', {name: /close layers/i});
+      fireEvent.click(closeButton);
+
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
+  });
+
   describe('onFiltersChange Callback', () => {
     it('calls onFiltersChange with correct filters when indicator is selected', () => {
       renderComponent();

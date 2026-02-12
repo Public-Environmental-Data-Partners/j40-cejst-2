@@ -3,6 +3,10 @@ declare namespace J40MapModuleScssNamespace {
     // main J40 map style
     j40Map: string;
 
+    // map overlay strip (header row + LayerFilter)
+    mapOverlayStrip: string;
+    layerFilterWrapper: string;
+
     // map header row
     mapHeaderRow: string;
     geolocateBox: string;

@@ -534,40 +534,45 @@ const J40Map = ({location}: IJ40Interface) => {
             indicatorFilters={layerFilters}
           />
 
-          {/* Layer Filter Dropdown: always visible; zoom controls enable/disable and messaging */}
-          <LayerFilter
-            zoom={viewport.zoom ?? constants.GLOBAL_MIN_ZOOM}
-            onFiltersChange={(filters) => {
-              setLayerFilters(filters);
-            }}
-            onOverlayStateChange={handleOverlayStateChange}
-          />
+          {/* Map overlay strip: search + geolocate, then LayerFilter (column on mobile so LayerFilter is below) */}
+          <div className={styles.mapOverlayStrip}>
+            <div className={styles.mapHeaderRow}>
+              <MapSearch goToPlace={goToPlace} />
 
-          {/* This is the first overlayed row on the map: Search and Geolocation */}
-          <div className={styles.mapHeaderRow}>
-            <MapSearch goToPlace={goToPlace} />
-
-            {/* Geolocate Icon */}
-            <div className={styles.geolocateBox}>
-              {
-                windowWidth > constants.USWDS_BREAKPOINTS.MOBILE_LG - 1 &&
-                <div className={
-                  (geolocationInProgress && !isGeolocateLocked) ?
-                    styles.geolocateMessage :
-                    styles.geolocateMessageHide
-                }>
-                  {intl.formatMessage(EXPLORE_COPY.MAP.GEOLOC_MSG_LOCATING)}
-                </div>
-              }
-              <GeolocateControl
-                positionOptions={{enableHighAccuracy: true}}
-                onGeolocate={onGeolocate}
-                onClick={onClickGeolocate}
-                trackUserLocation={windowWidth < constants.USWDS_BREAKPOINTS.MOBILE_LG}
-                showUserHeading={windowWidth < constants.USWDS_BREAKPOINTS.MOBILE_LG}
-              />
+              {/* Geolocate Icon */}
+              <div className={styles.geolocateBox}>
+                {
+                  windowWidth > constants.USWDS_BREAKPOINTS.MOBILE_LG - 1 &&
+                  <div className={
+                    (geolocationInProgress && !isGeolocateLocked) ?
+                      styles.geolocateMessage :
+                      styles.geolocateMessageHide
+                  }>
+                    {intl.formatMessage(EXPLORE_COPY.MAP.GEOLOC_MSG_LOCATING)}
+                  </div>
+                }
+                <GeolocateControl
+                  positionOptions={{enableHighAccuracy: true}}
+                  onGeolocate={onGeolocate}
+                  onClick={onClickGeolocate}
+                  trackUserLocation={windowWidth < constants.USWDS_BREAKPOINTS.MOBILE_LG}
+                  showUserHeading={windowWidth < constants.USWDS_BREAKPOINTS.MOBILE_LG}
+                />
+              </div>
             </div>
 
+            <div className={styles.layerFilterWrapper}>
+              <LayerFilter
+                zoom={viewport.zoom ?? constants.GLOBAL_MIN_ZOOM}
+                onFiltersChange={(filters) => {
+                  setLayerFilters(filters);
+                }}
+                onOverlayStateChange={handleOverlayStateChange}
+                isMobile={windowWidth <= constants.USWDS_BREAKPOINTS.MOBILE_LG}
+                selectedCount={getSelectedTractCount(layerFilters)}
+                totalCount={TOTAL_TRACT_COUNT}
+              />
+            </div>
           </div>
 
           {/* This is the second row overlayed on the map, it will add the navigation controls

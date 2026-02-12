@@ -9,6 +9,11 @@ declare namespace LayerFilterModuleScssNamespace {
     layersButton: string;
     layersButtonDisabled: string;
     chevron: string;
+    fullScreenOverlay: string;
+    fullScreenHeader: string;
+    fullScreenTractCount: string;
+    fullScreenClose: string;
+    fullScreenPanel: string;
     dropdownPanel: string;
     panelTitle: string;
     mainCheckboxLabel: string;

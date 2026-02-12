@@ -1495,6 +1495,10 @@
     "defaultMessage": "({selectedCount}/{totalCount})",
     "description": "Count badge showing number of selected indicators in a category"
   },
+  "layer.filter.close.layers": {
+    "defaultMessage": "Close layers",
+    "description": "Accessibility label for the button that closes the layers panel on mobile"
+  },
   "layer.filter.displaying.all.disadvantaged.tracts": {
     "defaultMessage": "Displaying all disadvantaged tracts.",
     "description": "Status when zoom is below 5 and map shows low-zoom (all disadvantaged) view"
@@ -1542,6 +1546,10 @@
   "layer.filter.tract.count.summary": {
     "defaultMessage": "{selectedCount} of {totalCount}",
     "description": "Tract count summary displayed at bottom-right of map: selected tracts of total tracts"
+  },
+  "layer.filter.tract.count.summary.suffix": {
+    "defaultMessage": "disadvantaged tracts",
+    "description": "Suffix for tract count in mobile overlay header (e.g. \"X of Y disadvantaged tracts\")"
   },
   "layer.filter.tribal.lands": {
     "defaultMessage": "Lands of federally recognized tribes",

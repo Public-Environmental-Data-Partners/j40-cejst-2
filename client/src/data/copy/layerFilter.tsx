@@ -19,6 +19,11 @@ export const LAYER_FILTER = defineMessages({
     defaultMessage: 'Categories of burden',
     description: 'Title of the layer filter dropdown panel',
   },
+  CLOSE_LAYERS: {
+    id: 'layer.filter.close.layers',
+    defaultMessage: 'Close layers',
+    description: 'Accessibility label for the button that closes the layers panel on mobile',
+  },
   IDENTIFIED_AS_DISADVANTAGED: {
     id: 'layer.filter.identified.as.disadvantaged',
     defaultMessage: 'Identified as disadvantaged',
@@ -73,6 +78,11 @@ export const LAYER_FILTER = defineMessages({
     id: 'layer.filter.tract.count.aria.label',
     defaultMessage: 'Tracts matching current filters: {selectedCount} of {totalCount}',
     description: 'Accessibility label for the tract count summary',
+  },
+  TRACT_COUNT_SUMMARY_SUFFIX: {
+    id: 'layer.filter.tract.count.summary.suffix',
+    defaultMessage: 'disadvantaged tracts',
+    description: 'Suffix for tract count in mobile overlay header (e.g. "X of Y disadvantaged tracts")',
   },
 
   // Zoom-based messaging (zl < 5 vs zl >= 5)
