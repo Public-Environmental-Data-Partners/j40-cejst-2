@@ -38,11 +38,35 @@ The **TractCountSummary** component shows a line like “X of Y” tracts (e.g. 
 
 At **low zoom** (below the threshold, e.g. zoom level &lt; 5), the map does not show per-indicator coloring; it shows a single “all disadvantaged” view. The LayerFilter UI reflects that with different copy and a disabled “Layers” button.
 
+### 3.1 Zoom level
+
+Zoom is passed from the map; LayerFilter uses it with constants from `client/src/data/constants.tsx`:
+
+| Constant | Value | Meaning |
+|----------|-------|---------|
+| `GLOBAL_MIN_ZOOM` | 3 | Default/fallback when zoom is undefined |
+| `GLOBAL_MIN_ZOOM_HIGH` | 5 | Threshold: zoom &lt; 5 = low zoom, zoom ≥ 5 = high zoom |
+
+- **Low zoom** (zoom &lt; 5): Per-indicator layers are not shown; map shows “all disadvantaged” view. Layers button is disabled except for state 3 messaging.
+- **High zoom** (zoom ≥ 5): User can open Layers and select burden indicators; map colors tracts by selected indicators (AND logic).
+
+### 3.2 Message states
+
+`zoomUiState` is derived in `LayerFilter.tsx` as: `isLowZoom && defaultOnly ? 1 : isLowZoom ? 3 : 2`, where `isLowZoom = zoomLevel < GLOBAL_MIN_ZOOM_HIGH` and `defaultOnly` = “Identified as disadvantaged” checked and no burden indicators selected.
+
+| zoomUiState | Zoom | Filter state | Message above | Second line | Layers button |
+|-------------|------|--------------|---------------|-------------|---------------|
+| **1** | &lt; 5 | Default only (ID as disadv., no indicators) | “zoom in to enable” | — | Disabled |
+| **2** | ≥ 5 | No indicators selected | “select burdens” | Invisible (reserve space), “Displaying all disadvantaged tracts.” | Enabled |
+| **2** | ≥ 5 | 1+ indicators selected | “selected burdens (n)” | Invisible (reserve space), same text | Enabled |
+| **3** | &lt; 5 | Has indicators selected | “Zoom in to view selection.” | Visible: “Displaying all disadvantaged tracts.” | Disabled |
+
+The second line in state 2 is always rendered (invisible, same height as state 3) so that when the user zooms out to state 3 the UI does not shift.
+
+### 3.3 Copy and implementation
+
 - **Location:** `LayerFilter.tsx` uses a `zoom` prop and constants (e.g. `GLOBAL_MIN_ZOOM`, `GLOBAL_MIN_ZOOM_HIGH`) to compute `zoomUiState` (1 | 2 | 3).
-  - **State 1:** Low zoom + “Identified as disadvantaged” only → “zoom in to enable” and Layers button disabled.
-  - **State 2:** High zoom → “select burdens” (prompt to pick indicators).
-  - **State 3:** Low zoom + user has other indicators selected → “Zoom in to view selection.” and a second line (e.g. “Displaying all disadvantaged tracts.”).
-- **Copy:** All zoom-related strings live in `client/src/data/copy/layerFilter.tsx` (e.g. `ZOOM_IN_TO_ENABLE`, `SELECT_BURDENS`, `ZOOM_IN_TO_VIEW_SELECTION`, `DISPLAYING_ALL_DISADVANTAGED_TRACT`). The banner above the Layers button and the optional line below it are driven by `messageAbove` and the `zoomUiState === 3` block in `LayerFilter.tsx`.
+- **Copy:** All zoom-related strings live in `client/src/data/copy/layerFilter.tsx` (e.g. `ZOOM_IN_TO_ENABLE`, `SELECT_BURDENS`, `SELECTED_BURDENS_COUNT`, `ZOOM_IN_TO_VIEW_SELECTION`, `DISPLAYING_ALL_DISADVANTAGED_TRACT`). The banner above the Layers button and the second line below it are driven by `messageAbove` and the unified second-banner block (state 2 or 3) in `LayerFilter.tsx`.
 
 ---
 

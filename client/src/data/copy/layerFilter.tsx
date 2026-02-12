@@ -86,6 +86,11 @@ export const LAYER_FILTER = defineMessages({
     defaultMessage: 'select burdens',
     description: 'Message when map zoom is 5 or above; prompt to select burden indicators',
   },
+  SELECTED_BURDENS_COUNT: {
+    id: 'layer.filter.selected.burdens.count',
+    defaultMessage: 'selected burdens ({count})',
+    description: 'Message when map zoom is 5 or above and one or more burden indicators are selected',
+  },
   ZOOM_IN_TO_VIEW_SELECTION: {
     id: 'layer.filter.zoom.in.to.view.selection',
     defaultMessage: 'Zoom in to view selection.',
@@ -95,11 +100,6 @@ export const LAYER_FILTER = defineMessages({
     id: 'layer.filter.displaying.all.disadvantaged.tracts',
     defaultMessage: 'Displaying all disadvantaged tracts.',
     description: 'Status when zoom is below 5 and map shows low-zoom (all disadvantaged) view',
-  },
-  SHOWING_TRACT_MEET_ALL_BURDENS: {
-    id: 'layer.filter.showing.tract.meet.all.burdens',
-    defaultMessage: 'Showing tracts that meet all selected burdens',
-    description: 'Status when multiple burden indicators are selected; map uses AND logic',
   },
 });
 

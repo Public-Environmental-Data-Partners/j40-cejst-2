@@ -301,17 +301,22 @@ const LayerFilter = ({zoom, onFiltersChange, onOverlayStateChange}: ILayerFilter
   }, [justExpanded]);
 
 
-  // Selected indicator count (for AND-message when 2+ selected)
+  // Selected indicator count (for message above in state 2)
   const selectedIndicatorCount = Object.keys(filters.indicators).filter(
       (id) => filters.indicators[id],
   ).length;
 
-  // Message above: State 1 = zoom in to enable, State 2 = select burdens, State 3 = zoom in to view selection
+  // Message above:
+  // State 1 = zoom in to enable,
+  // State 2 = select burdens or selected burdens (n),
+  // State 3 = zoom in to view selection
   const messageAbove =
     zoomUiState === 1 ?
       intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.ZOOM_IN_TO_ENABLE) :
       zoomUiState === 2 ?
-        intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.SELECT_BURDENS) :
+        (selectedIndicatorCount >= 1 ?
+          intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.SELECTED_BURDENS_COUNT, {count: selectedIndicatorCount}) :
+          intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.SELECT_BURDENS)) :
         intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.ZOOM_IN_TO_VIEW_SELECTION);
 
   return (
@@ -333,7 +338,7 @@ const LayerFilter = ({zoom, onFiltersChange, onOverlayStateChange}: ILayerFilter
           className={`${styles.layersButton} ${isLowZoom ? styles.layersButtonDisabled : ''}`}
           disabled={isLowZoom}
           aria-disabled={isLowZoom}
-          aria-describedby={zoomUiState === 3 || (zoomUiState === 2 && selectedIndicatorCount >= 2) ?
+          aria-describedby={zoomUiState === 2 || zoomUiState === 3 ?
             'layer-filter-zoom-message-above layer-filter-zoom-message-below' : 'layer-filter-zoom-message-above'}
           onClick={() => !isLowZoom && setIsOpen(!isOpen)}
           aria-expanded={isOpen}
@@ -342,28 +347,16 @@ const LayerFilter = ({zoom, onFiltersChange, onOverlayStateChange}: ILayerFilter
           {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.LAYERS_BUTTON)}
           <span className={styles.chevron}>{isOpen ? '▲' : '▼'}</span>
         </button>
-        {zoomUiState === 3 && (
+        {(zoomUiState === 2 || zoomUiState === 3) && (
           <div
-            className={styles.zoomMessageBanner}
+            className={`${styles.zoomMessageBanner} ${zoomUiState === 2 ? styles.zoomMessageBannerReserveSpace : ''}`}
             id="layer-filter-zoom-message-below"
             role="status"
             aria-live="polite"
             aria-atomic="true"
+            aria-hidden={zoomUiState === 2}
           >
             {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.DISPLAYING_ALL_DISADVANTAGED_TRACT)}
-          </div>
-        )}
-        {zoomUiState === 2 && (
-          <div
-            className={`${styles.zoomMessageBanner} 
-              ${selectedIndicatorCount < 2 ? styles.zoomMessageBannerReserveSpace : ''}`}
-            id="layer-filter-zoom-message-below"
-            role="status"
-            aria-live="polite"
-            aria-atomic="true"
-            aria-hidden={selectedIndicatorCount < 2}
-          >
-            {intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.SHOWING_TRACT_MEET_ALL_BURDENS)}
           </div>
         )}
       </div>
