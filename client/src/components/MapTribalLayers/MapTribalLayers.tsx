@@ -59,7 +59,7 @@ const MapTribalLayer = () => {
 
       {/* Tribal layer - controls the border between features */}
       <Layer
-        id={constants.FEATURE_BORDER_LAYER_ID}
+        id={constants.TRIBAL_FEATURE_BORDER_LAYER_ID}
         source-layer={constants.TRIBAL_SOURCE_LAYER}
         type='line'
         paint={{

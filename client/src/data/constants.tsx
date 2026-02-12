@@ -265,6 +265,7 @@ export const SELECTED_FEATURE_BORDER_LAYER_ID =
   "selected-feature-border-layer-id";
 
 export const TRIBAL_LAYER_ID = "tribal-layer-id";
+export const TRIBAL_FEATURE_BORDER_LAYER_ID = "tribal-feature-border-layer-id";
 export const TRIBAL_ALASKA_POINTS_LAYER_ID = "tribal-alaska-points-layer-id";
 export const TRIBAL_LABELS_LAYER_ID = "tribal-labels-layer-id";
 
@@ -284,7 +285,7 @@ export const GLOBAL_MAX_ZOOM_HIGH = 11;
 
 export const GLOBAL_MIN_ZOOM_FEATURE_BORDER = 5;
 export const GLOBAL_MAX_ZOOM_FEATURE_BORDER = 22;
-export const TRIBAL_MIN_ZOOM = 6.6;
+export const TRIBAL_MIN_ZOOM = 5;
 export const TRIBAL_MAX_ZOOM = 22;
 export const ALASKA_MIN_ZOOM = 3;
 export const ALASKA_MAX_ZOOM = 22;
