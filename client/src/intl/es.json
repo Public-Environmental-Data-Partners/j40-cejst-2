@@ -291,6 +291,7 @@
   "explore.map.page.side.panel.send.feedback.title": "Enviar comentarios",
   "explore.map.page.side.panel.selected.burdens.summary": "Este distrito censal supera el umbral en {x} de las {yBold} {y, plural, one {carga seleccionada} other {cargas seleccionadas}}.",
   "explore.map.page.side.panel.spacer.and": "Y",
+  "explore.map.page.side.panel.tract.contains.tribal.lands": "Este distrito censal contiene tierras de tribus reconocidas a nivel federal.",
   "explore.map.page.side.panel.tribalInfo.landAreaName": "Nombre del área de la tierra:",
   "explore.map.page.side.panel.version.title": "Versión de la metodología {version}",
   "explore.map.page.title.text": "Explore el mapa",
