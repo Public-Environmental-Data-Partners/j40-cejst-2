@@ -841,6 +841,14 @@ export const selectedBurdensSummary = (exceedCountX: number, selectedBurdenCount
   />
 );
 
+export const tractContainsTribalLandsMessage = (
+  <FormattedMessage
+    id="explore.map.page.side.panel.tract.contains.tribal.lands"
+    defaultMessage="This tract contains lands of federally recognized tribes."
+    description="Side panel when tribal lands filter is on and tract has tribal land"
+  />
+);
+
 // Temporarily commenting out as it may be needed again:
 // export const numberOfThresholdsExceeded = (thresholds:number) => <FormattedMessage
 //   id={'explore.map.page.side.panel.num.thresholds.exceeded'}

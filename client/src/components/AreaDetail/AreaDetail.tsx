@@ -183,6 +183,14 @@ const AreaDetail = ({properties, layerFilters}: IAreaDetailProps) => {
       }).length :
       0;
 
+  const tribalLandsFilterOn = Boolean(layerFilters?.indicators?.tribalLands);
+  const tractHasTribalLand = Boolean(
+      properties &&
+      typeof properties[constants.TRIBAL_AREAS_PERCENTAGE] === "number" &&
+      properties[constants.TRIBAL_AREAS_PERCENTAGE] > 0,
+  );
+  const showTribalLandsMessage = tribalLandsFilterOn && tractHasTribalLand;
+
   /**
    * Set the indicators for a given category.
    * @param {string} id the category ID
@@ -1258,9 +1266,28 @@ const AreaDetail = ({properties, layerFilters}: IAreaDetailProps) => {
       {/* Disadvantaged? or X-of-Y selected burdens summary (custom view) */}
       <div className={styles.categorization}>
         {useCustomIndicatorView ? (
-          <p className="selectedBurdensSummary">
-            {EXPLORE_COPY.selectedBurdensSummary(exceedCountX, selectedBurdenCountY)}
-          </p>
+          <>
+            {selectedBurdenCountY === 0 ? (
+              showTribalLandsMessage ?
+                <p className="selectedBurdensSummary">
+                  {EXPLORE_COPY.tractContainsTribalLandsMessage}
+                </p> :
+                <p className="selectedBurdensSummary">
+                  {EXPLORE_COPY.selectedBurdensSummary(0, 0)}
+                </p>
+            ) : (
+              <>
+                <p className="selectedBurdensSummary">
+                  {EXPLORE_COPY.selectedBurdensSummary(exceedCountX, selectedBurdenCountY)}
+                </p>
+                {showTribalLandsMessage && (
+                  <p className="selectedBurdensSummary">
+                    {EXPLORE_COPY.tractContainsTribalLandsMessage}
+                  </p>
+                )}
+              </>
+            )}
+          </>
         ) : (
           <>
             {/* Questions asking if disadvantaged? */}
