@@ -141,7 +141,7 @@ const MapTractLayers = ({
    */
 
   /**
-   * Builds a MapLibre GL expression that checks if a tract matches all of the selected indicators.
+   * Builds a MapLibre GL expression that checks if a tract matches at least one of the selected indicators.
    * Returns null if "Identified as disadvantaged" is checked (meaning color all tracts).
    * Returns an expression that evaluates to true/false for each tract based on indicator matches.
    *
@@ -183,8 +183,8 @@ const MapTractLayers = ({
       return ['==', 1, 0]; // Always false
     }
 
-    // Return 'all' expression: true if tract matches ALL selected indicators
-    return ['all', ...indicatorConditions];
+    // Return 'any' expression: true if tract matches at least one selected indicator
+    return ['any', ...indicatorConditions];
   };
 
   // Build the color condition expression
