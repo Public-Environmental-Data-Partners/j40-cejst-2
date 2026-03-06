@@ -110,7 +110,16 @@ const J40Map = ({location}: IJ40Interface) => {
     indicators: {},
   });
   const [isLayerFilterOpen, setIsLayerFilterOpen] = useState(false);
-  const {width: windowWidth} = useWindowSize();
+  const {width: windowWidth, height: windowHeight} = useWindowSize();
+
+  // Use full-screen overlay when viewport is narrow (<=480) or when height is too short
+  // for the dropdown to fit (avoids clipping Reset/Apply on short viewports / iPad).
+  const useLayerFilterOverlay =
+    windowWidth <= constants.USWDS_BREAKPOINTS.MOBILE_LG ||
+    (windowWidth >= constants.USWDS_BREAKPOINTS.DESKTOP &&
+      windowHeight < constants.LAYER_FILTER_OVERLAY_VIEWPORT_HEIGHT.MIN_DESKTOP) ||
+    (windowWidth < constants.USWDS_BREAKPOINTS.DESKTOP &&
+      windowHeight < constants.LAYER_FILTER_OVERLAY_VIEWPORT_HEIGHT.MIN_NARROW);
 
   const zoomLevel = viewport.zoom ?? constants.GLOBAL_MIN_ZOOM;
   const mapRegion: MapRegion = useMemo(() => {
@@ -594,7 +603,7 @@ const J40Map = ({location}: IJ40Interface) => {
                   setLayerFilters(filters);
                 }}
                 onOverlayStateChange={handleOverlayStateChange}
-                isMobile={windowWidth <= constants.USWDS_BREAKPOINTS.MOBILE_LG}
+                isMobile={useLayerFilterOverlay}
                 selectedCount={getSelectedTractCount(layerFilters)}
                 totalCount={TOTAL_TRACT_COUNT}
               />

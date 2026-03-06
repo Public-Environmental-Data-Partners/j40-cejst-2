@@ -368,6 +368,15 @@ export const USWDS_BREAKPOINTS = {
   DESKTOP: 1024,
 };
 
+// LayerFilter: use full-screen overlay (instead of dropdown) when viewport is too short
+// so the dropdown is not clipped by the map container.
+export const LAYER_FILTER_OVERLAY_VIEWPORT_HEIGHT = {
+  /** Min viewport height (px) to use dropdown when width >= DESKTOP (1024). */
+  MIN_DESKTOP: 900,
+  /** Min viewport height (px) to use dropdown when width < DESKTOP (map is 55vh). */
+  MIN_NARROW: 1450,
+};
+
 // ********** SURVEY LINKS ***************
 
 export const DATA_SURVEY_LINKS = {
