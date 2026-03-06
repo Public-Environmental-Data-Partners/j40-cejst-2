@@ -1,7 +1,7 @@
 /* eslint-disable valid-jsdoc */
 /* eslint-disable no-unused-vars */
 // External Libs:
-import React, {useRef, useState, useCallback} from 'react';
+import React, {useRef, useState, useCallback, useMemo} from 'react';
 import {Map, MapGeoJSONFeature, LngLatBoundsLike} from 'maplibre-gl';
 import ReactMapGL, {
   MapEvent,
@@ -42,6 +42,7 @@ import * as constants from '../data/constants';
 import * as styles from './J40Map.module.scss';
 import * as EXPLORE_COPY from '../data/copy/explore';
 import CreateReportPanel from './CreateReportPanel';
+import {getMapRegionFromViewport, type MapRegion} from '../utils/mapRegion';
 
 declare global {
   interface Window {
@@ -110,6 +111,15 @@ const J40Map = ({location}: IJ40Interface) => {
   });
   const [isLayerFilterOpen, setIsLayerFilterOpen] = useState(false);
   const {width: windowWidth} = useWindowSize();
+
+  const zoomLevel = viewport.zoom ?? constants.GLOBAL_MIN_ZOOM;
+  const mapRegion: MapRegion = useMemo(() => {
+    if (zoomLevel < constants.GLOBAL_MIN_ZOOM_HIGH) return 'nation';
+    return getMapRegionFromViewport(
+        viewport.longitude ?? 0,
+        viewport.latitude ?? 0,
+    );
+  }, [zoomLevel, viewport.longitude, viewport.latitude]);
 
   /**
    * Store the geolocation lock state in local storage. The Geolocation component from MapBox does not
@@ -393,6 +403,20 @@ const J40Map = ({location}: IJ40Interface) => {
   const onTransitionEnd = () => {
     setTransitionInProgress(false);
 
+    // Sync viewport state from the map so mapRegion (and LayerFilter) reflect the final view
+    // after a programmatic flyTo (e.g. territory shortcut), without blocking the animation.
+    const map = mapRef.current?.getMap();
+    if (map) {
+      const center = map.getCenter();
+      const zoom = map.getZoom();
+      setViewport((prev) => ({
+        ...prev,
+        longitude: center.lng,
+        latitude: center.lat,
+        zoom,
+      }));
+    }
+
     /*
     If there is a tract ID to be selected then do so once the map has finished moving.
     Note that setting the viewpoint to move the map as done in this component does not
@@ -532,6 +556,7 @@ const J40Map = ({location}: IJ40Interface) => {
           <MapTractLayers
             selectedFeatures={selectedFeatures}
             indicatorFilters={layerFilters}
+            mapRegion={mapRegion}
           />
 
           {/* Map overlay strip: search + geolocate, then LayerFilter (column on mobile so LayerFilter is below) */}
@@ -564,6 +589,7 @@ const J40Map = ({location}: IJ40Interface) => {
             <div className={styles.layerFilterWrapper}>
               <LayerFilter
                 zoom={viewport.zoom ?? constants.GLOBAL_MIN_ZOOM}
+                mapRegion={mapRegion}
                 onFiltersChange={(filters) => {
                   setLayerFilters(filters);
                 }}

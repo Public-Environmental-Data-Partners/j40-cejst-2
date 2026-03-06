@@ -19,6 +19,9 @@ export interface IndicatorDefinition {
   /** Property name for threshold exceeded flag (e.g., "EAL_ET") - used as key in properties object */
   thresholdPropertyName: string;
 
+  /** When set, used for Island Areas instead of thresholdPropertyName (e.g. IA_* tile properties). */
+  thresholdPropertyNameIslandAreas?: string;
+
   /** Property name for percentile value (e.g., "EALR_PFS"), null if indicator is a boolean. */
   percentilePropertyName: string | null;
 
@@ -236,6 +239,7 @@ export const INDICATOR_REGISTRY: {[key: string]: IndicatorDefinition} = {
   lowMedInc: {
     id: 'lowMedInc',
     thresholdPropertyName: constants.IS_EXCEEDS_THRESH_FOR_LOW_MEDIAN_INCOME,
+    thresholdPropertyNameIslandAreas: constants.IS_EXCEEDS_THRESH_FOR_ISLAND_AREA_LOW_MEDIAN_INCOME,
     percentilePropertyName: constants.LOW_MEDIAN_INCOME_PERCENTILE,
     i18nKey: EXPLORE_COPY.SIDE_PANEL_INDICATORS.LOW_MED_INC,
     category: 'workforce',
@@ -243,6 +247,7 @@ export const INDICATOR_REGISTRY: {[key: string]: IndicatorDefinition} = {
   unemploy: {
     id: 'unemploy',
     thresholdPropertyName: constants.IS_EXCEEDS_THRESH_FOR_UNEMPLOYMENT,
+    thresholdPropertyNameIslandAreas: constants.IS_EXCEEDS_THRESH_FOR_ISLAND_AREA_UNEMPLOYMENT,
     percentilePropertyName: constants.UNEMPLOYMENT_PROPERTY_PERCENTILE,
     i18nKey: EXPLORE_COPY.SIDE_PANEL_INDICATORS.UNEMPLOY,
     category: 'workforce',
@@ -250,6 +255,7 @@ export const INDICATOR_REGISTRY: {[key: string]: IndicatorDefinition} = {
   poverty: {
     id: 'poverty',
     thresholdPropertyName: constants.IS_EXCEEDS_THRESH_FOR_BELOW_100_POVERTY,
+    thresholdPropertyNameIslandAreas: constants.IS_EXCEEDS_THRESH_FOR_ISLAND_AREA_BELOW_100_POVERTY,
     percentilePropertyName: constants.POVERTY_BELOW_100_PERCENTILE,
     i18nKey: EXPLORE_COPY.SIDE_PANEL_INDICATORS.POVERTY,
     category: 'workforce',
@@ -257,6 +263,7 @@ export const INDICATOR_REGISTRY: {[key: string]: IndicatorDefinition} = {
   highSchool: {
     id: 'highSchool',
     thresholdPropertyName: constants.IS_LOW_HS_EDUCATION_LOW_HIGHER_ED_PRIORITIZED,
+    thresholdPropertyNameIslandAreas: constants.ISLAND_AREA_LOW_HS_EDU,
     percentilePropertyName: constants.HIGH_SCHOOL_PROPERTY_PERCENTILE,
     i18nKey: EXPLORE_COPY.SIDE_PANEL_INDICATORS.HIGH_SCL,
     category: 'workforce',

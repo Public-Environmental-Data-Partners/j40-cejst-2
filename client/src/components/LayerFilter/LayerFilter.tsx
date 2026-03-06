@@ -6,11 +6,18 @@ import * as styles from './LayerFilter.module.scss';
 import * as LAYER_FILTER_COPY from '../../data/copy/layerFilter';
 import * as EXPLORE_COPY from '../../data/copy/explore';
 import {INDICATOR_REGISTRY, getIndicatorsByCategory, getIndicatorById} from '../../data/indicators/registry';
+import {
+  getDisabledIndicatorIdsForRegion,
+  DISABLED_CATEGORY_IDS_WHEN_ISLAND_AREAS,
+} from '../../data/territoryConfig';
 import * as constants from '../../data/constants';
+import type {MapRegion} from '../../utils/mapRegion';
 
 interface ILayerFilter {
   /** Current map zoom level; used for enable/disable and messaging (zl < 5 = low zoom) */
   zoom?: number;
+  /** When in a territory (PR or Island Areas), disables checkboxes for burdens not shown there. */
+  mapRegion?: MapRegion;
   onFiltersChange: (filters: LayerFilters) => void;
   onOverlayStateChange?: (isOpen: boolean) => void;
   /** When true, use mobile layout (full-screen overlay); layout is handled by parent. */
@@ -19,6 +26,18 @@ interface ILayerFilter {
   selectedCount?: number;
   /** Total tract count (for mobile overlay header). */
   totalCount?: number;
+}
+
+/**
+ * Whether the given indicator checkbox should be disabled for the current map region.
+ * Tribal lands are disabled when not in nation.
+ * @param {string} indicatorId Registry indicator ID (or 'tribalLands')
+ * @param {MapRegion} mapRegion Current map region from viewport
+ * @return {boolean} True if indicator should be disabled
+ */
+function isIndicatorDisabledForRegion(indicatorId: string, mapRegion: MapRegion): boolean {
+  if (indicatorId === 'tribalLands') return mapRegion !== 'nation';
+  return getDisabledIndicatorIdsForRegion(mapRegion).has(indicatorId);
 }
 
 export interface LayerFilters {
@@ -89,6 +108,7 @@ export const CATEGORIES = buildCategoriesFromRegistry();
 
 const LayerFilter = ({
   zoom,
+  mapRegion = 'nation',
   onFiltersChange,
   onOverlayStateChange,
   isMobile,
@@ -120,6 +140,48 @@ const LayerFilter = ({
     filters.identifiedAsDisadvantaged &&
     !Object.values(filters.indicators).some(Boolean);
   const zoomUiState = isLowZoom && defaultOnly ? 1 : isLowZoom ? 3 : 2; // 1 | 2 | 3
+
+  // When view moves to a territory, uncheck any indicators that are disabled there (including Tribal lands)
+  useEffect(() => {
+    if (mapRegion === 'nation') return;
+
+    const disabledIds = getDisabledIndicatorIdsForRegion(mapRegion);
+
+    const newIndicators = {...filters.indicators};
+    let changed = false;
+    disabledIds.forEach((id) => {
+      if (newIndicators[id]) {
+        delete newIndicators[id];
+        changed = true;
+      }
+    });
+    if (newIndicators.tribalLands) {
+      delete newIndicators.tribalLands;
+      changed = true;
+    }
+    if (!changed) return;
+
+    const newFilters: LayerFilters = {
+      identifiedAsDisadvantaged: filters.identifiedAsDisadvantaged,
+      indicators: newIndicators,
+    };
+
+    const newCategoryStates = {...categoryStates};
+    if (mapRegion === 'island_areas') {
+      DISABLED_CATEGORY_IDS_WHEN_ISLAND_AREAS.forEach((catId) => {
+        newCategoryStates[catId] = false;
+      });
+    }
+    for (const cat of CATEGORIES) {
+      const selectedInCat = cat.indicators.filter((ind) => newFilters.indicators[ind.id]).length;
+      newCategoryStates[cat.id] = selectedInCat > 0;
+    }
+
+    setFilters(newFilters);
+    setCategoryStates(newCategoryStates);
+    onFiltersChange(newFilters);
+    // Intentionally depend only on mapRegion; use current filters/categoryStates when it changes
+  }, [mapRegion]);
 
   // Helper function to get indicator label message from registry
   // Uses registry as single source of truth for i18n keys
@@ -216,9 +278,11 @@ const LayerFilter = ({
     };
 
     if (checked) {
-      // Select all indicators in this category
+      // Select all enabled indicators in this category (skip disabled for current mapRegion)
       category.indicators.forEach((indicator) => {
-        newFilters.indicators[indicator.id] = true;
+        if (!isIndicatorDisabledForRegion(indicator.id, mapRegion)) {
+          newFilters.indicators[indicator.id] = true;
+        }
       });
       // Auto-expand category when selected
       setExpandedCategories((prev) => new Set(prev).add(categoryId));
@@ -387,6 +451,7 @@ const LayerFilter = ({
                 }}
                 className={styles.categoryCheckbox}
                 onClick={(e) => e.stopPropagation()}
+                disabled={mapRegion === 'island_areas' && DISABLED_CATEGORY_IDS_WHEN_ISLAND_AREAS.has(category.id)}
                 aria-label={intl.formatMessage(
                     LAYER_FILTER_COPY.LAYER_FILTER.CATEGORY_ARIA_LABEL,
                     {
@@ -426,6 +491,7 @@ const LayerFilter = ({
               {category.indicators.map((indicator) => {
                 const labelMessage = getIndicatorLabelMessage(indicator.id);
                 const indicatorLabel = intl.formatMessage(labelMessage);
+                const indicatorDisabled = isIndicatorDisabledForRegion(indicator.id, mapRegion);
                 return (
                   <label key={indicator.id} className={styles.checkboxLabel}>
                     <input
@@ -433,6 +499,7 @@ const LayerFilter = ({
                       checked={filters.indicators[indicator.id] || false}
                       onChange={(e) => handleIndicatorChange(indicator.id, e.target.checked)}
                       className={styles.checkbox}
+                      disabled={indicatorDisabled}
                       aria-label={indicatorLabel}
                     />
                     <span>{indicatorLabel}</span>
@@ -450,6 +517,7 @@ const LayerFilter = ({
           checked={filters.indicators.tribalLands || false}
           onChange={(e) => handleIndicatorChange('tribalLands', e.target.checked)}
           className={styles.checkbox}
+          disabled={mapRegion !== 'nation'}
         />
         <span>{intl.formatMessage(LAYER_FILTER_COPY.LAYER_FILTER.TRIBAL_LANDS)}</span>
       </label>

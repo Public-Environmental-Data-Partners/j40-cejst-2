@@ -19,6 +19,8 @@ import * as constants from "../../data/constants";
 import * as EXPLORE_COPY from "../../data/copy/explore";
 import {getIndicatorById, INDICATOR_REGISTRY} from "../../data/indicators/registry";
 import type {LayerFilters} from "../LayerFilter";
+import {getThresholdPropertyName} from "../../utils/indicatorRegion";
+import {sidePanelStateToMapRegion} from "../../utils/mapRegion";
 import * as styles from "./areaDetail.module.scss";
 
 // @ts-ignore
@@ -172,17 +174,6 @@ const AreaDetail = ({properties, layerFilters}: IAreaDetailProps) => {
 
   const selectedBurdenCountY = selectedBurdenIds.length;
 
-  /**
-   * Count of selected burdens for which this tract exceeds the threshold (*_ET). Used for X-of-Y summary.
-   */
-  const exceedCountX =
-    useCustomIndicatorView && properties ?
-      selectedBurdenIds.filter((id) => {
-        const def = INDICATOR_REGISTRY[id];
-        return def && Boolean(properties[def.thresholdPropertyName]);
-      }).length :
-      0;
-
   const tribalLandsFilterOn = Boolean(layerFilters?.indicators?.tribalLands);
   const tractHasTribalLand = Boolean(
       properties &&
@@ -251,6 +242,7 @@ const AreaDetail = ({properties, layerFilters}: IAreaDetailProps) => {
     constants.MISSING_DATA_STRING;
 
   const sidePanelState = properties[constants.SIDE_PANEL_STATE];
+  const mapRegionForIndicator = sidePanelStateToMapRegion(sidePanelState);
   const percentTractTribal =
     properties[constants.TRIBAL_AREAS_PERCENTAGE] >= 0 ?
       parseFloat(
@@ -332,76 +324,27 @@ const AreaDetail = ({properties, layerFilters}: IAreaDetailProps) => {
   };
 
   /**
-   * The workforce development category has some indicators who's disadvantaged boolean
-   * will vary depending on which territory is selected. This function allows us to change
-   * the boolean of workforce development indicators depending on which territory was selected
-   *
-   * @param {string} indicatorName
-   * @return {void}
+   * Workforce (and other) indicators use region-aware threshold property names (see indicatorRegion).
+   * @param {string} indicatorName - Canonical indicator ID
+   * @return {boolean | null} Threshold value when property present, null when missing
    */
   const getWorkForceIndicatorIsDisadv = (indicatorName: string) => {
-    if (sidePanelState === constants.SIDE_PANEL_STATE_VALUES.ISLAND_AREAS) {
-      if (indicatorName === "lowMedInc") {
-        return properties.hasOwnProperty(
-            constants.IS_EXCEEDS_THRESH_FOR_ISLAND_AREA_LOW_MEDIAN_INCOME,
-        ) ?
-          properties[
-              constants.IS_EXCEEDS_THRESH_FOR_ISLAND_AREA_LOW_MEDIAN_INCOME
-          ] :
-          null;
-      }
-      if (indicatorName === "unemploy") {
-        return properties.hasOwnProperty(
-            constants.IS_EXCEEDS_THRESH_FOR_ISLAND_AREA_UNEMPLOYMENT,
-        ) ?
-          properties[constants.IS_EXCEEDS_THRESH_FOR_ISLAND_AREA_UNEMPLOYMENT] :
-          null;
-      }
-      if (indicatorName === "poverty") {
-        return properties.hasOwnProperty(
-            constants.IS_EXCEEDS_THRESH_FOR_ISLAND_AREA_BELOW_100_POVERTY,
-        ) ?
-          properties[
-              constants.IS_EXCEEDS_THRESH_FOR_ISLAND_AREA_BELOW_100_POVERTY
-          ] :
-          null;
-      }
-      if (indicatorName === "highSchool") {
-        return properties.hasOwnProperty(constants.ISLAND_AREA_LOW_HS_EDU) ?
-          properties[constants.ISLAND_AREA_LOW_HS_EDU] :
-          null;
-      }
-    }
-
-    if (indicatorName === "lowMedInc") {
-      return properties.hasOwnProperty(
-          constants.IS_EXCEEDS_THRESH_FOR_LOW_MEDIAN_INCOME,
-      ) ?
-        properties[constants.IS_EXCEEDS_THRESH_FOR_LOW_MEDIAN_INCOME] :
-        null;
-    }
-    if (indicatorName === "unemploy") {
-      return properties.hasOwnProperty(
-          constants.IS_EXCEEDS_THRESH_FOR_UNEMPLOYMENT,
-      ) ?
-        properties[constants.IS_EXCEEDS_THRESH_FOR_UNEMPLOYMENT] :
-        null;
-    }
-    if (indicatorName === "poverty") {
-      return properties.hasOwnProperty(
-          constants.IS_EXCEEDS_THRESH_FOR_BELOW_100_POVERTY,
-      ) ?
-        properties[constants.IS_EXCEEDS_THRESH_FOR_BELOW_100_POVERTY] :
-        null;
-    }
-    if (indicatorName === "highSchool") {
-      return properties.hasOwnProperty(
-          constants.IS_LOW_HS_EDUCATION_LOW_HIGHER_ED_PRIORITIZED,
-      ) ?
-        properties[constants.IS_LOW_HS_EDUCATION_LOW_HIGHER_ED_PRIORITIZED] :
-        null;
-    }
+    const prop = getThresholdPropertyName(indicatorName, mapRegionForIndicator);
+    if (!prop) return null;
+    return properties.hasOwnProperty(prop) ? properties[prop] : null;
   };
+
+  /**
+   * Count of selected burdens for which this tract exceeds the threshold (*_ET). Used for X-of-Y summary.
+   * Uses region-aware threshold property names (Island Areas: IA_*, etc.).
+   */
+  const exceedCountX =
+    useCustomIndicatorView && properties ?
+      selectedBurdenIds.filter((id) => {
+        const prop = getThresholdPropertyName(id, mapRegionForIndicator);
+        return prop ? Boolean(properties[prop]) : false;
+      }).length :
+      0;
 
   /**
    * Define each indicator in the side panel with constants from copy file (for intl)

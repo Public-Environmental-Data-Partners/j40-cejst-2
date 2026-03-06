@@ -9,40 +9,16 @@ import * as constants from '../../data/constants';
 import * as COMMON_COPY from '../../data/copy/common';
 // Type definition for indicator selections (used for color-based approach)
 import {LayerFilters} from '../LayerFilter';
-import {INDICATOR_REGISTRY} from '../../data/indicators/registry';
-
-/**
- * Builds indicator property map from registry using canonical IDs.
- *
- * Maps indicator IDs (canonical IDs from LayerFilter) to their corresponding
- * tile property constants used in MapLibre GL expressions.
- * This mapping is used for the color-based approach to determine
- * which tracts to color based on selected indicators.
- *
- * Uses registry as single source of truth - map automatically stays in sync.
- *
- * @return {Object<string, string>} Map of indicator canonical IDs to threshold property names
- */
-const buildIndicatorPropertyMap = (): {[key: string]: string} => {
-  const map: {[key: string]: string} = {};
-
-  // Add all registry indicators using their canonical IDs (what LayerFilter uses)
-  Object.values(INDICATOR_REGISTRY).forEach((indicator) => {
-    map[indicator.id] = indicator.thresholdPropertyName;
-  });
-
-  // Note: tribalLands is handled as a separate layer (MapTribalLayer), not as a tract filter
-
-  return map;
-};
-
-const INDICATOR_PROPERTY_MAP = buildIndicatorPropertyMap();
+import type {MapRegion} from '../../utils/mapRegion';
+import {getThresholdPropertyName} from '../../utils/indicatorRegion';
 
 interface IMapTractLayers {
     selectedFeatures: MapGeoJSONFeature[] | undefined,
     // Optional indicator selections for color-based approach
     // When provided, determines which tracts to color based on selected indicators
     indicatorFilters?: LayerFilters;
+    /** When view is over Island Areas, workforce indicators use IA_* tile properties. */
+    mapRegion?: MapRegion;
 }
 
 /**
@@ -97,8 +73,8 @@ export const featureURLForTilesetName = (tilesetName: string): string => {
  */
 const MapTractLayers = ({
   selectedFeatures,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  indicatorFilters, // Will be used in next step for color-based paint expressions
+  indicatorFilters,
+  mapRegion = 'nation',
 }: IMapTractLayers) => {
   // Build filter for selected features (used for highlighting selected tracts)
   const selectedFeatureIds = selectedFeatures ? (selectedFeatures.map((feat) => feat.id)) : [''];
@@ -137,18 +113,22 @@ const MapTractLayers = ({
    * - Uses MapLibre GL conditional paint expressions (case statements)
    * - Matching tracts: use normal fill color (PRIORITIZED_FEATURE_FILL_COLOR)
    * - Non-matching tracts: use transparent color (rgba(0, 0, 0, 0))
-   * - Condition is built from selected indicators using INDICATOR_PROPERTY_MAP
+   * - Condition is built from selected indicators using getThresholdPropertyName (region-aware)
    */
 
   /**
    * Builds a MapLibre GL expression that checks if a tract matches at least one of the selected indicators.
    * Returns null if "Identified as disadvantaged" is checked (meaning color all tracts).
-   * Returns an expression that evaluates to true/false for each tract based on indicator matches.
+   * For Island Areas view, workforce indicators use territory-specific tile properties (IA_*, IALHE).
    *
    * @param {LayerFilters | undefined} layerFilters - LayerFilters object with selected indicators
+   * @param {MapRegion} region - Current map region (affects which tile properties are used)
    * @return {any[] | null} MapLibre GL expression or null (null = color all tracts)
    */
-  const buildIndicatorColorCondition = (layerFilters?: LayerFilters): any[] | null => {
+  const buildIndicatorColorCondition = (
+      layerFilters?: LayerFilters,
+      region: MapRegion = 'nation',
+  ): any[] | null => {
     // If no filters provided, return null (color all tracts - default behavior)
     if (!layerFilters) {
       return null;
@@ -169,14 +149,11 @@ const MapTractLayers = ({
       return ['==', 1, 0]; // Always false
     }
 
-    // Build condition expressions for checked indicators
+    // Build condition expressions for checked indicators (region-aware via getThresholdPropertyName)
     const indicatorConditions: any[] = checkedIndicators
-        .filter((indicatorId) => INDICATOR_PROPERTY_MAP[indicatorId]) // Only include valid indicators
-        .map((indicatorId) => [
-          '==',
-          ['get', INDICATOR_PROPERTY_MAP[indicatorId]],
-          true,
-        ]);
+        .map((indicatorId) => getThresholdPropertyName(indicatorId, region))
+        .filter((prop): prop is string => Boolean(prop))
+        .map((propName) => ['==', ['get', propName], true]);
 
     // If no valid conditions, return always-false
     if (indicatorConditions.length === 0) {
@@ -187,8 +164,8 @@ const MapTractLayers = ({
     return ['any', ...indicatorConditions];
   };
 
-  // Build the color condition expression
-  const colorCondition = buildIndicatorColorCondition(indicatorFilters);
+  // Build the color condition expression (region-aware for Island Areas workforce)
+  const colorCondition = buildIndicatorColorCondition(indicatorFilters, mapRegion);
 
   /**
    * Builds a MapLibre GL paint color expression that conditionally colors tracts.
