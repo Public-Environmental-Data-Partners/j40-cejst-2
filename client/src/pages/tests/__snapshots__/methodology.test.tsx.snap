@@ -911,7 +911,7 @@ exports[`rendering of the DatasetContainer checks if various text fields are vis
             data-testid="grid"
           >
             <h2>
-              Datasets used in v2.0 methodology
+              Datasets used in v2.1 methodology
             </h2>
           </div>
         </div>
