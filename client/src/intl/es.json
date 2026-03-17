@@ -62,7 +62,6 @@
   "download.page.download.file.3": "<link3>Archivo de forma </link3> (libro de códigos incluido con el archivo de forma {shapeFileSize} descomprimido)",
   "download.page.download.file.4": "<link4es>Documento de apoyo técnico</link4es> (.pdf {tsdFileSize})",
   "download.page.download.file.5": "<link5es>Instrucciones a las agencias federales sobre el uso del CEJST</link5es> (.pdf {instructionsEs})",
-  "download.page.files.section.title": "Formatos de archivo de la versión {version}",
   "download.page.release.2_0.update.HEADER": "Actualización de la publicación {release} de la versión - {date}",
   "download.page.release.2_0.update.NEW_IMPROVED_CONTENT_1": "Se agregó la carga de bajos ingresos a Samoa Americana, Guam, las Islas Marianas y las Islas Vírgenes de los Estados Unidos",
   "download.page.release.2_0.update.NEW_IMPROVED_CONTENT_2": "Los distritos de estos Territorios que están completamente rodeados de zonas desfavorecidas y superan un umbral ajustado de bajos ingresos ahora se consideran desfavorecidas",
