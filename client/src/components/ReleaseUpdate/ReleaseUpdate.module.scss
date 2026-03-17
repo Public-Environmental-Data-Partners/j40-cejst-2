@@ -19,6 +19,15 @@
             font-size: large;
             border-bottom: 2px solid #9A9B99;
         }
+
+        .releaseNote{
+            @include u-margin-top(2);
+            font-style: italic;
+        }
+
+        .releaseBlock + .releaseBlock{
+            @include u-margin-top(4);
+        }
     }
 
     .showHideText {

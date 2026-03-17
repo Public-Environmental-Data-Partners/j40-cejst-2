@@ -70,8 +70,29 @@ const J40AccordionItem = ({id, children}: IJ40AccordionItem) => {
 };
 
 const ReleaseUpdate = ({ }: IReleaseUpdateProps) => {
+  const release21Notes = (
+    <div className={styles.releaseBlock}>
+      <div className={styles.releaseHeader}>
+        {DOWNLOAD_COPY.RELEASE_2_1.HEADER}
+      </div>
+      <div className={styles.releaseSectionTitle}>
+        {DOWNLOAD_COPY.RELEASE_2_1.NEW_IMPROVED_SECTION}
+      </div>
+      <div>
+        <ul>
+          {DOWNLOAD_COPY.RELEASE_2_1.NEW_IMPROVED_CONTENT.map((item, i) => (
+            <li key={i}>{item}</li>
+          ))}
+        </ul>
+      </div>
+      <div className={styles.releaseNote}>
+        {DOWNLOAD_COPY.RELEASE_2_1.NOTE}
+      </div>
+    </div>
+  );
+
   const release20Notes = (
-    <div>
+    <div className={styles.releaseBlock}>
       <div className={styles.releaseHeader}>
         {DOWNLOAD_COPY.RELEASE_2_0.HEADER}
       </div>
@@ -112,6 +133,7 @@ const ReleaseUpdate = ({ }: IReleaseUpdateProps) => {
     <div className={styles.releaseUpdateComponent}>
       <J40AccordionItem id={'releaseUpdate'}>
         <div>
+          {release21Notes}
           {release20Notes}
         </div>
       </J40AccordionItem>

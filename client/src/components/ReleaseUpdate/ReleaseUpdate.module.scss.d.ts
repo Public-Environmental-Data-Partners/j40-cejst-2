@@ -5,6 +5,8 @@ declare namespace ReleaseUpdateNamespace {
       releaseSectionTitle:string;
       releaseSectionBody:string;
       releaseHeader: string;
+      releaseNote: string;
+      releaseBlock: string;
       showHideText: string;
       showHideIcon: string;
     }

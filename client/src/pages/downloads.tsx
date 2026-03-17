@@ -33,8 +33,6 @@ const DownloadsPage = ({location}: IDownloadsPageProps) => {
 
           <Grid col={12} tablet={{col: 8}}>
 
-            <h2 className={'j40-mt-0 j40-mb-3'}>{DOWNLOADS_COPY.DOWNLOAD_LINKS.TITLE}</h2>
-
             <section>
               <ReleaseUpdate />
             </section>

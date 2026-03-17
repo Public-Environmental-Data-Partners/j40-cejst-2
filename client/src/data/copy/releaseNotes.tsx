@@ -3,6 +3,43 @@ import React from 'react';
 import * as COMMON_COPY from './common';
 import {VERSION_NUMBER} from './methodology';
 
+const RELEASE_2_1_VERSION = '2.1';
+
+export const RELEASE_2_1 = {
+  HEADER: <FormattedMessage
+    id={'download.page.release.2_1.update.HEADER'}
+    defaultMessage={`Version {release} Release update - {date}`}
+    description={'Download page release notes header for version 2.1'}
+    values={{
+      release: RELEASE_2_1_VERSION,
+      date: <FormattedDate
+        value={COMMON_COPY.METH_2_1_RELEASE_DATE}
+        year="numeric"
+        month="short"
+        day="numeric"
+      />,
+    }}
+  />,
+  NEW_IMPROVED_SECTION: <FormattedMessage
+    id={'download.page.release.2_1.update.NEW_IMPROVED_SECTION'}
+    defaultMessage={`New & Improved`}
+    description={'Download page release notes New & Improved section'}
+  />,
+  NEW_IMPROVED_CONTENT: [
+    <FormattedMessage
+      id={'download.page.release.2_1.update.NEW_IMPROVED_CONTENT_1'}
+      key={'download.page.release.2_1.update.NEW_IMPROVED_CONTENT_1'}
+      defaultMessage={`Added the ability to view disadvantaged communities by burdens of interest`}
+      description={'Download page release notes 2.1 content'}
+    />,
+  ],
+  NOTE: <FormattedMessage
+    id={'download.page.release.2_1.update.NOTE'}
+    defaultMessage={`Note: None of the underlying data has changed`}
+    description={'Download page release notes 2.1 data disclaimer'}
+  />,
+};
+
 export const RELEASE_2_0 = {
   HEADER: <FormattedMessage
     id={'download.page.release.2_0.update.HEADER'}

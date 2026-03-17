@@ -151,17 +151,9 @@ export const getDownloadIconAltTag = () => defineMessages({
   },
 });
 
-export {RELEASE_2_0} from './releaseNotes';
+export {RELEASE_2_0, RELEASE_2_1} from './releaseNotes';
 
 export const DOWNLOAD_LINKS = {
-  TITLE: <FormattedMessage
-    id={'download.page.files.section.title'}
-    defaultMessage={`Version {version} file formats`}
-    description={'Navigate to the download page. This is first download file link'}
-    values={{
-      version: VERSION_NUMBER,
-    }}
-  />,
   TEXT: <FormattedMessage
     id={'downloads.page.files.section.text'}
     defaultMessage={'The dataset used in the {version} version of the tool, along with a codebook, and information about how to use the list of communities (.pdf) are available for download:'}

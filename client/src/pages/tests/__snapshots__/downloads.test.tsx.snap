@@ -275,11 +275,6 @@ exports[`rendering of the DatasetContainer checks if various text fields are vis
           class="grid-col-12 tablet:grid-col-8"
           data-testid="grid"
         >
-          <h2
-            class="j40-mt-0 j40-mb-3"
-          >
-            Version 2.0 file formats
-          </h2>
           <section>
             <div>
               <span>
@@ -306,7 +301,7 @@ exports[`rendering of the DatasetContainer checks if various text fields are vis
                 <div>
                   <div>
                     <div>
-                      Version 2.0 Release update - Dec 20, 2024
+                      Version 2.1 Release update - Mar 20, 2026
                     </div>
                     <div>
                       New & Improved
@@ -314,55 +309,12 @@ exports[`rendering of the DatasetContainer checks if various text fields are vis
                     <div>
                       <ul>
                         <li>
-                          Added the low income burden to American Samoa, Guam, the Mariana Islands, and the U.S. Virgin
-        Islands
-                        </li>
-                        <li>
-                          Tracts in these territories that are completely surrounded by disadvantaged tracts and exceed
-        an adjusted low income threshold are now considered disadvantaged
-                        </li>
-                        <li>
-                          Additionally, census tracts in these four Territories are now considered disadvantaged if they
-        meet the low income threshold only, because these Territories are not included in the nationally-consistent
-        datasets on environmental and climate burdens used in the tool
-                        </li>
-                        <li>
-                          Updated the data in the workforce development category to the Census Decennial 2020 data for
-        the U.S. territories of Guam, Virgin Islands, Northern Mariana Islands, and American Samoa
-                        </li>
-                        <li>
-                          Made improvements to the low income burden to better identify college students before they are
-        excluded from that burden’s percentile
-                        </li>
-                        <li>
-                          Census tracts that were disadvantaged under version 1.0 continue to be considered as
-        disadvantaged in version 2.0
+                          Added the ability to view disadvantaged communities by burdens of interest
                         </li>
                       </ul>
                     </div>
                     <div>
-                      Technical Fixes
-                    </div>
-                    <div>
-                      <ul>
-                        <li>
-                          For tracts that have water boundaries, e.g. coastal or island tracts, the water boundaries are
-        now excluded from the calculation to determine if a tract is 100% surrounded by disadvantaged census tracts
-                        </li>
-                      </ul>
-                    </div>
-                    <div>
-                      User Interface Improvements
-                    </div>
-                    <div>
-                      <ul>
-                        <li>
-                          Added the ability to search by census tract ID
-                        </li>
-                        <li>
-                          The basemap has been updated to use a free, open source map
-                        </li>
-                      </ul>
+                      Note: None of the underlying data has changed
                     </div>
                   </div>
                 </div>

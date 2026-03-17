@@ -31,6 +31,7 @@ export const FEEDBACK_EMAIL = 'Screeningtool-Support@omb.eop.gov';
 export const METH_BETA_RELEASE_DATE = new Date(2022, 1, 18, 11, 59, 59); // Feb 18 2022
 export const METH_1_0_RELEASE_DATE = new Date(2022, 10, 22, 11, 59, 59); // Nov 22 2022
 export const METH_2_0_RELEASE_DATE = new Date(2024, 11, 20, 11, 59, 59); // Dec 19 2024
+export const METH_2_1_RELEASE_DATE = new Date(2026, 2, 20, 11, 59, 59); // Mar 20 2026
 
 
 // Update Banner
