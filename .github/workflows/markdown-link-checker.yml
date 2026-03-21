@@ -1,10 +1,7 @@
 name: Markdown Link Checker
 on:
-  pull_request:
-    branches:
-      - main
-    paths:
-      - "**.md"
+  workflow_dispatch:
+
 
 jobs:
   markdown-link-check:
@@ -12,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Need full history for path filtering
+          fetch-depth: 0 # Need full history for path filtering on PRs
       - uses: dorny/paths-filter@v3
         id: changes
         with:
@@ -20,7 +17,7 @@ jobs:
             markdown:
               - '**.md'
       - name: Run linkspector
-        if: steps.changes.outputs.markdown == 'true'
+        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.markdown == 'true'
         uses: umbrelladocs/action-linkspector@v1
         with:
           fail_on_error: true
