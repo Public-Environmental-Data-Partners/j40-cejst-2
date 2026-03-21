@@ -1,9 +1,7 @@
 import {FormattedDate, FormattedMessage} from 'gatsby-plugin-intl';
 import React from 'react';
 import * as COMMON_COPY from './common';
-import {VERSION_NUMBER} from './methodology';
-
-const RELEASE_2_1_VERSION = '2.1';
+import {VERSION_NUMBER_V2_0, VERSION_NUMBER_V2_1} from './methodology';
 
 export const RELEASE_2_1 = {
   HEADER: <FormattedMessage
@@ -11,7 +9,7 @@ export const RELEASE_2_1 = {
     defaultMessage={`Version {release} Release update - {date}`}
     description={'Download page release notes header for version 2.1'}
     values={{
-      release: RELEASE_2_1_VERSION,
+      release: VERSION_NUMBER_V2_1,
       date: <FormattedDate
         value={COMMON_COPY.METH_2_1_RELEASE_DATE}
         year="numeric"
@@ -46,7 +44,7 @@ export const RELEASE_2_0 = {
     defaultMessage={`Version {release} Release update - {date}`}
     description={'Navigate to the download page. This is first download file link'}
     values={{
-      release: VERSION_NUMBER,
+      release: VERSION_NUMBER_V2_0,
       date: <FormattedDate
         value={COMMON_COPY.METH_2_0_RELEASE_DATE}
         year="numeric"

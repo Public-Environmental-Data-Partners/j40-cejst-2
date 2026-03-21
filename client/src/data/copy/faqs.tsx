@@ -6,7 +6,7 @@ import LinkTypeWrapper from '../../components/LinkTypeWrapper';
 
 import {DATA_SURVEY_LINKS, PAGES_ENDPOINTS, SITE_SATISFACTION_SURVEY_LINKS} from '../constants';
 import {CEJST_INSTRUCT, EXEC_ORDER_LINK, FED_RECOGNIZED_INDIAN_ENTITIES, WHEJAC_RECOMMENDATIONS} from './about';
-import {boldFn, FEEDBACK_EMAIL, linkFn, METH_1_0_RELEASE_DATE, METH_2_0_RELEASE_DATE} from './common';
+import {boldFn, FEEDBACK_EMAIL, linkFn, METH_1_0_RELEASE_DATE, METH_2_1_RELEASE_DATE} from './common';
 import {DOWNLOAD_FILES} from './downloads';
 import {EXPLORE_PAGE_LINKS} from './explore';
 import {VERSION_NUMBER} from './methodology';
@@ -373,7 +373,7 @@ export const FAQ_ANSWERS = {
         month="long"
       />),
       currentVersion: VERSION_NUMBER,
-      currentVersionRelease: (<FormattedDate value={METH_2_0_RELEASE_DATE}
+      currentVersionRelease: (<FormattedDate value={METH_2_1_RELEASE_DATE}
         year="numeric"
         month="long"
       />),

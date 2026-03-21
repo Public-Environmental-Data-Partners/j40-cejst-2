@@ -4,7 +4,12 @@ import React from 'react';
 import {defineMessages} from 'react-intl';
 import {boldFn, linkFn, simpleLink} from './common';
 
-export const VERSION_NUMBER = (2.1).toFixed(1);
+/** Display strings for specific CEJST releases (use for historical copy, release notes, etc.). */
+export const VERSION_NUMBER_V2_0 = (2.0).toFixed(1);
+export const VERSION_NUMBER_V2_1 = (2.1).toFixed(1);
+
+/** Current tool / methodology version shown in “current version” copy site-wide. */
+export const VERSION_NUMBER = VERSION_NUMBER_V2_0;
 
 // eslint-disable-next-line no-unused-vars
 export enum VERSIONS {BETA, V1_0, V2_0}
