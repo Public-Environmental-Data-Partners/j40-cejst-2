@@ -351,6 +351,10 @@
     "defaultMessage": "Zooming in and selecting shows information about each census tract.",
     "description": "On the explore the map page, the fifth description of the page"
   },
+  "explore.map.page.donate.button.text": {
+    "defaultMessage": "Donate",
+    "description": "On the explore the map page, the donate button next to share data feedback"
+  },
   "explore.map.page.explore.data.box.body": {
     "defaultMessage": "Download the data with documentation and shapefile from the <link1>downloads</link1> page.",
     "description": "Navigate to the explore the map page. When the map is in view, click on the map. The side panel will show Things to know, this is the fifth paragraph of this side pane"

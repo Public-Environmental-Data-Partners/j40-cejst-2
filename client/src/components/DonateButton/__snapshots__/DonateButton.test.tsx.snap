@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`rendering of DonateButton Component checks if component renders 1`] = `
+<DocumentFragment>
+  <a
+    href="https://donorbox.org/open-environmental-data-project-donations-2"
+    rel="noreferrer"
+    target="_blank"
+  >
+    <button
+      class="usa-button"
+      data-testid="button"
+      type="button"
+    >
+      Donate
+      <img
+        alt="launch icon"
+        src="test-file-stub"
+      />
+    </button>
+  </a>
+</DocumentFragment>
+`;

@@ -379,6 +379,9 @@ export const LAYER_FILTER_OVERLAY_VIEWPORT_HEIGHT = {
 
 // ********** SURVEY LINKS ***************
 
+export const DONATE_LINK =
+  "https://donorbox.org/open-environmental-data-project-donations-2";
+
 export const DATA_SURVEY_LINKS = {
   EN: "https://docs.google.com/forms/d/e/1FAIpQLSc_nxBGIs9q8yg1RlgePhpevBePGJVE9NYLWBnwhd46wt-67A/viewform",
   ES: "https://docs.google.com/forms/d/e/1FAIpQLSdB-4Viwb6KJIUQjMLxfqxsJXlg-gQ61PGT524AGill9Mf_Pg/viewform",

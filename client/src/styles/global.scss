@@ -172,6 +172,17 @@ li.usa-nav__primary-item a:hover::after {
     @include at-media-max("tablet") {
       flex-direction: column;
     }
+
+    .page-heading-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+
+      .usa-button {
+        margin: 0;
+      }
+    }
   }
 
   .j40-mb5-mt3 {
