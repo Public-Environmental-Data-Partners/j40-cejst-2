@@ -7,9 +7,10 @@ import J40Map from '../components/J40Map';
 import J40MainGridContainer from '../components/J40MainGridContainer';
 import Layout from '../components/layout';
 import DatasetsButton from '../components/DatasetsButton';
+import DonateButton from '../components/DonateButton';
 
 import * as EXPLORE_COPY from '../data/copy/explore';
-import {DATA_SURVEY_LINKS} from '../data/constants';
+import {DATA_SURVEY_LINKS, DONATE_LINK} from '../data/constants';
 
 interface IMapPageProps {
   location: Location;
@@ -27,7 +28,10 @@ const ExporeToolPage = ({location}: IMapPageProps) => {
 
       <section className={'page-heading'}>
         <h1>{intl.formatMessage(EXPLORE_COPY.PAGE_INTRO.PAGE_HEADING)}</h1>
-        <DatasetsButton href= {intl.locale === 'es' ? DATA_SURVEY_LINKS.ES : DATA_SURVEY_LINKS.EN} />
+        <div className={'page-heading-actions'}>
+          <DonateButton href={DONATE_LINK} />
+          <DatasetsButton href= {intl.locale === 'es' ? DATA_SURVEY_LINKS.ES : DATA_SURVEY_LINKS.EN} />
+        </div>
       </section>
 
       <Grid row gap className={'j40-mb5-mt3'}>

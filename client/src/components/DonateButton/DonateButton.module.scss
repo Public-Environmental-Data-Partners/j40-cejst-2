@@ -1,0 +1,20 @@
+@use '../../styles/design-system.scss' as *;
+
+.donateButtonContainer {
+
+      @include u-height(6);
+      z-index: 2;
+
+      @include u-text("white");
+      @include u-bg("green-40v");
+
+      &:hover {
+        @include u-bg("green-50v");
+        @include u-text("white");
+      }
+
+      .launchIcon {
+        height: .8rem;
+        filter: brightness(0) invert(1);
+      }
+}

@@ -28,6 +28,11 @@ export const PAGE_INTRO = defineMessages({
     defaultMessage: 'Explore the map',
     description: 'On the explore the map page, the heading of the page',
   },
+  DONATE_BUTTON: {
+    id: 'explore.map.page.donate.button.text',
+    defaultMessage: 'Donate',
+    description: 'On the explore the map page, the donate button next to share data feedback',
+  },
 });
 
 export const PAGE_DESCRIPTION1 = <FormattedMessage
