@@ -4,9 +4,10 @@ import LinkTypeWrapper from '../../components/LinkTypeWrapper';
 import {PAGES_ENDPOINTS} from '../constants';
 import {linkFn} from './common';
 
-export const PRIVACY_POLICY_LAST_UPDATED = new Date(2024, 11, 19, 11, 59, 59); // Dec 19 2024
+export const PRIVACY_POLICY_LAST_UPDATED = new Date(2026, 10, 14, 11, 59, 59); // Nov 14 2026
 export const PRIVACY_EMAIL = 'CEJST@ceq.eop.gov';
 export const USA_GOV_COOKIES_URL = 'https://www.usa.gov/optout-instructions';
+export const POSTHOG_PRIVACY_URL = 'https://posthog.com/privacy';
 export const COPPA_URL = 'https://www.ftc.gov/legal-library/browse/rules/childrens-online-privacy-protection-rule-coppa';
 
 export const PAGE_INTRO = defineMessages({
@@ -131,8 +132,12 @@ export const PRIVACY_CONTENT = {
   SHARING_INFO_BODY3: <FormattedMessage
     id={'privacy.sharing.info.body3'}
     defaultMessage={`We may share your information with third-party service providers who assist us in operating the
-      CEJST tool. These providers are contractually obligated to protect the privacy and security of the data.`}
+      CEJST tool, including PostHog, which we use to measure website traffic. PostHog\u2019s practices are described
+      in its <posthog>privacy policy</posthog>.`}
     description={'Privacy policy third-party sharing text'}
+    values={{
+      posthog: linkFn(POSTHOG_PRIVACY_URL, false, true),
+    }}
   />,
   COOKIES_HEADING: <FormattedMessage
     id={'privacy.cookies.heading'}
@@ -147,15 +152,17 @@ export const PRIVACY_CONTENT = {
   />,
   COOKIES_BODY2: <FormattedMessage
     id={'privacy.cookies.body2'}
-    defaultMessage={`The CEJST uses cookies for technical purposes, such as to enable better navigation through the
-      site or to allow you to customize your preferences for interacting with the website, and to monitor and
-      analyze traffic to the website.`}
+    defaultMessage={`The CEJST uses cookies and similar technologies for technical purposes, such as to enable better
+      navigation through the site or to allow you to customize your preferences for interacting with the website.
+      We also use PostHog, a third-party analytics service, to monitor page traffic. PostHog may store cookies or
+      local storage values on your device for that purpose.`}
     description={'Privacy policy CEJST cookie usage'}
   />,
   COOKIES_BODY3: <FormattedMessage
     id={'privacy.cookies.body3'}
-    defaultMessage={`<link1>USA.gov</link1> provides instructions for "opting out" from cookies if you do not want
-      to receive them.`}
+    defaultMessage={`<link1>USA.gov</link1> provides instructions for "opting out" from many website cookies. Those
+      instructions may not stop PostHog analytics on this site. You can also limit tracking through your browser
+      settings or by using tools that block third-party analytics scripts.`}
     description={'Privacy policy cookie opt-out info'}
     values={{
       link1: linkFn(USA_GOV_COOKIES_URL, false, true),

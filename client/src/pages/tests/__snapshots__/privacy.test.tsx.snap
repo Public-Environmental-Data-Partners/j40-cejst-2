@@ -259,7 +259,7 @@ exports[`rendering of the Privacy Policy page matches Privacy Policy page snapsh
           data-testid="grid"
         >
           <p>
-            Effective Date: December 19, 2024
+            Effective Date: November 14, 2026
           </p>
           <p>
             The Council on Environmental Quality (CEQ, we, or us) is committed to protecting the privacy and
@@ -337,7 +337,18 @@ exports[`rendering of the Privacy Policy page matches Privacy Policy page snapsh
           </p>
           <p>
             We may share your information with third-party service providers who assist us in operating the
-      CEJST tool. These providers are contractually obligated to protect the privacy and security of the data.
+      CEJST tool, including PostHog, which we use to measure website traffic. PostHog’s practices are described
+      in its 
+            <a
+              class="usa-link usa-link--external"
+              data-cy=""
+              href="https://posthog.com/privacy"
+              rel="noreferrer"
+              target="_blank"
+            >
+              privacy policy
+            </a>
+            .
           </p>
           <h2
             id="cookies"
@@ -349,9 +360,10 @@ exports[`rendering of the Privacy Policy page matches Privacy Policy page snapsh
       remember specific information about your visit.
           </p>
           <p>
-            The CEJST uses cookies for technical purposes, such as to enable better navigation through the
-      site or to allow you to customize your preferences for interacting with the website, and to monitor and
-      analyze traffic to the website.
+            The CEJST uses cookies and similar technologies for technical purposes, such as to enable better
+      navigation through the site or to allow you to customize your preferences for interacting with the website.
+      We also use PostHog, a third-party analytics service, to monitor page traffic. PostHog may store cookies or
+      local storage values on your device for that purpose.
           </p>
           <p>
             <a
@@ -363,8 +375,9 @@ exports[`rendering of the Privacy Policy page matches Privacy Policy page snapsh
             >
               USA.gov
             </a>
-             provides instructions for "opting out" from cookies if you do not want
-      to receive them.
+             provides instructions for "opting out" from many website cookies. Those
+      instructions may not stop PostHog analytics on this site. You can also limit tracking through your browser
+      settings or by using tools that block third-party analytics scripts.
           </p>
           <h2
             id="external-links"
